@@ -95,7 +95,7 @@ def searchBot2():
             print(e.reason)
             time.sleep(2)
 
-newer_tweets = tweepy.Cursor(api.search, "stock market").items(tweetNumber)
+newer_tweets = tweepy.Cursor(api.search, "stock market").items(200)
 
 def searchBot3():
     print("Running third search.")
@@ -249,9 +249,9 @@ print(time.ctime())
 schedule.every().day.at("15:15").do(tweet_sentiment)
 schedule.every().day.at("09:15").do(searchBot)
 schedule.every().day.at("12:15").do(searchBot2)
-schedule.every().day.at("17:45").do(searchBot3)
+schedule.every().day.at("18:00").do(searchBot3)
 schedule.every(15).minutes.do(reply)
-schedule.every(2).hours.do(follow_followers)
+schedule.every().hour.do(follow_followers)
 schedule.every(5).hours.do(run_scraper)
 
 
