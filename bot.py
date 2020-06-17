@@ -1,6 +1,5 @@
 import tweepy
 from textblob import TextBlob
-import jsonpickle
 import pandas as pd
 import numpy as np
 import redis
@@ -8,7 +7,7 @@ import schedule
 import time
 import re
 import os
-import json
+
 
 consumer_key = os.getenv("CONSUMER_KEY")
 consumer_secret = os.getenv("CONSUMER_SECRET")
