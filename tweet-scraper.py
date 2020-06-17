@@ -39,7 +39,7 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
     tweetsPerQry = 100
     redisDataBase = 'tweets_scraped'
     sinceId = None
-    while tweetCount < maxTweets:
+    while tweetCount < (maxTweets-50):
         try:
             if (max_id <= 0):
                 if (not sinceId):
@@ -97,7 +97,7 @@ def subjectivity(x): return TextBlob(x).sentiment.subjectivity
 
 if __name__ == "__main__":
     redisDataBase = "tweets_scraped"
-    scrape_twitter(1000, 'trump', redisDataBase)
+    scrape_twitter(3000, 'stock market', redisDataBase)
     f = read_tweets(redisDataBase)
     # print(f)
     tweet_polarity = np.zeros(client.scard(redisDataBase))
@@ -112,20 +112,31 @@ if __name__ == "__main__":
 
         elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
             bearish_count += 1
-
-    # sns.scatterplot(tweet_polarity,  # X-axis
-    #                 tweet_subjectivity,  # Y-axis
-    #                 s=100)
-    sentiment = bullish_count - bearish_count
+    sentiment = (bullish_count-25) - bearish_count
     print(f"Bullish count is {bullish_count}")
     print(f"Bearish count is {bearish_count}")
+    to_string = "null"
     if sentiment > 30:
-        print("The market sentiment is bullish!!")
-    elif sentiment > 0:
-        print("Twitter sentiment is showing people undecided on whether the market is currently bullish or bearish.")
+        to_string = "Twitter sentiment of the stock market is bullish with a reading of {}.".format(
+            sentiment)
+        current_high = int(client.get('highest_sentiment'))
+        if sentiment > current_high:
+            client.set('highest_sentiment', str(sentiment))
+            to_string = "{} This is the highest reading to date.".format(
+                to_string)
+    elif sentiment > -5:
+        to_string = "Twitter sentiment of the stock market is nuetral with a reading of {}.".format(
+            sentiment)
     else:
-        print("The market is bearish")
-    print(sentiment)
+        to_string = "Twitter sentiment of the stock market is bearish with a reading of {}.".format(
+            sentiment)
+        current_low = int(client.get('lowest_sentiment'))
+        if sentiment > current_low:
+            client.set('lowest_sentiment', str(sentiment))
+            to_string = "{} This is the lowest reading to date.".format(
+                to_string)
+    print(to_string)
+    api.update_status(to_string)
 
     # plt.title("Sentiment Analysis", fontsize=20)
     # plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
