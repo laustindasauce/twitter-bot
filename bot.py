@@ -23,10 +23,8 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 tweets = api.mentions_timeline()
 
-FILE_NAME = 'last_seen.txt'
 
-
-def read_last_seen(FILE_NAME):
+def read_last_seen():
     # file_read = open(FILE_NAME, 'r')
     # last_seen_id = int(file_read.read().strip())
     # file_read.close()
@@ -47,7 +45,7 @@ def reply():
     print("Checking for any mentions")
     print(time.ctime())
     tweets = api.mentions_timeline(
-        read_last_seen(FILE_NAME), tweet_mode='extended')
+        read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
         #if 'bullish' in tweet.full_text.lower():
         try:
