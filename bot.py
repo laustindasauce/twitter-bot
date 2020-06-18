@@ -247,10 +247,11 @@ def run_scraper():
 
 
 print(time.ctime())
-schedule.every().day.at("15:15").do(tweet_sentiment)
-schedule.every().day.at("09:15").do(searchBot)
-schedule.every().day.at("12:15").do(searchBot2)
-schedule.every().day.at("18:00").do(searchBot3)
+schedule.every().day.at("15:13").do(tweet_sentiment)
+schedule.every().day.at("09:17").do(searchBot)
+schedule.every().day.at("12:12").do(searchBot2)
+schedule.every().day.at("17:03").do(searchBot3)
+schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(20).minutes.do(follow_followers)
 schedule.every(5).hours.do(run_scraper)
