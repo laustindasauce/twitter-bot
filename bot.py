@@ -236,7 +236,7 @@ def run_scraper():
         to_string = "Twitter sentiment of the stock market is bearish with a reading of {}.".format(
             sentiment)
         current_low = int(client.get('lowest_sentiment'))
-        if sentiment > current_low:
+        if sentiment < current_low:
             client.set('lowest_sentiment', str(sentiment))
             to_string = "{} This is the lowest reading to date.".format(
                 to_string)
