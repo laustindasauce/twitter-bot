@@ -218,7 +218,8 @@ def run_scraper():
 
         elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
             bearish_count += 1
-    sentiment = (bullish_count-75) - bearish_count
+    bullish_count -= 35
+    sentiment = (bullish_count) - bearish_count
     print(f"Bullish count is {bullish_count}")
     print(f"Bearish count is {bearish_count}")
     print(f"Sentiment count is {sentiment}")
