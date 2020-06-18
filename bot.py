@@ -221,6 +221,7 @@ def run_scraper():
     sentiment = (bullish_count-75) - bearish_count
     print(f"Bullish count is {bullish_count}")
     print(f"Bearish count is {bearish_count}")
+    print(f"Sentiment count is {sentiment}")
     to_string = "null"
     if sentiment > 30:
         to_string = "Twitter sentiment of the stock market is bullish with a reading of {}.".format(
