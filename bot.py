@@ -53,7 +53,7 @@ def reply():
         try:
             print("Replied to ID - " + str(tweet.id) + " - " + tweet.full_text)
             username = tweet.user.screen_name
-            if username not CalendarKy:
+            if username != "CalendarKy":
                 api.update_status("@" + username +
                                     " Hello, " + username + " this is an automated reply. @CalendarKy could you please help me out?", tweet.id)
             #api.retweet(tweet.id)
