@@ -123,7 +123,7 @@ def tweet_sentiment():
     api.update_status(status)
 
 
-def follow_followers(api):
+def follow_followers():
     print(time.ctime())
     print("Retrieving and following followers")
     for follower in tweepy.Cursor(api.followers).items():
@@ -251,7 +251,7 @@ schedule.every().day.at("09:15").do(searchBot)
 schedule.every().day.at("12:15").do(searchBot2)
 schedule.every().day.at("18:00").do(searchBot3)
 schedule.every(15).minutes.do(reply)
-schedule.every().hour.do(follow_followers)
+schedule.every(20).minutes.do(follow_followers)
 schedule.every(5).hours.do(run_scraper)
 
 
