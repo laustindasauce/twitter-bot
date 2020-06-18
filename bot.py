@@ -42,8 +42,8 @@ def store_last_seen(last_seen_id):
 #store_last_seen(FILE_NAME, '1194877411671724066')
 
 def reply():
-    print("Checking for any mentions")
-    print(time.ctime())
+    # print("Checking for any mentions")
+    # print(time.ctime())
     tweets = api.mentions_timeline(
         read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
@@ -112,7 +112,7 @@ def searchBot3():
             time.sleep(2)
 
 def tweet_sentiment():
-    print(time.ctime())
+    # print(time.ctime())
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
@@ -123,8 +123,8 @@ def tweet_sentiment():
 
 
 def follow_followers():
-    print(time.ctime())
-    print("Retrieving and following followers")
+    # print(time.ctime())
+    # print("Retrieving and following followers")
     for follower in tweepy.Cursor(api.followers).items():
         if not follower.following:
             print(f"Following {follower.name}")
@@ -132,7 +132,7 @@ def follow_followers():
 
 
 def scrape_twitter(maxTweets, searchQuery, redisDataBase):
-    print(time.ctime())
+    # print(time.ctime())
     client.delete(redisDataBase)
     print(f"Downloading max {maxTweets} tweets")
     retweet_filter = '-filter:retweets'
@@ -168,7 +168,7 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                 client.sadd(redisDataBase, (str(tweet.full_text.replace(
                     '\n', '').encode("utf-8"))+"\n"))
             tweetCount += len(new_tweets)
-            print(f"Downloaded {tweetCount} tweets")
+            # print(f"Downloaded {tweetCount} tweets")
             max_id = new_tweets[-1].id
 
         except tweepy.TweepError as e:
