@@ -53,8 +53,9 @@ def reply():
         try:
             print("Replied to ID - " + str(tweet.id) + " - " + tweet.full_text)
             username = tweet.user.screen_name
-            api.update_status("@" + tweet.user.screen_name +
-                                " Hello, " + username + " this is an automated reply. @CalendarKy could you please help me out?", tweet.id)
+            if username not CalendarKy:
+                api.update_status("@" + username +
+                                    " Hello, " + username + " this is an automated reply. @CalendarKy could you please help me out?", tweet.id)
             #api.retweet(tweet.id)
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
