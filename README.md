@@ -15,7 +15,7 @@ tweeting, replying to mentions, following users back and more. Most of the examp
   * Secret Key ID
 
 **Redis Setup**
-* Download redis and activate your redis server a simple youtube search will do
+* Download redis and activate your redis server, a simple youtube search will do
 * Start running your redis-server
 * Next open your redis-cli
   * Be sure to change the requirepass within your config to secure your server
