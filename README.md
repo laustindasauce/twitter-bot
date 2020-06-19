@@ -19,8 +19,8 @@ This is some code using tweepy and twitter API to automate some twitter function
 * Next open your redis-cli
   * Be sure to change the requirepass within your config to secure your server
   * Within redis-cli// > config get requirepass
-  * 1) "requirepass"
-  * 2) "This Will Be Empty"
+    1. "requirepass"
+    2. "This Will Be Empty"
 * Set your password
   * Within redis-cli// > config set requirepass yourPasswordHere
 
