@@ -51,13 +51,13 @@ def reply():
         try:
             username = tweet.user.screen_name
             if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
-                print("Replied to username - " + username +
+                print("Replied to - " + username +
                       " - " + tweet.full_text)
                 api.update_status("@" + username +
-                                    " Hello, " + username + " this is an automated reply. @CalendarKy could you please help me out?", tweet.id)
+                                    " Hello, " + username + ", just a moment. @CalendarKy could you please help me out?", tweet.id)
             # #api.retweet(tweet.id)
             else:
-                print("Favorited username " + username +
+                print("Favorited " + username +
                   " - " + tweet.full_text)
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
