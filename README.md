@@ -8,21 +8,21 @@ This is some code using tweepy and twitter API to automate some twitter function
 * Create a new application and fill out your information
 * Generate your access token
 * Write down your needed keys
-* - Consumer ID
-* - Consumer Secret Key
-* - Key ID
-* - Secret Key ID
+ - Consumer ID
+ - Consumer Secret Key
+ - Key ID
+ - Secret Key ID
 
 **Redis Setup**
 * Download redis and activate your redis server a simple youtube search will do
 * Start running your redis-server
 * Next open your redis-cli
-* - Be sure to change the requirepass within your config to secure your server
-* - Within redis-cli// > config get requirepass
-* - 1) "requirepass"
-* - 2) "This Will Be Empty"
+ - Be sure to change the requirepass within your config to secure your server
+ - Within redis-cli// > config get requirepass
+ - 1) "requirepass"
+ - 2) "This Will Be Empty"
 * Set your password
-* - Within redis-cli// > config set requirepass yourPasswordHere
+ - Within redis-cli// > config set requirepass yourPasswordHere
 
 
 ### Running
