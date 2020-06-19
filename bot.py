@@ -307,35 +307,37 @@ def thank_new_followers():
     for follower in new_followers:
         to_string = "@" + follower + " Thanks for the follow!"
         print(to_string)
+        api.update_status(to_string)
         client.sadd('followers_thanked', follower)
         new_follower = True
     if new_follower:
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
+        
     
     
 
 print(time.ctime())
-# schedule.every().monday.at("02:01").do(unfollow)
-# schedule.every().day.at("11:26").do(auto_follow)
-# schedule.every().day.at("15:13").do(tweet_sentiment)
-# schedule.every().day.at("09:17").do(searchBot)
-# schedule.every().day.at("12:12").do(searchBot2)
-# schedule.every().day.at("17:03").do(searchBot3)
-# schedule.every().day.at("09:06").do(searchBot3)
-# schedule.every(15).minutes.do(reply)
-# schedule.every(20).minutes.do(follow_followers)
-# schedule.every(5).hours.do(run_scraper)
+schedule.every().monday.at("02:01").do(unfollow)
+schedule.every().day.at("11:26").do(auto_follow)
+schedule.every().day.at("15:13").do(tweet_sentiment)
+schedule.every().day.at("09:17").do(searchBot)
+schedule.every().day.at("12:12").do(searchBot2)
+schedule.every().day.at("17:03").do(searchBot3)
+schedule.every().day.at("09:06").do(searchBot3)
+schedule.every(15).minutes.do(reply)
+schedule.every(20).minutes.do(follow_followers)
+schedule.every(5).hours.do(run_scraper)
 
 
-# while True:
-#     try:
-#         schedule.run_pending()
-#         time.sleep(1)
-#     except tweepy.TweepError as e:
-#         print(e.reason)
-#         time.sleep(1)
+while True:
+    try:
+        schedule.run_pending()
+        time.sleep(1)
+    except tweepy.TweepError as e:
+        print(e.reason)
+        time.sleep(1)
 
-if __name__ == "__main__":
-    thank_new_followers()
+# if __name__ == "__main__":
+#     thank_new_followers()
