@@ -340,13 +340,13 @@ schedule.every(5).hours.do(run_scraper)
 schedule.every(21).minutes.do(thank_new_followers)
 
 
-# while True:
-#     try:
-#         schedule.run_pending()
-#         time.sleep(1)
-#     except tweepy.TweepError as e:
-#         print(e.reason)
-#         time.sleep(1)
+while True:
+    try:
+        schedule.run_pending()
+        time.sleep(1)
+    except tweepy.TweepError as e:
+        print(e.reason)
+        time.sleep(1)
 
-if __name__ == "__main__":
-    reply()
+# if __name__ == "__main__":
+#     reply()
