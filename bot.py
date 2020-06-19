@@ -49,12 +49,16 @@ def reply():
     for tweet in reversed(tweets):
         #if 'bullish' in tweet.full_text.lower():
         try:
-            print("Replied to ID - " + str(tweet.id) + " - " + tweet.full_text)
             username = tweet.user.screen_name
-            if username != "CalendarKy":
+            if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
+                print("Replied to username - " + username +
+                      " - " + tweet.full_text)
                 api.update_status("@" + username +
                                     " Hello, " + username + " this is an automated reply. @CalendarKy could you please help me out?", tweet.id)
-            #api.retweet(tweet.id)
+            # #api.retweet(tweet.id)
+            else:
+                print("Favorited username " + username +
+                  " - " + tweet.full_text)
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
         except tweepy.TweepError as e:
@@ -336,13 +340,13 @@ schedule.every(5).hours.do(run_scraper)
 schedule.every(21).minutes.do(thank_new_followers)
 
 
-while True:
-    try:
-        schedule.run_pending()
-        time.sleep(1)
-    except tweepy.TweepError as e:
-        print(e.reason)
-        time.sleep(1)
+# while True:
+#     try:
+#         schedule.run_pending()
+#         time.sleep(1)
+#     except tweepy.TweepError as e:
+#         print(e.reason)
+#         time.sleep(1)
 
-# if __name__ == "__main__":
-#     thank_new_followers()
+if __name__ == "__main__":
+    reply()
