@@ -329,6 +329,7 @@ schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(20).minutes.do(follow_followers)
 schedule.every(5).hours.do(run_scraper)
+schedule.every(152).minutes.do(thank_new_followers)
 
 
 while True:
