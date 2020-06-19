@@ -246,7 +246,55 @@ def run_scraper():
     api.update_status(to_string)
 
 
+def auto_follow():
+    query = "stock market"
+    print(f"Following users who have tweeted about the {query}")
+    search = tweepy.Cursor(api.search, q=query,
+                           result_type="recent", lang="en").items(50)
+
+    for tweet in search:
+        if tweet.user.followers_count < 1000:
+            continue
+        try:
+            api.create_favorite(tweet.id)
+            time.sleep(2)
+            api.create_friendship(tweet.user.id)
+            time.sleep(2)
+            print(f"You are now following {tweet.user.screen_name}")
+        except tweepy.TweepError as e:
+            print(e.reason)
+            time.sleep(2)
+
+
+def unfollow():
+    friendNames, followNames = [], []
+    try:
+        for friend in tweepy.Cursor(api.friends).items(400):
+            if friend.followers_count < 1000:
+                friendNames.append(friend.screen_name)
+
+        for follower in tweepy.Cursor(api.followers).items(400):
+            followNames.append(follower.screen_name)
+    except tweepy.TweepError as e:
+        print(e.reason)
+        time.sleep(2)
+
+    friendset = set(friendNames)
+    followset = set(followNames)
+    not_fback = friendset.difference(followset)
+    for not_following in not_fback:
+        try:
+            api.destroy_friendship(not_following)
+            print(f"Unfollowing: {not_following}")
+            time.sleep(3)
+        except tweepy.TweepError as e:
+            print(e.reason)
+            time.sleep(2)
+
+
 print(time.ctime())
+schedule.every().monday.at("02:01").do(unfollow)
+schedule.every().day.at("11:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("09:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
