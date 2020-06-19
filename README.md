@@ -22,7 +22,8 @@ This is some code using tweepy and twitter API to automate some twitter function
     1. "requirepass"
     2. "This Will Be Empty"
 * Set your password
-  * Within redis-cli// > config set requirepass yourPasswordHere
+  * Within redis-cli// > config set requirepass yourPasswordHere (recommended at least 32 characters long)
+
 
 
 ## Running
