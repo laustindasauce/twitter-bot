@@ -1,6 +1,7 @@
 # Twitter Bot Implementing Redis Database 
 
-This is some code using tweepy and twitter API to automate some twitter functions.
+This is messing around learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are 
+tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion redis is as easy, if not easier, to use.
 
 ## Prerequisites
 **Twitter Developer Set Up**
