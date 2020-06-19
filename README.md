@@ -1,4 +1,4 @@
-# Twitter Bot 
+# Twitter Bot Implementing Redis Database 
 
 This is some code using tweepy and twitter API to automate some twitter functions.
 
@@ -25,7 +25,7 @@ This is some code using tweepy and twitter API to automate some twitter function
   * Within redis-cli// > config set requirepass yourPasswordHere
 
 
-### Running
+## Running
 
 This is built to be ran 24/7 using docker.
 
