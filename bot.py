@@ -310,7 +310,7 @@ def thank_new_followers():
     for follower in list(client.smembers('followers_thanked')):
         followers_thanked.append(follower.decode("utf-8"))
     followers_thanked = set(followers_thanked)
-    for follower in tweepy.Cursor(api.followers).items(50):
+    for follower in tweepy.Cursor(api.followers).items(10):
         followers.append(str(follower.id))
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
@@ -344,14 +344,14 @@ schedule.every(5).hours.do(run_scraper)
 schedule.every(19).minutes.do(thank_new_followers)
 
 
-# while True:
-#     try:
-#         schedule.run_pending()
-#         time.sleep(1)
-#     except tweepy.TweepError as e:
-#         print(e.reason)
-#         time.sleep(1)
+while True:
+    try:
+        schedule.run_pending()
+        time.sleep(1)
+    except tweepy.TweepError as e:
+        print(e.reason)
+        time.sleep(1)
 
-if __name__ == "__main__":
-    thank_new_followers()
+# if __name__ == "__main__":
+#     thank_new_followers()
     # reply()
