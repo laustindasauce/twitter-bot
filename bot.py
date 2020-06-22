@@ -302,21 +302,25 @@ def unfollow():
 
 def thank_new_followers():
     new_follower = False
+    # client.srem('followers_thanked', '441228378')
     total_followers = client.scard('followers_thanked')
+    print(f"{total_followers} total followers")
     followers_thanked = []
     followers = []
     for follower in list(client.smembers('followers_thanked')):
         followers_thanked.append(follower.decode("utf-8"))
     followers_thanked = set(followers_thanked)
-    for follower in tweepy.Cursor(api.followers).items(20):
-        followers.append(follower.screen_name)
+    for follower in tweepy.Cursor(api.followers).items(50):
+        followers.append(str(follower.id))
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
+    print(followers_thanked)
+    print(followers_set)
     for follower in new_followers:
-        to_string = "@" + follower + " Thanks for the follow!"
+        to_string = "Thanks for the follow!"
         print(to_string)
-        api.send_direct_message(follower.id, to_string)
-        client.sadd('followers_thanked', follower)
+        api.send_direct_message(follower, to_string)
+        client.sadd('followers_thanked', str(follower))
         new_follower = True
     if new_follower:
         new_total_followers = client.scard('followers_thanked')
@@ -337,16 +341,17 @@ schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(20).minutes.do(follow_followers)
 schedule.every(5).hours.do(run_scraper)
-schedule.every(3).minutes.do(thank_new_followers)
+schedule.every(19).minutes.do(thank_new_followers)
 
 
-while True:
-    try:
-        schedule.run_pending()
-        time.sleep(1)
-    except tweepy.TweepError as e:
-        print(e.reason)
-        time.sleep(1)
+# while True:
+#     try:
+#         schedule.run_pending()
+#         time.sleep(1)
+#     except tweepy.TweepError as e:
+#         print(e.reason)
+#         time.sleep(1)
 
-# if __name__ == "__main__":
-#     reply()
+if __name__ == "__main__":
+    thank_new_followers()
+    # reply()
