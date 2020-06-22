@@ -315,7 +315,7 @@ def thank_new_followers():
     for follower in new_followers:
         to_string = "@" + follower + " Thanks for the follow!"
         print(to_string)
-        api.update_status(to_string)
+        api.send_direct_message(follower.id, to_string)
         client.sadd('followers_thanked', follower)
         new_follower = True
     if new_follower:
@@ -337,7 +337,7 @@ schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(20).minutes.do(follow_followers)
 schedule.every(5).hours.do(run_scraper)
-schedule.every(21).minutes.do(thank_new_followers)
+schedule.every(3).minutes.do(thank_new_followers)
 
 
 while True:
