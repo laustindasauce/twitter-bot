@@ -316,7 +316,7 @@ def thank_new_followers():
     new_followers = followers_set.difference(followers_thanked)
 
     for follower in new_followers:
-        to_string = "Thanks for the follow!"
+        to_string = "Thanks for the follow! Also, follow @CalendarKy for more market information!"
         print(to_string)
         api.send_direct_message(follower, to_string)
         client.sadd('followers_thanked', str(follower))
