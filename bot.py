@@ -314,8 +314,7 @@ def thank_new_followers():
         followers.append(str(follower.id))
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
-    print(followers_thanked)
-    print(followers_set)
+
     for follower in new_followers:
         to_string = "Thanks for the follow!"
         print(to_string)
