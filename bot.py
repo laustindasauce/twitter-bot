@@ -275,14 +275,17 @@ def auto_follow():
 
 
 def unfollow():
+    print("running unfollow function")
     friendNames, followNames = [], []
     try:
-        for friend in tweepy.Cursor(api.friends).items(400):
-            if friend.followers_count < 1000:
+        for friend in tweepy.Cursor(api.friends).items(150):
+            if friend.followers_count < 5000:
                 friendNames.append(friend.screen_name)
+                time.sleep(2)
 
-        for follower in tweepy.Cursor(api.followers).items(400):
+        for follower in tweepy.Cursor(api.followers).items(150):
             followNames.append(follower.screen_name)
+            time.sleep(2)
     except tweepy.TweepError as e:
         print(e.reason)
         time.sleep(2)
@@ -331,6 +334,7 @@ def thank_new_followers():
 
 print(time.ctime())
 schedule.every().monday.at("02:01").do(unfollow)
+schedule.every().thursday.at("11:35").do(unfollow)
 schedule.every().day.at("11:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("09:17").do(searchBot)
@@ -352,5 +356,4 @@ while True:
         time.sleep(1)
 
 # if __name__ == "__main__":
-#     thank_new_followers()
-    # reply()
+#     unfollow()
