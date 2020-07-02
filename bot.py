@@ -304,10 +304,9 @@ def unfollow():
 
 
 def thank_new_followers():
-    new_follower = False
     # client.srem('followers_thanked', '441228378')
     total_followers = client.scard('followers_thanked')
-    print(f"{total_followers} total followers")
+    # print(f"{total_followers} total followers")
     followers_thanked = []
     followers = []
     for follower in list(client.smembers('followers_thanked')):
@@ -318,13 +317,12 @@ def thank_new_followers():
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
 
-    for follower in new_followers:
-        to_string = "Thanks for the follow! Also, follow @CalendarKy for more market information!"
-        print(to_string)
-        api.send_direct_message(follower, to_string)
-        client.sadd('followers_thanked', str(follower))
-        new_follower = True
-    if new_follower:
+    if new_followers:
+        for follower in new_followers:
+            to_string = "Thanks for the follow! Also, follow @CalendarKy for more market information!"
+            # print(to_string)
+            api.send_direct_message(follower, to_string)
+            client.sadd('followers_thanked', str(follower))
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
