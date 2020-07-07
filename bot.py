@@ -137,6 +137,7 @@ def follow_followers():
         if not follower.following:
             print(f"Following {follower.name}")
             follower.follow()
+            time.sleep(2)
 
 
 def scrape_twitter(maxTweets, searchQuery, redisDataBase):
