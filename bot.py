@@ -316,7 +316,6 @@ def thank_new_followers():
     for follower in tweepy.Cursor(api.followers).items(10):
         followers.append(str(follower.id))
         if not follower.following:
-            print(f"Following {follower.name}")
             try:
                 follower.follow()
                 print(f"Following {follower}")
