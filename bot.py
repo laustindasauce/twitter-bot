@@ -337,7 +337,6 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
         
-thank_new_followers()
 
 print(time.ctime())
 schedule.every().monday.at("02:01").do(unfollow)
