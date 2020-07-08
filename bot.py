@@ -313,12 +313,13 @@ def thank_new_followers():
     for follower in list(client.smembers('followers_thanked')):
         followers_thanked.append(follower.decode("utf-8"))
     followers_thanked = set(followers_thanked)
-    for follower in tweepy.Cursor(api.followers).items(10):
+    for follower in tweepy.Cursor(api.followers).items(100):
         followers.append(str(follower.id))
+        #follower has a long list of possible things to see.. kinda neat
         if not follower.following:
+            print(f"Following {follower.name}")
             try:
                 follower.follow()
-                print(f"Following {follower}")
                 time.sleep(3)
             except tweepy.TweepError as e:
                 # ignores logging that we've already tried to follow this person
@@ -337,7 +338,7 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
         
-
+thank_new_followers()
 print(time.ctime())
 schedule.every().monday.at("02:01").do(unfollow)
 schedule.every().thursday.at("11:35").do(unfollow)
