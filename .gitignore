@@ -33,6 +33,10 @@ MANIFEST
 *.manifest
 *.spec
 
+# Other files
+searchbot.py
+tweet-scraper.py
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
