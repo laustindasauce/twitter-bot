@@ -49,7 +49,7 @@ def reply():
     for tweet in reversed(tweets):
         #if 'bullish' in tweet.full_text.lower():
         try:
-            username = tweet.user.screen_name
+            name = tweet.user.screen_name
             if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
                 print("Replied to - " + username +
                       " - " + tweet.full_text)
@@ -322,7 +322,9 @@ def thank_new_followers():
                 print(f"Following {follower}")
                 time.sleep(3)
             except tweepy.TweepError as e:
-                print(e.reason)
+                # ignores logging that we've already tried to follow this person
+                if e.reason[:13] != "[{'code': 160":
+                    print(e.reason)
                 time.sleep(2)
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
@@ -335,7 +337,7 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
         
-    
+thank_new_followers()
 
 print(time.ctime())
 schedule.every().monday.at("02:01").do(unfollow)
