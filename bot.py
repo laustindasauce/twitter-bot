@@ -49,7 +49,7 @@ def reply():
     for tweet in reversed(tweets):
         #if 'bullish' in tweet.full_text.lower():
         try:
-            name = tweet.user.screen_name
+            username = tweet.user.screen_name
             if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
                 print("Replied to - " + username +
                       " - " + tweet.full_text)
