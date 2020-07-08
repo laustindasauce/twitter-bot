@@ -336,7 +336,6 @@ def thank_new_followers():
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
         
     
-thank_new_followers()
 
 print(time.ctime())
 schedule.every().monday.at("02:01").do(unfollow)
@@ -352,13 +351,13 @@ schedule.every(5).hours.do(run_scraper)
 schedule.every(19).minutes.do(thank_new_followers)
 
 
-# while True:
-#     try:
-#         schedule.run_pending()
-#         time.sleep(1)
-#     except tweepy.TweepError as e:
-#         print(e.reason)
-#         time.sleep(1)
+while True:
+    try:
+        schedule.run_pending()
+        time.sleep(1)
+    except tweepy.TweepError as e:
+        print(e.reason)
+        time.sleep(1)
 
 # if __name__ == "__main__":
 #     unfollow()
