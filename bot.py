@@ -315,13 +315,20 @@ def thank_new_followers():
     followers_thanked = set(followers_thanked)
     for follower in tweepy.Cursor(api.followers).items(10):
         followers.append(str(follower.id))
+        if not follower.following:
+            print(f"Following {follower.name}")
+            try:
+                follower.follow()
+                print(f"Following {follower}")
+                time.sleep(3)
+            except tweepy.TweepError as e:
+                print(e.reason)
+                time.sleep(2)
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
-
     if new_followers:
         for follower in new_followers:
             to_string = "Thanks for the follow! Also, follow @CalendarKy for more market information!"
-            # print(to_string)
             api.send_direct_message(follower, to_string)
             client.sadd('followers_thanked', str(follower))
         new_total_followers = client.scard('followers_thanked')
@@ -329,7 +336,7 @@ def thank_new_followers():
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
         
     
-    
+thank_new_followers()
 
 print(time.ctime())
 schedule.every().monday.at("02:01").do(unfollow)
@@ -341,18 +348,17 @@ schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:03").do(searchBot3)
 schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
-schedule.every(20).minutes.do(follow_followers)
 schedule.every(5).hours.do(run_scraper)
 schedule.every(19).minutes.do(thank_new_followers)
 
 
-while True:
-    try:
-        schedule.run_pending()
-        time.sleep(1)
-    except tweepy.TweepError as e:
-        print(e.reason)
-        time.sleep(1)
+# while True:
+#     try:
+#         schedule.run_pending()
+#         time.sleep(1)
+#     except tweepy.TweepError as e:
+#         print(e.reason)
+#         time.sleep(1)
 
 # if __name__ == "__main__":
 #     unfollow()
