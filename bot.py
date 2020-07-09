@@ -104,19 +104,19 @@ def searchBot2():
                 print(e.reason)
             time.sleep(2)
 
-newer_tweets = tweepy.Cursor(api.search, "stock market").items(200)
+newer_tweets = tweepy.Cursor(api.search, "stock market").items(300)
 
 def searchBot3():
     print("Running third search.")
     print(time.ctime())
     i = 0
     for tweet in newer_tweets:
-        i += 1
         try:
             api.create_favorite(tweet.id)
+            time.sleep(2)
+            i += 1
             if i % 20 == 0:
                 print(f"Favorited {i} stock market tweets")
-            time.sleep(2)
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
