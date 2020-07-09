@@ -80,7 +80,8 @@ def searchBot():
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
-            print(e.reason)
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
             time.sleep(2)
 
 new_tweets = tweepy.Cursor(api.search, "stonks").items(20)
@@ -99,7 +100,8 @@ def searchBot2():
                 print("Retweet 2 done!")
             time.sleep(2)
         except tweepy.TweepError as e:
-            print(e.reason)
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
             time.sleep(2)
 
 newer_tweets = tweepy.Cursor(api.search, "stock market").items(200)
@@ -116,7 +118,8 @@ def searchBot3():
                 print(f"Favorited {i} stock market tweets")
             time.sleep(2)
         except tweepy.TweepError as e:
-            print(e.reason)
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
             time.sleep(2)
 
 def tweet_sentiment():
