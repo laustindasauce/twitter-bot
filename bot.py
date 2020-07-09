@@ -265,7 +265,7 @@ def auto_follow():
                            result_type="recent", lang="en").items(250)
     num_followed = 0
     for tweet in search:
-        if tweet.user.followers_count < 5000:
+        if tweet.user.followers_count > 5000:
             continue
         try:
             api.create_favorite(tweet.id)
@@ -292,7 +292,7 @@ def auto_follow2():
                            result_type="recent", lang="en").items(100)
     num_followed = 0
     for tweet in search:
-        if tweet.user.followers_count < 2000:
+        if tweet.user.followers_count > 3000:
             continue
         try:
             api.create_favorite(tweet.id)
@@ -316,7 +316,7 @@ def auto_follow2():
                            result_type="recent", lang="en").items(100)
 
     for tweet in search:
-        if tweet.user.followers_count < 2000:
+        if tweet.user.followers_count > 3000:
             continue
         try:
             api.create_favorite(tweet.id)
