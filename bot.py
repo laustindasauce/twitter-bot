@@ -317,10 +317,10 @@ def thank_new_followers():
         followers.append(str(follower.id))
         #follower has a long list of possible things to see.. kinda neat
         if not follower.following:
-            print(f"Following {follower.name}")
             try:
                 follower.follow()
                 time.sleep(3)
+                print(f"Following {follower.name}")
             except tweepy.TweepError as e:
                 # ignores logging that we've already tried to follow this person
                 if e.reason[:13] != "[{'code': 160":
