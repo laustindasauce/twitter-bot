@@ -254,37 +254,95 @@ def run_scraper():
     print(to_string)
     api.update_status(to_string)
 
-
+# This is trying to get followers that will be active and interested in my content
 def auto_follow():
     query = "stock market"
     print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
-
+                           result_type="recent", lang="en").items(250)
+    num_followed = 0
     for tweet in search:
-        if tweet.user.followers_count < 1000:
+        if tweet.user.followers_count < 5000:
             continue
         try:
             api.create_favorite(tweet.id)
             time.sleep(2)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(2)
+        try:
             api.create_friendship(tweet.user.id)
             time.sleep(2)
-            print(f"You are now following {tweet.user.screen_name}")
+            # print(f"You are now following {tweet.user.screen_name}")
+            num_followed += 1
         except tweepy.TweepError as e:
-            print(e.reason)
+            if e.reason[:13] != "[{'code': 160":
+                print(e.reason)
             time.sleep(2)
+    print(f"Now following {num_followed} more users.")
+# This is to purely try to get my follower count up
+def auto_follow2():
+    query = "ifb"
+    print(f"Following users who have tweeted about the {query}")
+    search = tweepy.Cursor(api.search, q=query,
+                           result_type="recent", lang="en").items(100)
+    num_followed = 0
+    for tweet in search:
+        if tweet.user.followers_count < 2000:
+            continue
+        try:
+            api.create_favorite(tweet.id)
+            time.sleep(2)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(2)
+        try:
+            api.create_friendship(tweet.user.id)
+            time.sleep(2)
+            # print(f"You are now following {tweet.user.screen_name}")
+            num_followed += 1
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 160":
+                print(e.reason)
+            time.sleep(2)
+    query = "follow back"
+    print(f"Following users who have tweeted about the {query}")
+    search = tweepy.Cursor(api.search, q=query,
+                           result_type="recent", lang="en").items(100)
 
+    for tweet in search:
+        if tweet.user.followers_count < 2000:
+            continue
+        try:
+            api.create_favorite(tweet.id)
+            time.sleep(2)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(2)
+        try:
+            api.create_friendship(tweet.user.id)
+            time.sleep(2)
+            # print(f"You are now following {tweet.user.screen_name}")
+            num_followed += 1
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 160":
+                print(e.reason)
+            time.sleep(2)
+    print(f"Now following {num_followed} more users.")
 
 def unfollow():
     print("running unfollow function")
     friendNames, followNames = [], []
     try:
-        for friend in tweepy.Cursor(api.friends).items(150):
+        for friend in tweepy.Cursor(api.friends).items(500):
             if friend.followers_count < 5000:
                 friendNames.append(friend.screen_name)
                 time.sleep(2)
 
-        for follower in tweepy.Cursor(api.followers).items(150):
+        for follower in tweepy.Cursor(api.followers).items(500):
             followNames.append(follower.screen_name)
             time.sleep(2)
     except tweepy.TweepError as e:
@@ -320,6 +378,7 @@ def thank_new_followers():
             try:
                 follower.follow()
                 time.sleep(3)
+                # Moved this print statement so that if there is an error we don't print 
                 print(f"Following {follower.name}")
             except tweepy.TweepError as e:
                 # ignores logging that we've already tried to follow this person
@@ -338,10 +397,11 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
         
-thank_new_followers()
+
 print(time.ctime())
-schedule.every().monday.at("02:01").do(unfollow)
-schedule.every().thursday.at("11:35").do(unfollow)
+schedule.every().week.do(unfollow)
+schedule.every(3).days.at("04:01").do(auto_follow2)
+# schedule.every().thursday.at("11:35").do(unfollow)
 schedule.every().day.at("11:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("09:17").do(searchBot)
