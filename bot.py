@@ -262,10 +262,10 @@ def auto_follow():
     query = "stock market"
     print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(250)
+                           result_type="recent", lang="en").items(50)
     num_followed = 0
     for tweet in search:
-        if tweet.user.followers_count > 5000:
+        if tweet.user.followers_count > 2000:
             continue
         try:
             api.create_favorite(tweet.id)
@@ -289,7 +289,7 @@ def auto_follow2():
     query = "ifb"
     print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(100)
+                           result_type="recent", lang="en").items(50)
     num_followed = 0
     for tweet in search:
         if tweet.user.followers_count > 3000:
@@ -313,7 +313,7 @@ def auto_follow2():
     query = "follow back"
     print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(100)
+                           result_type="recent", lang="en").items(50)
 
     for tweet in search:
         if tweet.user.followers_count > 3000:
@@ -340,12 +340,12 @@ def unfollow():
     print("running unfollow function")
     friendNames, followNames = [], []
     try:
-        for friend in tweepy.Cursor(api.friends).items(500):
+        for friend in tweepy.Cursor(api.friends).items(200):
             if friend.followers_count < 5000:
                 friendNames.append(friend.screen_name)
                 time.sleep(2)
 
-        for follower in tweepy.Cursor(api.followers).items(500):
+        for follower in tweepy.Cursor(api.followers).items(200):
             followNames.append(follower.screen_name)
             time.sleep(2)
     except tweepy.TweepError as e:
