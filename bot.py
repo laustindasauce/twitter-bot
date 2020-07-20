@@ -62,6 +62,7 @@ def reply():
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
         except tweepy.TweepError as e:
+            store_last_seen(tweet.id)
             print(e.reason)
             time.sleep(2)
 
