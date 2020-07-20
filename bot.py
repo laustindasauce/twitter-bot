@@ -401,9 +401,6 @@ def thank_new_followers():
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
 
 
-if __name__ == "__main__":
-    auto_follow2()
-
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("04:01").do(auto_follow2)
