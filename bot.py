@@ -399,12 +399,15 @@ def thank_new_followers():
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
-        
+
+
+if __name__ == "__main__":
+    auto_follow2()
 
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("04:01").do(auto_follow2)
-# schedule.every().thursday.at("11:35").do(unfollow)
+schedule.every().thursday.at("11:35").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("09:17").do(searchBot)
