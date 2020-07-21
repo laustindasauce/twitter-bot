@@ -1,4 +1,3 @@
-""" If you want a visual plot for the sentiment analysis then you need to un-comment plt and sns imports """
 import tweepy
 from textblob import TextBlob
 import pandas as pd
@@ -383,7 +382,7 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
 
-run_scraper()
+
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("04:01").do(auto_follow2)
