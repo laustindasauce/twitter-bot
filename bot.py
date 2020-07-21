@@ -1,21 +1,22 @@
-""" If you want a visual plot for the sentiment analysis then you need to un-comment plt and sns imports """
 import tweepy
 from textblob import TextBlob
 import pandas as pd
-# import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import redis
-# import seaborn as sns
+import seaborn as sns
 import schedule
 import time
 import re
 import os
+
 
 """ Need to sign up for a developer twitter account to get these """
 consumer_key = os.getenv("CONSUMER_KEY")
 consumer_secret = os.getenv("CONSUMER_SECRET")
 key = os.getenv("KEY")
 secret = os.getenv("SECRET")
+
 
 """ Download Redis and have a server running """
 client = redis.Redis(host="10.10.10.1", port=6379,
@@ -25,6 +26,9 @@ auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
+
+""" Global variable for our png file path """
+png_file = "/tmp/plot.png"
 
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
@@ -159,7 +163,6 @@ def run_scraper():
     redisDataBase = "tweets_scraped"
     scrape_twitter(3000, 'Example', redisDataBase)
     f = read_tweets(redisDataBase)
-    # print(f)
     tweet_polarity = np.zeros(client.scard(redisDataBase))
     tweet_subjectivity = np.zeros(client.scard(redisDataBase))
     positive_count = 0
@@ -172,9 +175,9 @@ def run_scraper():
             positive_count += 1
         elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
             negative_count += 1
-    # sns.scatterplot(tweet_polarity,  # X-axis
-    #                 tweet_subjectivity,  # Y-axis
-    #                 s=100)
+    sns.scatterplot(tweet_polarity,  # X-axis
+                    tweet_subjectivity,  # Y-axis
+                    s=100)
     sentiment = (positive_count) - negative_count
     print(f"Positive count is {positive_count}")
     print(f"Negative count is {negative_count}")
@@ -195,13 +198,13 @@ def run_scraper():
             client.set('lowest_sentiment', str(sentiment))
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
-    api.update_status(to_string)
-    # plt.title("Sentiment Analysis", fontsize=20)
-    # plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
-    # plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
-    # plt.tight_layout()
+    plt.title("Sentiment Analysis", fontsize=20)
+    plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
+    plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
+    plt.tight_layout()
+    plt.savefig(png_file)
+    api.update_with_media(png_file, to_string)
     # plt.show()
-
 
 
 # This is trying to get followers that will be active and interested in my content
