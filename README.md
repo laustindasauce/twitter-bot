@@ -29,7 +29,7 @@ tweeting, replying to mentions, following users back and more. Most of the examp
 
 ## Running
 
-This is built to be ran 24/7 using docker.
+**This is built to be ran 24/7 using docker.**
 
 ```bash
 docker run -d \
