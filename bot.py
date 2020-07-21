@@ -56,8 +56,6 @@ def reply():
             time.sleep(2)
 
 
-
-
 def searchBot():
     tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
     print("Running first search.")
@@ -72,7 +70,6 @@ def searchBot():
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
             time.sleep(2)
-
 
 
 def searchBot2():
@@ -110,6 +107,7 @@ def searchBot3():
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
             time.sleep(2)
+
 
 def tweet_sentiment():
     client = redis.Redis(host="10.10.10.1", port=6379,
