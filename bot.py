@@ -1,8 +1,11 @@
+""" If you want a visual plot for the sentiment analysis then you need to un-comment plt and sns imports """
 import tweepy
 from textblob import TextBlob
 import pandas as pd
+# import matplotlib as plt
 import numpy as np
 import redis
+# import seaborn as sns
 import schedule
 import time
 import re
