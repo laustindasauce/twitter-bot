@@ -56,10 +56,10 @@ def reply():
             time.sleep(2)
 
 
-tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
 
 
 def searchBot():
+    tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
     print("Running first search.")
     print(time.ctime())
     for tweet in tweets:
@@ -73,14 +73,14 @@ def searchBot():
                 print(e.reason)
             time.sleep(2)
 
-new_tweets = tweepy.Cursor(api.search, "stonks").items(20)
 
 
 def searchBot2():
+    tweets = tweepy.Cursor(api.search, "stonks").items(20)
     print("Running second search.")
     print(time.ctime())
     i = 0
-    for tweet in new_tweets:
+    for tweet in tweets:
         try:
             i += 1
             api.create_favorite(tweet.id)
@@ -93,13 +93,13 @@ def searchBot2():
                 print(e.reason)
             time.sleep(2)
 
-newer_tweets = tweepy.Cursor(api.search, "stock market").items(300)
 
 def searchBot3():
+    tweets = tweepy.Cursor(api.search, "stock market").items(300)
     print("Running third search.")
     print(time.ctime())
     i = 0
-    for tweet in newer_tweets:
+    for tweet in tweets:
         try:
             api.create_favorite(tweet.id)
             time.sleep(2)
