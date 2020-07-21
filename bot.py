@@ -21,8 +21,6 @@ auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-tweets = api.mentions_timeline()
-
 
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
@@ -40,14 +38,14 @@ def reply():
     for tweet in reversed(tweets):
         try:
             username = tweet.user.screen_name
-            if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
-                print("Replied to - " + username +
-                      " - " + tweet.full_text)
-                api.update_status("@" + username +
-                                    " Hello, " + username + ", just a moment. @CalendarKy could you please help me out?", tweet.id)
-            else:
-                print("Favorited " + username +
-                  " - " + tweet.full_text)
+            
+            print("Replied to - " + username +
+                    " - " + tweet.full_text)
+            api.update_status("@" + username +
+                                " Hello, " + username + ", just a moment. " + 
+                                "@CalendarKy could you please help me out?", tweet.id)
+
+            print("Favorited " + username + " - " + tweet.full_text)
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
         except tweepy.TweepError as e:
@@ -56,10 +54,10 @@ def reply():
             time.sleep(2)
 
 
-tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
 
 
 def searchBot():
+    tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
     print("Running first search.")
     print(time.ctime())
     for tweet in tweets:
@@ -73,10 +71,10 @@ def searchBot():
                 print(e.reason)
             time.sleep(2)
 
-new_tweets = tweepy.Cursor(api.search, "stonks").items(20)
 
 
 def searchBot2():
+    new_tweets = tweepy.Cursor(api.search, "stonks").items(20)
     print("Running second search.")
     print(time.ctime())
     i = 0
@@ -93,9 +91,9 @@ def searchBot2():
                 print(e.reason)
             time.sleep(2)
 
-newer_tweets = tweepy.Cursor(api.search, "stock market").items(300)
 
 def searchBot3():
+    newer_tweets = tweepy.Cursor(api.search, "stock market").items(300)
     print("Running third search.")
     print(time.ctime())
     i = 0
