@@ -2,10 +2,10 @@
 import tweepy
 from textblob import TextBlob
 import pandas as pd
-# import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import redis
-# import seaborn as sns
+import seaborn as sns
 import schedule
 import time
 import re
@@ -24,8 +24,7 @@ auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-tweets = api.mentions_timeline()
-
+png_file = "/tmp/plot.png"
 
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
@@ -204,13 +203,13 @@ def run_scraper():
     for idx, tweet in enumerate(f):
         tweet_polarity[idx] = polarity(tweet)
         tweet_subjectivity[idx] = subjectivity(tweet)
-        if tweet_polarity[idx] > 0.15:
+        if tweet_polarity[idx] > 0.10:
             bullish_count += 1
         elif tweet_polarity[idx] < 0.00:
             bearish_count += 1
-    # sns.scatterplot(tweet_polarity,  # X-axis
-    #                 tweet_subjectivity,  # Y-axis
-    #                 s=100)
+    sns.scatterplot(tweet_polarity,  # X-axis
+                    tweet_subjectivity,  # Y-axis
+                    s=100)
     sentiment = (bullish_count) - bearish_count
     # print(f"Bullish count is {bullish_count}")
     # print(f"Bearish count is {bearish_count}")
@@ -231,11 +230,13 @@ def run_scraper():
             client.set('lowest_sentiment', str(sentiment))
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
-    api.update_status(to_string)
-    # plt.title("Sentiment Analysis", fontsize=20)
-    # plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
-    # plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
-    # plt.tight_layout()
+    # api.update_status(to_string)
+    plt.title("Sentiment Analysis", fontsize=20)
+    plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
+    plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
+    plt.tight_layout()
+    plt.savefig(png_file)
+    api.update_with_media(png_file, to_string)
     # plt.show()
 
 
@@ -382,7 +383,7 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
 
-
+run_scraper()
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("04:01").do(auto_follow2)
