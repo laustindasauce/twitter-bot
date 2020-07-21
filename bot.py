@@ -25,29 +25,19 @@ tweets = api.mentions_timeline()
 
 
 def read_last_seen():
-    # file_read = open(FILE_NAME, 'r')
-    # last_seen_id = int(file_read.read().strip())
-    # file_read.close()
     last_seen_id = int(client.get('last_seen_id'))
     return last_seen_id
 
 
 def store_last_seen(last_seen_id):
-    # file_write = open(FILE_NAME, 'w')
-    # file_write.write(str(last_seen_id))
-    # file_write.close()
     client.set('last_seen_id', str(last_seen_id))
     return
 
-#store_last_seen(FILE_NAME, '1194877411671724066')
 
 def reply():
-    # print("Checking for any mentions")
-    # print(time.ctime())
     tweets = api.mentions_timeline(
         read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
-        #if 'bullish' in tweet.full_text.lower():
         try:
             username = tweet.user.screen_name
             if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
@@ -55,7 +45,6 @@ def reply():
                       " - " + tweet.full_text)
                 api.update_status("@" + username +
                                     " Hello, " + username + ", just a moment. @CalendarKy could you please help me out?", tweet.id)
-            # #api.retweet(tweet.id)
             else:
                 print("Favorited " + username +
                   " - " + tweet.full_text)
@@ -66,9 +55,8 @@ def reply():
             print(e.reason)
             time.sleep(2)
 
-tweetNumber = 2
 
-tweets = tweepy.Cursor(api.search, "#bullmarket").items(tweetNumber)
+tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
 
 
 def searchBot():
@@ -124,7 +112,6 @@ def searchBot3():
             time.sleep(2)
 
 def tweet_sentiment():
-    # print(time.ctime())
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
@@ -135,8 +122,6 @@ def tweet_sentiment():
 
 
 def follow_followers():
-    # print(time.ctime())
-    # print("Retrieving and following followers")
     for follower in tweepy.Cursor(api.followers).items():
         if not follower.following:
             print(f"Following {follower.name}")
@@ -145,7 +130,6 @@ def follow_followers():
 
 
 def scrape_twitter(maxTweets, searchQuery, redisDataBase):
-    # print(time.ctime())
     client.delete(redisDataBase)
     print(f"Downloading max {maxTweets} tweets")
     retweet_filter = '-filter:retweets'
@@ -181,7 +165,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                 client.sadd(redisDataBase, (str(tweet.full_text.replace(
                     '\n', '').encode("utf-8"))+"\n"))
             tweetCount += len(new_tweets)
-            # print(f"Downloaded {tweetCount} tweets")
             max_id = new_tweets[-1].id
 
         except tweepy.TweepError as e:
@@ -189,9 +172,7 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
             print("some error : " + str(e))
             break
 
-    print(f"Downloaded {tweetCount} tweets, Saved to {redisDataBase}")
-
-    # print(client.smembers(redisDataBase))
+    print(f"Downloaded {tweetCount} tweets; Saved to {redisDataBase}")
 
 
 def clean(tweet):
@@ -228,7 +209,6 @@ def run_scraper():
         tweet_subjectivity[idx] = subjectivity(tweet)
         if tweet_polarity[idx] > 0.15 and tweet_subjectivity[idx] < 0.5:
             bullish_count += 1
-
         elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
             bearish_count += 1
     bullish_count -= 35
@@ -278,13 +258,14 @@ def auto_follow():
         try:
             api.create_friendship(tweet.user.id)
             time.sleep(2)
-            # print(f"You are now following {tweet.user.screen_name}")
             num_followed += 1
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 160":
                 print(e.reason)
             time.sleep(2)
     print(f"Now following {num_followed} more users.")
+
+
 # This is to purely try to get my follower count up
 def auto_follow2():
     query = "ifb"
@@ -305,7 +286,6 @@ def auto_follow2():
         try:
             api.create_friendship(tweet.user.id)
             time.sleep(2)
-            # print(f"You are now following {tweet.user.screen_name}")
             num_followed += 1
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 160":
@@ -313,9 +293,9 @@ def auto_follow2():
             time.sleep(2)
     query = "follow back"
     print(f"Following users who have tweeted about the {query}")
+    # Switch up the query
     search = tweepy.Cursor(api.search, q=query,
                            result_type="recent", lang="en").items(50)
-
     for tweet in search:
         if tweet.user.followers_count > 3000:
             continue
@@ -329,7 +309,6 @@ def auto_follow2():
         try:
             api.create_friendship(tweet.user.id)
             time.sleep(2)
-            # print(f"You are now following {tweet.user.screen_name}")
             num_followed += 1
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 160":
@@ -352,7 +331,6 @@ def unfollow():
     except tweepy.TweepError as e:
         print(e.reason)
         time.sleep(2)
-
     friendset = set(friendNames)
     followset = set(followNames)
     not_fback = friendset.difference(followset)
@@ -367,9 +345,7 @@ def unfollow():
 
 
 def thank_new_followers():
-    # client.srem('followers_thanked', '441228378')
     total_followers = client.scard('followers_thanked')
-    # print(f"{total_followers} total followers")
     followers_thanked = []
     followers = []
     for follower in list(client.smembers('followers_thanked')):
@@ -385,7 +361,10 @@ def thank_new_followers():
                 # Moved this print statement so that if there is an error we don't print 
                 print(f"Following {follower.name}")
             except tweepy.TweepError as e:
-                # ignores logging that we've already tried to follow this person
+                """ Ignores error that we've already tried to follow this person
+                    The reason we're ignoring this error is because if someone is private
+                    we will keep trying to follow them until they accept our follow.
+                """
                 if e.reason[:13] != "[{'code': 160":
                     print(e.reason)
                 time.sleep(2)
@@ -424,6 +403,3 @@ while True:
     except tweepy.TweepError as e:
         print(e.reason)
         time.sleep(1)
-
-# if __name__ == "__main__":
-#     unfollow()
