@@ -1,8 +1,11 @@
+""" If you want a visual plot for the sentiment analysis then you need to un-comment plt and sns imports """
 import tweepy
 from textblob import TextBlob
 import pandas as pd
 import numpy as np
+# import matplotlib as plt
 import redis
+# import seaborn as sns
 import schedule
 import time
 import re
@@ -203,10 +206,13 @@ def run_scraper():
     for idx, tweet in enumerate(f):
         tweet_polarity[idx] = polarity(tweet)
         tweet_subjectivity[idx] = subjectivity(tweet)
-        if tweet_polarity[idx] > 0.15 and tweet_subjectivity[idx] < 0.5:
+        if tweet_polarity[idx] > 0.15:
             bullish_count += 1
-        elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
+        elif tweet_polarity[idx] < 0.00:
             bearish_count += 1
+    # sns.scatterplot(tweet_polarity,  # X-axis
+    #                 tweet_subjectivity,  # Y-axis
+    #                 s=100)
     bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
     print(f"Bullish count is {bullish_count}")
@@ -229,6 +235,11 @@ def run_scraper():
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
+    # plt.title("Sentiment Analysis", fontsize=20)
+    # plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
+    # plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
+    # plt.tight_layout()
+    # plt.show()
 
 
 # This is trying to get followers that will be active and interested in my content
