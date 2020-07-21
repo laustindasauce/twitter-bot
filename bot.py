@@ -2,8 +2,8 @@
 import tweepy
 from textblob import TextBlob
 import pandas as pd
-import numpy as np
 # import matplotlib as plt
+import numpy as np
 import redis
 # import seaborn as sns
 import schedule
@@ -166,7 +166,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                     '\n', '').encode("utf-8"))+"\n"))
             tweetCount += len(new_tweets)
             max_id = new_tweets[-1].id
-
         except tweepy.TweepError as e:
             # Just exit if any error
             print("some error : " + str(e))
@@ -198,7 +197,6 @@ def run_scraper():
     redisDataBase = "tweets_scraped"
     scrape_twitter(3000, 'stock market', redisDataBase)
     f = read_tweets(redisDataBase)
-    # print(f)
     tweet_polarity = np.zeros(client.scard(redisDataBase))
     tweet_subjectivity = np.zeros(client.scard(redisDataBase))
     bullish_count = 0
