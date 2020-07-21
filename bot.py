@@ -44,7 +44,8 @@ def reply():
                 print("Replied to - " + username +
                       " - " + tweet.full_text)
                 api.update_status("@" + username +
-                                    " Hello, " + username + ", just a moment. @CalendarKy could you please help me out?", tweet.id)
+                                    " Hello, " + username + ", just a moment. " + 
+                                    "@CalendarKy could you please help me out?", tweet.id)
             else:
                 print("Favorited " + username +
                   " - " + tweet.full_text)
@@ -113,7 +114,7 @@ def tweet_sentiment():
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
-    status = "I am currently {} the stock market.".format(sentiment)
+    status = f"I am currently {sentiment} the stock market."
     print(status)
     print("Updating our status to our current sentiment.")
     api.update_status(status)
@@ -143,7 +144,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                 if (not sinceId):
                     new_tweets = api.search(
                         q=q, lang="en", count=tweetsPerQry, tweet_mode='extended')
-
                 else:
                     new_tweets = api.search(q=q, lang="en", count=tweetsPerQry,
                                             since_id=sinceId, tweet_mode='extended')
@@ -155,7 +155,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                     new_tweets = api.search(q=q, lang="en", count=tweetsPerQry,
                                             max_id=str(max_id - 1),
                                             since_id=sinceId, tweet_mode='extended')
-
             if not new_tweets:
                 print("No more tweets found")
                 break
@@ -169,7 +168,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
             # Just exit if any error
             print("some error : " + str(e))
             break
-
     print(f"Downloaded {tweetCount} tweets; Saved to {redisDataBase}")
 
 
@@ -216,25 +214,22 @@ def run_scraper():
     print(f"Sentiment count is {sentiment}")
     to_string = "null"
     if sentiment > 30:
-        to_string = "Twitter sentiment of the stock market is bullish with a reading of {}.".format(
-            sentiment)
+        to_string = f"Twitter sentiment of the stock market is bullish with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
         if sentiment > current_high:
             client.set('highest_sentiment', str(sentiment))
-            to_string = "{} This is the highest reading to date.".format(to_string)
+            to_string = f"{to_string} This is the highest reading to date."
     elif sentiment > -5:
-        to_string = "Twitter sentiment of the stock market is nuetral with a reading of {}.".format(
-            sentiment)
+        to_string = f"Twitter sentiment of the stock market is nuetral with a reading of {sentiment}."
     else:
-        to_string = "Twitter sentiment of the stock market is bearish with a reading of {}.".format(
-            sentiment)
+        to_string = f"Twitter sentiment of the stock market is bearish with a reading of {sentiment}."
         current_low = int(client.get('lowest_sentiment'))
         if sentiment < current_low:
             client.set('lowest_sentiment', str(sentiment))
-            to_string = "{} This is the lowest reading to date.".format(
-                to_string)
+            to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
+
 
 # This is trying to get followers that will be active and interested in my content
 def auto_follow():
