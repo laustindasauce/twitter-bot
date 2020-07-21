@@ -211,7 +211,6 @@ def run_scraper():
     # sns.scatterplot(tweet_polarity,  # X-axis
     #                 tweet_subjectivity,  # Y-axis
     #                 s=100)
-    bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
     print(f"Bullish count is {bullish_count}")
     print(f"Bearish count is {bearish_count}")
