@@ -162,23 +162,26 @@ def run_scraper():
     # print(f)
     tweet_polarity = np.zeros(client.scard(redisDataBase))
     tweet_subjectivity = np.zeros(client.scard(redisDataBase))
-    bullish_count = 0
-    bearish_count = 0
+    positive_count = 0
+    negative_count = 0
     for idx, tweet in enumerate(f):
         tweet_polarity[idx] = polarity(tweet)
         tweet_subjectivity[idx] = subjectivity(tweet)
-        if tweet_polarity[idx] > 0.15 and tweet_subjectivity[idx] < 0.5:
-            bullish_count += 1
+        # Filter out the opinionated tweets by having subjectivity < 0.5
+        if tweet_polarity[idx] > 0.00 and tweet_subjectivity[idx] < 0.5:
+            positive_count += 1
         elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
-            bearish_count += 1
-    bullish_count -= 35
-    sentiment = (bullish_count) - bearish_count
-    print(f"Bullish count is {bullish_count}")
-    print(f"Bearish count is {bearish_count}")
+            negative_count += 1
+    # sns.scatterplot(tweet_polarity,  # X-axis
+    #                 tweet_subjectivity,  # Y-axis
+    #                 s=100)
+    sentiment = (positive_count) - negative_count
+    print(f"Positive count is {positive_count}")
+    print(f"Negative count is {negative_count}")
     print(f"Sentiment count is {sentiment}")
     to_string = "null"
     if sentiment > 0:
-        to_string = f"Twitter sentiment of 'Example' is bullish with a reading of {sentiment}."
+        to_string = f"Twitter sentiment of 'Example' is positive with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
         if sentiment > current_high:
             client.set('highest_sentiment', str(sentiment))
@@ -186,13 +189,19 @@ def run_scraper():
     elif sentiment == 0:
         to_string = f"Twitter sentiment of 'Example' is nuetral with a reading of {sentiment}."
     else:
-        to_string = f"Twitter sentiment of 'Example' is bearish with a reading of {sentiment}."
+        to_string = f"Twitter sentiment of 'Example' is negative with a reading of {sentiment}."
         current_low = int(client.get('lowest_sentiment'))
         if sentiment < current_low:
             client.set('lowest_sentiment', str(sentiment))
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
+    # plt.title("Sentiment Analysis", fontsize=20)
+    # plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
+    # plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
+    # plt.tight_layout()
+    # plt.show()
+
 
 
 # This is trying to get followers that will be active and interested in my content
