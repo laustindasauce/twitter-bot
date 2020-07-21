@@ -21,8 +21,6 @@ auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-tweets = api.mentions_timeline()
-
 
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
@@ -40,14 +38,14 @@ def reply():
     for tweet in reversed(tweets):
         try:
             username = tweet.user.screen_name
-            if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
-                print("Replied to - " + username +
-                      " - " + tweet.full_text)
-                api.update_status("@" + username +
-                                    " Hello, " + username + ", just a moment. @CalendarKy could you please help me out?", tweet.id)
-            else:
-                print("Favorited " + username +
-                  " - " + tweet.full_text)
+            
+            print("Replied to - " + username +
+                    " - " + tweet.full_text)
+            api.update_status("@" + username +
+                                " Hello, " + username + ", just a moment. " + 
+                                "@CalendarKy could you please help me out?", tweet.id)
+
+            print("Favorited " + username + " - " + tweet.full_text)
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
         except tweepy.TweepError as e:
@@ -57,7 +55,7 @@ def reply():
 
 
 def searchBot():
-    tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
+    tweets = tweepy.Cursor(api.search, "whatever you want here").items(2)
     print("Running first search.")
     print(time.ctime())
     for tweet in tweets:
@@ -72,48 +70,11 @@ def searchBot():
             time.sleep(2)
 
 
-def searchBot2():
-    tweets = tweepy.Cursor(api.search, "stonks").items(20)
-    print("Running second search.")
-    print(time.ctime())
-    i = 0
-    for tweet in tweets:
-        try:
-            i += 1
-            api.create_favorite(tweet.id)
-            if i % 10 == 0:
-                tweet.retweet()
-                print("Retweet 2 done!")
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-
-
-def searchBot3():
-    tweets = tweepy.Cursor(api.search, "stock market").items(300)
-    print("Running third search.")
-    print(time.ctime())
-    i = 0
-    for tweet in tweets:
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-            i += 1
-            if i % 20 == 0:
-                print(f"Favorited {i} stock market tweets")
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-
-
 def tweet_sentiment():
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
-    status = "I am currently {} the stock market.".format(sentiment)
+    status = f"The sentiment for 'Example' is {sentiment}."
     print(status)
     print("Updating our status to our current sentiment.")
     api.update_status(status)
@@ -143,7 +104,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                 if (not sinceId):
                     new_tweets = api.search(
                         q=q, lang="en", count=tweetsPerQry, tweet_mode='extended')
-
                 else:
                     new_tweets = api.search(q=q, lang="en", count=tweetsPerQry,
                                             since_id=sinceId, tweet_mode='extended')
@@ -155,7 +115,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                     new_tweets = api.search(q=q, lang="en", count=tweetsPerQry,
                                             max_id=str(max_id - 1),
                                             since_id=sinceId, tweet_mode='extended')
-
             if not new_tweets:
                 print("No more tweets found")
                 break
@@ -169,7 +128,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
             # Just exit if any error
             print("some error : " + str(e))
             break
-
     print(f"Downloaded {tweetCount} tweets; Saved to {redisDataBase}")
 
 
@@ -195,7 +153,7 @@ def subjectivity(x): return TextBlob(x).sentiment.subjectivity
 
 def run_scraper():
     redisDataBase = "tweets_scraped"
-    scrape_twitter(3000, 'stock market', redisDataBase)
+    scrape_twitter(3000, 'Example', redisDataBase)
     f = read_tweets(redisDataBase)
     # print(f)
     tweet_polarity = np.zeros(client.scard(redisDataBase))
@@ -215,30 +173,27 @@ def run_scraper():
     print(f"Bearish count is {bearish_count}")
     print(f"Sentiment count is {sentiment}")
     to_string = "null"
-    if sentiment > 30:
-        to_string = "Twitter sentiment of the stock market is bullish with a reading of {}.".format(
-            sentiment)
+    if sentiment > 0:
+        to_string = f"Twitter sentiment of 'Example' is bullish with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
         if sentiment > current_high:
             client.set('highest_sentiment', str(sentiment))
-            to_string = "{} This is the highest reading to date.".format(to_string)
-    elif sentiment > -5:
-        to_string = "Twitter sentiment of the stock market is nuetral with a reading of {}.".format(
-            sentiment)
+            to_string = f"{to_string} This is the highest reading to date."
+    elif sentiment == 0:
+        to_string = f"Twitter sentiment of 'Example' is nuetral with a reading of {sentiment}."
     else:
-        to_string = "Twitter sentiment of the stock market is bearish with a reading of {}.".format(
-            sentiment)
+        to_string = f"Twitter sentiment of 'Example' is bearish with a reading of {sentiment}."
         current_low = int(client.get('lowest_sentiment'))
         if sentiment < current_low:
             client.set('lowest_sentiment', str(sentiment))
-            to_string = "{} This is the lowest reading to date.".format(
-                to_string)
+            to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
 
+
 # This is trying to get followers that will be active and interested in my content
 def auto_follow():
-    query = "stock market"
+    query = "Whatever you want here"
     print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
                            result_type="recent", lang="en").items(50)
@@ -263,56 +218,6 @@ def auto_follow():
             time.sleep(2)
     print(f"Now following {num_followed} more users.")
 
-
-# This is to purely try to get my follower count up
-def auto_follow2():
-    query = "ifb"
-    print(f"Following users who have tweeted about the {query}")
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
-    num_followed = 0
-    for tweet in search:
-        if tweet.user.followers_count > 3000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(2)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 160":
-                print(e.reason)
-            time.sleep(2)
-    query = "follow back"
-    print(f"Following users who have tweeted about the {query}")
-    # Switch up the query
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
-    for tweet in search:
-        if tweet.user.followers_count > 3000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(2)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 160":
-                print(e.reason)
-            time.sleep(2)
-    print(f"Now following {num_followed} more users.")
 
 def unfollow():
     print("running unfollow function")
@@ -371,24 +276,20 @@ def thank_new_followers():
     if new_followers:
         print("Thanking new followers.")
         for follower in new_followers:
-            to_string = "Thanks for the follow! Also, follow @CalendarKy for a follow back and more market information!"
+            to_string = "Thanks for the follow!"
             api.send_direct_message(follower, to_string)
             client.sadd('followers_thanked', str(follower))
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
-        print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
+        print(f"{total_followers} new followers. Total of {new_total_followers} followers.")
 
 
 print(time.ctime())
 schedule.every().week.do(unfollow)
-schedule.every(3).days.at("04:01").do(auto_follow2)
 schedule.every().thursday.at("11:35").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("09:17").do(searchBot)
-schedule.every().day.at("12:12").do(searchBot2)
-schedule.every().day.at("17:03").do(searchBot3)
-schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(5).hours.do(run_scraper)
 schedule.every(19).minutes.do(thank_new_followers)
