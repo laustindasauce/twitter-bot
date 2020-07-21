@@ -309,6 +309,7 @@ def auto_follow2():
             time.sleep(2)
     print(f"Now following {num_followed} more users.")
 
+
 def unfollow():
     print("running unfollow function")
     friendNames, followNames = [], []
@@ -377,7 +378,7 @@ def thank_new_followers():
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("04:01").do(auto_follow2)
-schedule.every().thursday.at("11:35").do(unfollow)
+schedule.every().thursday.at("11:37").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("09:17").do(searchBot)
@@ -385,8 +386,8 @@ schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:03").do(searchBot3)
 schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
-schedule.every(5).hours.do(run_scraper)
-schedule.every(19).minutes.do(thank_new_followers)
+schedule.every(7).hours.do(run_scraper)
+schedule.every(20).minutes.do(thank_new_followers)
 
 
 while True:
