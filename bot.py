@@ -8,12 +8,13 @@ import time
 import re
 import os
 
-
+""" Need to sign up for a developer twitter account to get these """
 consumer_key = os.getenv("CONSUMER_KEY")
 consumer_secret = os.getenv("CONSUMER_SECRET")
 key = os.getenv("KEY")
 secret = os.getenv("SECRET")
 
+""" Download Redis and have a server running """
 client = redis.Redis(host="10.10.10.1", port=6379,
                      password=os.getenv("REDIS_PASS"))
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
