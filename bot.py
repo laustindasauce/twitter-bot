@@ -60,14 +60,17 @@ def reply():
 
 
 def searchBot():
-    tweets = tweepy.Cursor(api.search, "#bullmarket").items(2)
+    tweets = tweepy.Cursor(api.search, "#bullmarket").items(100)
     # print("Running first search.")
     print(time.ctime())
+    i = 0
     for tweet in tweets:
+        i += 1
         try:
-            tweet.retweet()
             # print("Retweet done!")
             api.create_favorite(tweet.id)
+            if i % 45 == 0:
+                tweet.retweet()
             time.sleep(2)
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
@@ -76,7 +79,7 @@ def searchBot():
 
 
 def searchBot2():
-    tweets = tweepy.Cursor(api.search, "stonks").items(20)
+    tweets = tweepy.Cursor(api.search, "stonks").items(50)
     # print("Running second search.")
     print(time.ctime())
     i = 0
@@ -84,7 +87,7 @@ def searchBot2():
         try:
             i += 1
             api.create_favorite(tweet.id)
-            if i % 10 == 0:
+            if i % 20 == 0:
                 tweet.retweet()
                 # print("Retweet 2 done!")
             time.sleep(2)
@@ -95,7 +98,7 @@ def searchBot2():
 
 
 def searchBot3():
-    tweets = tweepy.Cursor(api.search, "stock market").items(300)
+    tweets = tweepy.Cursor(api.search, "stock market").items(200)
     # print("Running third search.")
     print(time.ctime())
     i = 0
@@ -112,13 +115,28 @@ def searchBot3():
             time.sleep(2)
 
 
+def ifb_bot():
+    tweets = tweepy.Cursor(api.search, "ifb").items(150)
+    print(time.ctime())
+    i = 0
+    for tweet in tweets:
+        i += 1
+        try:
+            if i % 50 == 0:
+                print(f"Favorited {i} ifb tweets")
+            api.create_favorite(tweet.id)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+        time.sleep(2)
+
+
 def tweet_sentiment():
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
     status = f"I am currently {sentiment} the stock market."
     print(status)
-    # print("Updating our status to our current sentiment.")
     api.update_status(status)
 
 
@@ -415,7 +433,7 @@ schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
-schedule.every().day.at("10:06").do(searchBot3)
+schedule.every().day.at("10:06").do(ifb_bot)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(20).minutes.do(thank_new_followers)
