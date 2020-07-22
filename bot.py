@@ -383,6 +383,27 @@ def thank_new_followers():
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
 
 
+def calendarky_favorite():
+    client = redis.Redis(host="10.10.10.1", port=6379,
+                         password=os.getenv("REDIS_PASS"))
+    client.set('ky_since_id', '1285706104433979392')
+    tweet_id = int(client.get('ky_since_id'))
+    tweets = api.home_timeline(since_id=tweet_id, include_rts=1)
+    for tweet in reversed(tweets):
+        try:
+            if tweet.user.screen_name == 'CalendarKy':
+                if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
+                    print(tweet.text)
+                    api.create_favorite(tweet.id)
+                    # tweet.retweet()
+                    # print(client.get(tweet_id))
+            time.sleep(2)
+        except tweepy.TweepError as e:
+            print(e.reason)
+            time.sleep(2)
+        client.set(tweet_id, tweet.id)
+
+
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("04:01").do(auto_follow2)
@@ -396,6 +417,7 @@ schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(20).minutes.do(thank_new_followers)
+schedule.every(5).minutes.do(calendarky_favorite)
 
 
 while True:
