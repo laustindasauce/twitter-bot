@@ -388,7 +388,7 @@ def calendarky_favorite():
                          password=os.getenv("REDIS_PASS"))
     client.set('ky_since_id', '1285706104433979392')
     tweet_id = int(client.get('ky_since_id'))
-    tweets = api.home_timeline(since_id=tweet_id, include_rts=1)
+    tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
     for tweet in reversed(tweets):
         try:
             if tweet.user.screen_name == 'CalendarKy':
@@ -397,7 +397,7 @@ def calendarky_favorite():
                     api.create_favorite(tweet.id)
                     # tweet.retweet()
                     # print(client.get(tweet_id))
-            time.sleep(2)
+                    time.sleep(2)
         except tweepy.TweepError as e:
             print(e.reason)
             time.sleep(2)
@@ -412,12 +412,12 @@ schedule.every().day.at("13:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("09:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
-schedule.every().day.at("17:03").do(searchBot3)
+schedule.every().day.at("17:07").do(searchBot3)
 schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(20).minutes.do(thank_new_followers)
-schedule.every(5).minutes.do(calendarky_favorite)
+schedule.every(3).minutes.do(calendarky_favorite)
 
 
 while True:
