@@ -41,21 +41,22 @@ def reply():
     for tweet in reversed(tweets):
         try:
             username = tweet.user.screen_name
-            if username != "CalendarKy" and tweet.full_text[:11] != "@CalendarKy":
+            if username != "CalendarKy" and username != "statutorywheel" and tweet.full_text[:11] != "@CalendarKy" \
+                and tweet.full_text[:11] != "@statutorywheel" and tweet.full_text[:17] != "@InternTendie and":
                 print("Replied to - " + username +
                       " - " + tweet.full_text)
                 api.update_status("@" + username +
                                     " Hello, " + username + ", just a moment. " + 
-                                    "@CalendarKy could you please help me out?", tweet.id)
+                                    "@CalendarKy @statutorywheel, can I please get some help?", tweet.id)
             else:
                 print("Favorited " + username +
-                  " - " + tweet.full_text)
+                      " - " + tweet.full_text)
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
         except tweepy.TweepError as e:
             store_last_seen(tweet.id)
             print(e.reason)
-            time.sleep(2)
+        time.sleep(2)
 
 
 def searchBot():
@@ -383,7 +384,7 @@ def thank_new_followers():
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
 
 
-def calendarky_favorite():
+def specific_favorite():
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
     client.set('ky_since_id', '1285706104433979392')
@@ -391,7 +392,7 @@ def calendarky_favorite():
     tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
     for tweet in reversed(tweets):
         try:
-            if tweet.user.screen_name == 'CalendarKy':
+            if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
                 if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
                     print(tweet.text)
                     api.create_favorite(tweet.id)
@@ -417,7 +418,7 @@ schedule.every().day.at("09:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(20).minutes.do(thank_new_followers)
-schedule.every(3).minutes.do(calendarky_favorite)
+schedule.every(3).minutes.do(specific_favorite)
 
 
 while True:
