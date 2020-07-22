@@ -273,7 +273,7 @@ def auto_follow2():
     query = "ifb"
     # print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
+                           result_type="recent", lang="en").items(25)
     num_followed = 0
     for tweet in search:
         if tweet.user.followers_count > 3000:
@@ -287,7 +287,7 @@ def auto_follow2():
             time.sleep(2)
         try:
             api.create_friendship(tweet.user.id)
-            time.sleep(2)
+            time.sleep(5)
             num_followed += 1
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 160":
@@ -297,7 +297,7 @@ def auto_follow2():
     # print(f"Following users who have tweeted about the {query}")
     # Switch up the query
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
+                           result_type="recent", lang="en").items(25)
     for tweet in search:
         if tweet.user.followers_count > 3000:
             continue
@@ -310,7 +310,7 @@ def auto_follow2():
             time.sleep(2)
         try:
             api.create_friendship(tweet.user.id)
-            time.sleep(2)
+            time.sleep(5)
             num_followed += 1
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 160":
@@ -360,7 +360,6 @@ def thank_new_followers():
         if not follower.following:
             try:
                 follower.follow()
-                time.sleep(3)
                 # Moved this print statement so that if there is an error we don't print 
                 print(f"Following {follower.name}")
             except tweepy.TweepError as e:
@@ -370,7 +369,7 @@ def thank_new_followers():
                 """
                 if e.reason[:13] != "[{'code': 160":
                     print(e.reason)
-                time.sleep(2)
+            time.sleep(3)
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
@@ -409,14 +408,14 @@ def specific_favorite():
 
 print(time.ctime())
 schedule.every().week.do(unfollow)
-schedule.every(3).days.at("04:01").do(auto_follow2)
+schedule.every(3).days.at("09:01").do(auto_follow2)
 schedule.every().thursday.at("11:37").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
-schedule.every().day.at("09:17").do(searchBot)
+schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
-schedule.every().day.at("09:06").do(searchBot3)
+schedule.every().day.at("10:06").do(searchBot3)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(20).minutes.do(thank_new_followers)
