@@ -387,22 +387,24 @@ def thank_new_followers():
 def specific_favorite():
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
-    client.set('ky_since_id', '1285706104433979392')
-    tweet_id = int(client.get('ky_since_id'))
+    sinceId = 'ky_since_id'
+    client.set(sinceId, '1285706104433979392')
+    tweet_id = int(client.get(sinceId))
     tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
     for tweet in reversed(tweets):
+        client.set(sinceId, str(tweet.id))
         try:
             if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
                 if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
                     print(tweet.text)
                     api.create_favorite(tweet.id)
                     # tweet.retweet()
-                    # print(client.get(tweet_id))
+                    # print(client.get(sinceId))
                     time.sleep(2)
         except tweepy.TweepError as e:
-            print(e.reason)
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
             time.sleep(2)
-        client.set(tweet_id, tweet.id)
 
 
 print(time.ctime())
