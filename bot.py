@@ -221,7 +221,7 @@ def run_scraper():
     for idx, tweet in enumerate(f):
         tweet_polarity[idx] = polarity(tweet)
         tweet_subjectivity[idx] = subjectivity(tweet)
-        if tweet_polarity[idx] > 0.10:
+        if tweet_polarity[idx] > 0.15:
             bullish_count += 1
         elif tweet_polarity[idx] < 0.00:
             bearish_count += 1
