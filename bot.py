@@ -375,12 +375,14 @@ def thank_new_followers():
     for follower in list(client.smembers('followers_thanked')):
         followers_thanked.append(follower.decode("utf-8"))
     followers_thanked = set(followers_thanked)
+    follow_count = 0
     for follower in tweepy.Cursor(api.followers).items(100):
         followers.append(str(follower.id))
         #follower has a long list of possible things to see.. kinda neat
         if not follower.following:
             try:
                 follower.follow()
+                follow_count += 1
                 # Moved this print statement so that if there is an error we don't print 
                 # print(f"Following {follower.name}")
             except tweepy.TweepError as e:
@@ -392,6 +394,7 @@ def thank_new_followers():
                 if e.reason[:13] != "[{'code': 160":
                     print(e.reason)
             time.sleep(3)
+    print(f"Tendie followed back {follow_count} people.")
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
@@ -441,7 +444,7 @@ def specific_favorite():
                 print(e.reason)
         time.sleep(3)
 
-
+thank_new_followers()
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("09:01").do(auto_follow2)
