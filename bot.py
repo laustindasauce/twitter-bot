@@ -439,10 +439,12 @@ def specific_favorite():
                     # tweet.retweet()
                     # print(client.get(sinceId))
                     print(f"Favorited {tweet.user.screen_name}'s tweet.")
+                    time.sleep(3)
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
-        time.sleep(3)
+            time.sleep(3)
+        
 
 thank_new_followers()
 print(time.ctime())
