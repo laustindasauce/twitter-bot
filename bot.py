@@ -394,7 +394,8 @@ def thank_new_followers():
                 if e.reason[:13] != "[{'code': 160":
                     print(e.reason)
             time.sleep(3)
-    print(f"Tendie followed back {follow_count} people.")
+    if follow_count > 0:
+        print(f"Tendie followed back {follow_count} people.")
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
