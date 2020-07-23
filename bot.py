@@ -341,29 +341,28 @@ def unfollow():
     # print("running unfollow function")
     friendNames, followNames = [], []
     try:
-        for friend in tweepy.Cursor(api.friends).items(200):
+        for friend in tweepy.Cursor(api.friends).items(300):
             if friend.followers_count < 5000:
                 friendNames.append(friend.screen_name)
-                time.sleep(2)
 
-        for follower in tweepy.Cursor(api.followers).items(200):
+        for follower in tweepy.Cursor(api.followers).items(300):
             followNames.append(follower.screen_name)
-            time.sleep(2)
+
     except tweepy.TweepError as e:
         print(e.reason)
         time.sleep(2)
     friendset = set(friendNames)
     followset = set(followNames)
     not_fback = friendset.difference(followset)
+    unfollow_count = 0
     for not_following in not_fback:
         try:
+            unfollow_count += 1
             api.destroy_friendship(not_following)
-            print(f"Unfollowing: {not_following}")
-            time.sleep(3)
         except tweepy.TweepError as e:
             print(e.reason)
-            time.sleep(2)
-
+        time.sleep(5)
+    print(f"Unfollowed: {unfollow_count} losers.")
 
 def thank_new_followers():
     total_followers = client.scard('followers_thanked')
@@ -379,7 +378,7 @@ def thank_new_followers():
             try:
                 follower.follow()
                 # Moved this print statement so that if there is an error we don't print 
-                print(f"Following {follower.name}")
+                # print(f"Following {follower.name}")
             except tweepy.TweepError as e:
                 """ Ignores error that we've already tried to follow this person
                     The reason we're ignoring this error is because if someone is private
@@ -413,15 +412,14 @@ def specific_favorite():
         try:
             if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
                 if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
-                    print(tweet.text)
                     api.create_favorite(tweet.id)
                     # tweet.retweet()
                     # print(client.get(sinceId))
-                    time.sleep(2)
+                    print(tweet.text)
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
-            time.sleep(2)
+        time.sleep(2)
 
 
 print(time.ctime())
