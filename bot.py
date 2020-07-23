@@ -455,7 +455,7 @@ schedule.every().day.at("17:07").do(searchBot3)
 schedule.every(2).hours.do(ifb_bot)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
-schedule.every(20).minutes.do(thank_new_followers)
+schedule.every(10).minutes.do(thank_new_followers)
 schedule.every(4).minutes.do(specific_favorite)
 
 
