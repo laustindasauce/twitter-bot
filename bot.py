@@ -366,6 +366,7 @@ def unfollow():
         time.sleep(5)
     print(f"Unfollowed: {unfollow_count} losers.")
 
+
 def thank_new_followers():
     print("Running thank_new_followers()")
     total_followers = client.scard('followers_thanked')
@@ -440,7 +441,7 @@ def specific_favorite():
                 print(e.reason)
         time.sleep(3)
 
-thank_new_followers()
+
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("09:01").do(auto_follow2)
