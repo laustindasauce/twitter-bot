@@ -396,8 +396,12 @@ def thank_new_followers():
         # print("Thanking new followers.")
         for follower in new_followers:
             to_string = "Appreciate you following me! Also, follow @CalendarKy for more market information!"
-            api.send_direct_message(follower, to_string)
-            client.sadd('followers_thanked', str(follower))
+            try:
+                client.sadd('followers_thanked', str(follower))
+                api.send_direct_message(follower, to_string)
+            except tweepy.TweepError as e:
+                print(e)
+            time.sleep(3)
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
