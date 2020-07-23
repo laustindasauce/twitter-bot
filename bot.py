@@ -445,9 +445,9 @@ def specific_favorite():
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
             time.sleep(3)
+        time.sleep(1)
         
 
-thank_new_followers()
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("09:01").do(auto_follow2)
@@ -459,10 +459,10 @@ schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
 schedule.every(2).hours.do(ifb_bot)
-schedule.every(15).minutes.do(reply)
+schedule.every(20).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
-schedule.every(8).minutes.do(thank_new_followers)
-schedule.every(4).minutes.do(specific_favorite)
+schedule.every(15).minutes.do(thank_new_followers)
+schedule.every(3).minutes.do(specific_favorite)
 
 
 while True:
