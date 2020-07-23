@@ -462,3 +462,4 @@ schedule.every(4).minutes.do(specific_favorite)
 while True:
     schedule.run_pending()
     time.sleep(1)
+print("We errored out! :(")
