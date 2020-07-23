@@ -385,7 +385,8 @@ def thank_new_followers():
             except tweepy.TweepError as e:
                 """ Ignores error that we've already tried to follow this person
                     The reason we're ignoring this error is because if someone is private
-                    we will keep trying to follow them until they accept our follow.
+                    we will keep trying to follow them until they accept our follow. Which 
+                    will give the error of already pending request.
                 """
                 if e.reason[:13] != "[{'code': 160":
                     print(e.reason)
@@ -394,14 +395,25 @@ def thank_new_followers():
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
         # print("Thanking new followers.")
+        trouble = False
         for follower in new_followers:
-            to_string = "Appreciate you following me! Also, follow @CalendarKy for more market information!"
-            try:
-                client.sadd('followers_thanked', str(follower))
-                api.send_direct_message(follower, to_string)
-            except tweepy.TweepError as e:
-                print(e)
-            time.sleep(3)
+            if not trouble:
+                try:
+                    to_string = "Appreciate you following me! Also, follow @CalendarKy for more market information!"
+                    client.sadd('followers_thanked', str(follower))
+                    api.send_direct_message(follower, to_string)
+                except tweepy.TweepError as e:
+                    if e.reason[:13] == "[{'code': 226":
+                        print("They think this is spam...")
+                        trouble = True
+                    else:
+                        print(e)
+                time.sleep(3)
+            else:
+                try:
+                    client.sadd('followers_thanked', str(follower))
+                except tweepy.TweepError as e:                        
+                    print(e)
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
@@ -426,9 +438,9 @@ def specific_favorite():
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
-        time.sleep(2)
+        time.sleep(3)
 
-
+thank_new_followers()
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every(3).days.at("09:01").do(auto_follow2)
@@ -447,9 +459,5 @@ schedule.every(4).minutes.do(specific_favorite)
 
 
 while True:
-    try:
-        schedule.run_pending()
-        time.sleep(1)
-    except tweepy.TweepError as e:
-        print(e.reason)
-        time.sleep(1)
+    schedule.run_pending()
+    time.sleep(1)
