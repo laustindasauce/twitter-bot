@@ -36,6 +36,7 @@ def store_last_seen(last_seen_id):
 
 
 def reply():
+    print("Running reply()")
     tweets = api.mentions_timeline(
         read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
@@ -60,6 +61,7 @@ def reply():
 
 
 def searchBot():
+    print("Running #bullmarket search.")
     tweets = tweepy.Cursor(api.search, "#bullmarket").items(100)
     # print("Running first search.")
     print(time.ctime())
@@ -68,9 +70,10 @@ def searchBot():
         i += 1
         try:
             # print("Retweet done!")
+            if i % 50 == 0:
+                # tweet.retweet()
+                print(f"Favorited {i} #bullmarket tweets.")
             api.create_favorite(tweet.id)
-            if i % 45 == 0:
-                tweet.retweet()
             time.sleep(2)
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
@@ -79,6 +82,7 @@ def searchBot():
 
 
 def searchBot2():
+    print("Running stonks search.")
     tweets = tweepy.Cursor(api.search, "stonks").items(50)
     # print("Running second search.")
     print(time.ctime())
@@ -86,10 +90,10 @@ def searchBot2():
     for tweet in tweets:
         try:
             i += 1
+            if i % 25 == 0:
+                # tweet.retweet()
+                print(f"Favorited {i} stonks tweets.")
             api.create_favorite(tweet.id)
-            if i % 20 == 0:
-                tweet.retweet()
-                # print("Retweet 2 done!")
             time.sleep(2)
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
@@ -98,6 +102,7 @@ def searchBot2():
 
 
 def searchBot3():
+    print("Running stock market search.")
     tweets = tweepy.Cursor(api.search, "stock market").items(200)
     # print("Running third search.")
     print(time.ctime())
@@ -116,6 +121,7 @@ def searchBot3():
 
 
 def ifb_bot():
+    print("Running ifb search.")
     tweets = tweepy.Cursor(api.search, "ifb").items(150)
     print(time.ctime())
     i = 0
@@ -132,20 +138,13 @@ def ifb_bot():
 
 
 def tweet_sentiment():
+    print("Running tweet_sentiment()")
     client = redis.Redis(host="10.10.10.1", port=6379,
                          password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
     status = f"I am currently {sentiment} the stock market."
     print(status)
     api.update_status(status)
-
-
-def follow_followers():
-    for follower in tweepy.Cursor(api.followers).items():
-        if not follower.following:
-            print(f"Following {follower.name}")
-            follower.follow()
-            time.sleep(2)
 
 
 def scrape_twitter(maxTweets, searchQuery, redisDataBase):
@@ -211,6 +210,7 @@ def subjectivity(x): return TextBlob(x).sentiment.subjectivity
 
 
 def run_scraper():
+    print("Running data scraper.")
     redisDataBase = "tweets_scraped"
     scrape_twitter(3000, 'stock market', redisDataBase)
     f = read_tweets(redisDataBase)
@@ -260,6 +260,7 @@ def run_scraper():
 
 # This is trying to get followers that will be active and interested in my content
 def auto_follow():
+    print("Running auto_follow()")
     query = "stock market"
     # print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
@@ -288,6 +289,7 @@ def auto_follow():
 
 # This is to purely try to get my follower count up
 def auto_follow2():
+    print("Running auto_follow2()")
     query = "ifb"
     # print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
@@ -338,7 +340,7 @@ def auto_follow2():
 
 
 def unfollow():
-    # print("running unfollow function")
+    print("Running unfollow()")
     friendNames, followNames = [], []
     try:
         for friend in tweepy.Cursor(api.friends).items(300):
@@ -365,6 +367,7 @@ def unfollow():
     print(f"Unfollowed: {unfollow_count} losers.")
 
 def thank_new_followers():
+    print("Running thank_new_followers()")
     total_followers = client.scard('followers_thanked')
     followers_thanked = []
     followers = []
@@ -436,7 +439,7 @@ schedule.every().day.at("10:06").do(ifb_bot)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(20).minutes.do(thank_new_followers)
-schedule.every(3).minutes.do(specific_favorite)
+schedule.every(4).minutes.do(specific_favorite)
 
 
 while True:
