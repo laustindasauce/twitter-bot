@@ -435,7 +435,7 @@ def specific_favorite():
                     api.create_favorite(tweet.id)
                     # tweet.retweet()
                     # print(client.get(sinceId))
-                    print(tweet.text)
+                    print(f"Favorited {tweet.user.screen_name}'s tweet.")
         except tweepy.TweepError as e:
             if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
@@ -452,7 +452,7 @@ schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
-schedule.every().day.at("10:06").do(ifb_bot)
+schedule.every(2).hours.do(ifb_bot)
 schedule.every(15).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(20).minutes.do(thank_new_followers)
