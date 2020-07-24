@@ -407,6 +407,7 @@ def thank_new_followers():
                 if e.reason[:13] == "[{'code': 160":
                     continue
                 elif e.reason[:13] == "[{'code': 161":
+                    print("Following limit hit!!")
                     limit = True
                 else:
                     print(e.reason)
