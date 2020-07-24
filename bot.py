@@ -388,6 +388,7 @@ def thank_new_followers():
         followers_thanked.append(follower.decode("utf-8"))
     followers_thanked = set(followers_thanked)
     follow_count = 0
+    limit = False
     for follower in tweepy.Cursor(api.followers).items(100):
         followers.append(str(follower.id))
         #follower has a long list of possible things to see.. kinda neat
@@ -403,7 +404,11 @@ def thank_new_followers():
                     we will keep trying to follow them until they accept our follow. Which 
                     will give the error of already pending request.
                 """
-                if e.reason[:13] != "[{'code': 160":
+                if e.reason[:13] == "[{'code': 160":
+                    continue
+                elif e.reason[:13] == "[{'code': 161":
+                    limit = True
+                else:
                     print(e.reason)
             time.sleep(3)
     if follow_count > 0:
@@ -413,10 +418,12 @@ def thank_new_followers():
     if new_followers:
         # print("Thanking new followers.")
         trouble = False
+        to_string = "Appreciate you following me! Also, follow @CalendarKy for more market information!"
+        if limit:
+            to_string = f"{to_string} Sorry, I've hit a following limit and will follow you back ASAP!"
         for follower in new_followers:
             if not trouble:
                 try:
-                    to_string = "Appreciate you following me! Also, follow @CalendarKy for more market information!"
                     client.sadd('followers_thanked', str(follower))
                     api.send_direct_message(follower, to_string)
                 except tweepy.TweepError as e:
