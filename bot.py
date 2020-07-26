@@ -78,7 +78,7 @@ def searchBot():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 139":
                 continue
-            elif e.reason[:13] == "[{'code': 283":
+            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
                 print("Malicious activity suspected. Ending searchBot.")
                 return
             else:
@@ -103,7 +103,7 @@ def searchBot2():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 139":
                 continue
-            elif e.reason[:13] == "[{'code': 283":
+            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
                 print("Malicious activity suspected. Ending searchBot2.")
                 return
             else:
@@ -127,7 +127,7 @@ def searchBot3():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 139":
                 continue
-            elif e.reason[:13] == "[{'code': 283":
+            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
                 print("Malicious activity suspected. Ending searchBot3.")
                 return
             else:
@@ -149,7 +149,7 @@ def ifb_bot():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 139":
                 continue
-            elif e.reason[:13] == "[{'code': 283":
+            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
                 print("Malicious activity suspected. Ending ifb_bot.")
                 return
             else:
@@ -295,7 +295,7 @@ def auto_follow():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 139":
                 continue
-            elif e.reason[:13] == "[{'code': 283":
+            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
                 print("Malicious activity suspected. Ending auto_follow.")
                 return
             else:
@@ -308,7 +308,7 @@ def auto_follow():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 160":
                 continue
-            elif e.reason[:13] == "[{'code': 283":
+            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
                 print("Malicious activity suspected. Ending auto_follow.")
                 print(f"Now following {num_followed} more users.")
                 return
@@ -343,7 +343,7 @@ def auto_follow2():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 160":
                 continue
-            elif e.reason[:13] == "[{'code': 429":
+            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
                 print(f"Now following {num_followed} more users.")
                 print("Followed too many people... ending auto_follow")
                 return
@@ -372,7 +372,7 @@ def auto_follow2():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 160":
                 continue
-            elif e.reason[:13] == "[{'code': 429":
+            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
                 print("Followed too many people... ending auto_follow")
                 print(f"Now following {num_followed} more users.")
                 return
@@ -464,7 +464,7 @@ def thank_new_followers():
                     client.sadd('followers_thanked', str(follower))
                     api.send_direct_message(follower, to_string)
                 except tweepy.TweepError as e:
-                    if e.reason[:13] == "[{'code': 226":
+                    if e.reason[:13] == "[{'code': 226" or e.reason[:13] == "[{'code': 429":
                         print("They think this is spam...")
                         trouble = True
                     else:
