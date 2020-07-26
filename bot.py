@@ -437,10 +437,14 @@ def thank_new_followers():
                 """
                 if e.reason[:13] == "[{'code': 160":
                     continue
-                elif e.reason[:13] == "[{'code': 161":
-                    if not limit:
-                        print("Following limit hit!!")
+                elif e.reason[:13] == "[{'code': 161" or e.reason[:13] == "[{'code': 429":
+                    print("Following limit hit!!")
                     limit = True
+                    break
+                elif e.reason[:13] == "[{'code': 283":
+                    print("Malicious activity suspected. Can't follow back right now.")
+                    limit = True
+                    break
                 else:
                     print(e.reason)
             time.sleep(3)
