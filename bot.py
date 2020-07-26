@@ -241,19 +241,19 @@ def run_scraper():
     for idx, tweet in enumerate(f):
         tweet_polarity[idx] = polarity(tweet)
         tweet_subjectivity[idx] = subjectivity(tweet)
-        if tweet_polarity[idx] > 0.15:
+        if tweet_polarity[idx] > 0.15 and tweet_subjectivity[idx] < 0.5:
             bullish_count += 1
-        elif tweet_polarity[idx] < 0.00:
+        elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
             bearish_count += 1
-    sns.scatterplot(tweet_polarity,  # X-axis
-                    tweet_subjectivity,  # Y-axis
-                    s=100)
+    # sns.scatterplot(tweet_polarity,  # X-axis
+    #                 tweet_subjectivity,  # Y-axis
+                    # s=100)
+    bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
     # print(f"Bullish count is {bullish_count}")
     # print(f"Bearish count is {bearish_count}")
     # print(f"Sentiment count is {sentiment}")
-    to_string = "null"
-    if sentiment > 30:
+    if sentiment > 5:
         to_string = f"Twitter sentiment of the stock market is bullish with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
         if sentiment > current_high:
@@ -268,13 +268,13 @@ def run_scraper():
             client.set('lowest_sentiment', str(sentiment))
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
-    # api.update_status(to_string)
-    plt.title("Sentiment Analysis", fontsize=20)
-    plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
-    plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
-    plt.tight_layout()
-    plt.savefig(png_file)
-    api.update_with_media(png_file, to_string)
+    api.update_status(to_string)
+    # plt.title("Sentiment Analysis", fontsize=20)
+    # plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
+    # plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
+    # plt.tight_layout()
+    # plt.savefig(png_file)
+    # api.update_with_media(png_file, to_string)
     # plt.show()
 
 
