@@ -76,7 +76,11 @@ def searchBot():
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
+            if e.reason[:13] == "[{'code': 139":
+                continue
+            elif e.reason[:13] == "[{'code': 283":
+                return
+            else:
                 print(e.reason)
             time.sleep(2)
 
@@ -96,7 +100,11 @@ def searchBot2():
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
+            if e.reason[:13] == "[{'code': 139":
+                continue
+            elif e.reason[:13] == "[{'code': 283":
+                return
+            else:
                 print(e.reason)
             time.sleep(2)
 
@@ -115,7 +123,11 @@ def searchBot3():
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
+            if e.reason[:13] == "[{'code': 139":
+                continue
+            elif e.reason[:13] == "[{'code': 283":
+                return
+            else:
                 print(e.reason)
             time.sleep(2)
 
@@ -132,9 +144,13 @@ def ifb_bot():
                 print(f"Favorited {i} ifb tweets")
             api.create_favorite(tweet.id)
         except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
+            if e.reason[:13] == "[{'code': 139":
+                continue
+            elif e.reason[:13] == "[{'code': 283":
+                return
+            else:
                 print(e.reason)
-        time.sleep(2)
+        time.sleep(4)
 
 
 def tweet_sentiment():
@@ -273,7 +289,11 @@ def auto_follow():
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
+            if e.reason[:13] == "[{'code': 139":
+                continue
+            elif e.reason[:13] == "[{'code': 283":
+                return
+            else:
                 print(e.reason)
             time.sleep(2)
         try:
@@ -281,7 +301,11 @@ def auto_follow():
             time.sleep(2)
             num_followed += 1
         except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 160":
+            if e.reason[:13] == "[{'code': 160":
+                continue
+            elif e.reason[:13] == "[{'code': 283":
+                return
+            else:
                 print(e.reason)
             time.sleep(2)
     print(f"Now following {num_followed} more users.")
@@ -479,7 +503,7 @@ schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
-schedule.every(2).hours.do(ifb_bot)
+schedule.every(4).hours.do(ifb_bot)
 schedule.every(20).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(15).minutes.do(thank_new_followers)
