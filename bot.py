@@ -138,7 +138,6 @@ def searchBot3():
 def ifb_bot():
     print("Running ifb search.")
     tweets = tweepy.Cursor(api.search, "ifb").items(150)
-    print(time.ctime())
     i = 0
     for tweet in tweets:
         i += 1
