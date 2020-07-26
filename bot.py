@@ -79,6 +79,7 @@ def searchBot():
             if e.reason[:13] == "[{'code': 139":
                 continue
             elif e.reason[:13] == "[{'code': 283":
+                print("Malicious activity suspected. Ending searchBot.")
                 return
             else:
                 print(e.reason)
@@ -103,6 +104,7 @@ def searchBot2():
             if e.reason[:13] == "[{'code': 139":
                 continue
             elif e.reason[:13] == "[{'code': 283":
+                print("Malicious activity suspected. Ending searchBot2.")
                 return
             else:
                 print(e.reason)
@@ -126,6 +128,7 @@ def searchBot3():
             if e.reason[:13] == "[{'code': 139":
                 continue
             elif e.reason[:13] == "[{'code': 283":
+                print("Malicious activity suspected. Ending searchBot3.")
                 return
             else:
                 print(e.reason)
@@ -147,6 +150,7 @@ def ifb_bot():
             if e.reason[:13] == "[{'code': 139":
                 continue
             elif e.reason[:13] == "[{'code': 283":
+                print("Malicious activity suspected. Ending ifb_bot.")
                 return
             else:
                 print(e.reason)
@@ -292,6 +296,7 @@ def auto_follow():
             if e.reason[:13] == "[{'code': 139":
                 continue
             elif e.reason[:13] == "[{'code': 283":
+                print("Malicious activity suspected. Ending auto_follow.")
                 return
             else:
                 print(e.reason)
@@ -304,6 +309,8 @@ def auto_follow():
             if e.reason[:13] == "[{'code': 160":
                 continue
             elif e.reason[:13] == "[{'code': 283":
+                print("Malicious activity suspected. Ending auto_follow.")
+                print(f"Now following {num_followed} more users.")
                 return
             else:
                 print(e.reason)
