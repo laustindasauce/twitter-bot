@@ -48,7 +48,7 @@ docker pull 10.10.10.1:5000/bot-name \
 
 **Bot Container**
 ```bash
-# Make sure you are in the directory that has you Dockerfile and bot script
+# Make sure you are in the directory that has your Dockerfile and bot script
 
 docker build --no-cache -t 10.10.10.1:5000/bot-name .
 
