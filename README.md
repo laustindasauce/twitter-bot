@@ -54,3 +54,23 @@ docker build --no-cache -t 10.10.10.1:5000/bot-name .
 
 docker push 10.10.10.1:5000/bot-name
 ```
+
+### Contributions are welcomed! 💚
+**Talk to me here if you have any ideas [![Issues][📫]][1]
+
+### Check out my personal bot account here: [![Twitter][1.2]][2]
+
+
+
+
+<!-- link to issues page -->
+
+[1]: https://github.com/abspen1/twitter-bot/issues
+
+<!-- links to your social media accounts -->
+
+[2]: https://twitter.com/interntendie
+
+<!-- icons without padding -->
+
+[1.2]: http://i.imgur.com/wWzX9uB.png (twitter icon without padding)
