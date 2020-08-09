@@ -32,7 +32,8 @@ tweeting, replying to mentions, following users back and more. Most of the examp
 **This is built to be ran 24/7 using docker.**
 
 ```bash
-docker run -d \
+docker pull 10.10.10.1:5000/bot-name \
+&& docker run -d \
   --name bot_name \
   --restart unless-stopped \
   -e CONSUMER_KEY="some consumer ID" \
@@ -41,4 +42,15 @@ docker run -d \
   -e SECRET="some secret key ID" \
   -e REDIS_PASS="some password" \
   10.10.10.1:5000/bot-name
+```
+
+## Build & Push 
+
+**Bot Container**
+```bash
+# Make sure you are in the directory that has you Dockerfile and bot script
+
+docker build --no-cache -t 10.10.10.1:5000/bot-name .
+
+docker push 10.10.10.1:5000/bot-name
 ```
