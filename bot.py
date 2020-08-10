@@ -507,9 +507,9 @@ def thank_new_followers():
     if new_followers:
         # print("Thanking new followers.")
         trouble = False
-        to_string = "Appreciate you following me! Check out my github if you're intereseted in programming! " + \
+        to_string = "\nAppreciate you following me! Check out my github if you're intereseted in programming! " + \
             "Also, if you'd like to create a twitter bot of your own, you can find how to do that there!\n" + \
-            "Github: https://github.com/abspen1"
+            "https://github.com/abspen1"
         if limit:
             to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
         for follower in new_followers:
