@@ -61,8 +61,8 @@ def reply():
 
 
 def searchBot():
-    print("Running #bullmarket search.")
-    tweets = tweepy.Cursor(api.search, "#bullmarket").items(100)
+    print("Running #python search.")
+    tweets = tweepy.Cursor(api.search, "#python").items(20)
     # print("Running first search.")
     print(time.ctime())
     i = 0
@@ -72,7 +72,7 @@ def searchBot():
             # print("Retweet done!")
             if i % 50 == 0:
                 # tweet.retweet()
-                print(f"Favorited {i} #bullmarket tweets.")
+                print(f"Favorited {i} #python tweets.")
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
@@ -87,8 +87,8 @@ def searchBot():
 
 
 def searchBot2():
-    print("Running stonks search.")
-    tweets = tweepy.Cursor(api.search, "stonks").items(50)
+    print("Running javascript search.")
+    tweets = tweepy.Cursor(api.search, "javascript").items(10)
     # print("Running second search.")
     print(time.ctime())
     i = 0
@@ -97,7 +97,7 @@ def searchBot2():
             i += 1
             if i % 25 == 0:
                 # tweet.retweet()
-                print(f"Favorited {i} stonks tweets.")
+                print(f"Favorited {i} javascript tweets.")
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
@@ -112,8 +112,8 @@ def searchBot2():
 
 
 def searchBot3():
-    print("Running stock market search.")
-    tweets = tweepy.Cursor(api.search, "stock market").items(200)
+    print("Running algorithm search.")
+    tweets = tweepy.Cursor(api.search, "algorithm").items(10)
     # print("Running third search.")
     print(time.ctime())
     i = 0
@@ -121,7 +121,7 @@ def searchBot3():
         try:
             i += 1
             if i % 20 == 0:
-                print(f"Favorited {i} stock market tweets")
+                print(f"Favorited {i} algorithm tweets")
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
@@ -280,42 +280,95 @@ def run_scraper():
 # This is trying to get followers that will be active and interested in my content
 def auto_follow():
     print("Running auto_follow()")
-    query = "stock market"
+    query = "computer science"
     # print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
+                           result_type="recent", lang="en").items(10)
     num_followed = 0
     for tweet in search:
-        if tweet.user.followers_count > 2000:
+        if tweet.user.followers_count > 3000:
             continue
         try:
             api.create_favorite(tweet.id)
             time.sleep(2)
         except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 139":
-                continue
-            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
-                print("Malicious activity suspected. Ending auto_follow.")
-                return
-            else:
+            if e.reason[:13] != "[{'code': 139":
                 print(e.reason)
             time.sleep(2)
         try:
             api.create_friendship(tweet.user.id)
-            time.sleep(2)
+            time.sleep(5)
             num_followed += 1
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 160":
                 continue
-            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
-                print("Malicious activity suspected. Ending auto_follow.")
+            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
+                print(f"Now following {num_followed} more users.")
+                print("Followed too many people... ending auto_follow")
+                return
+            else:
+                print(e.reason)
+            time.sleep(2)
+    query = "programming"
+    # print(f"Following users who have tweeted about the {query}")
+    # Switch up the query
+    search = tweepy.Cursor(api.search, q=query,
+                           result_type="recent", lang="en").items(10)
+    for tweet in search:
+        if tweet.user.followers_count > 3000:
+            continue
+        try:
+            api.create_favorite(tweet.id)
+            time.sleep(2)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(2)
+        try:
+            api.create_friendship(tweet.user.id)
+            time.sleep(5)
+            num_followed += 1
+        except tweepy.TweepError as e:
+            if e.reason[:13] == "[{'code': 160":
+                continue
+            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
+                print("Followed too many people... ending auto_follow")
                 print(f"Now following {num_followed} more users.")
                 return
             else:
                 print(e.reason)
             time.sleep(2)
     print(f"Now following {num_followed} more users.")
-
+    query = "python program"
+    # print(f"Following users who have tweeted about the {query}")
+    # Switch up the query
+    search = tweepy.Cursor(api.search, q=query,
+                           result_type="recent", lang="en").items(10)
+    for tweet in search:
+        if tweet.user.followers_count > 3000:
+            continue
+        try:
+            api.create_favorite(tweet.id)
+            time.sleep(2)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(2)
+        try:
+            api.create_friendship(tweet.user.id)
+            time.sleep(5)
+            num_followed += 1
+        except tweepy.TweepError as e:
+            if e.reason[:13] == "[{'code': 160":
+                continue
+            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
+                print("Followed too many people... ending auto_follow")
+                print(f"Now following {num_followed} more users.")
+                return
+            else:
+                print(e.reason)
+            time.sleep(2)
+    print(f"Now following {num_followed} more users.")
 
 # This is to purely try to get my follower count up
 def auto_follow2():
@@ -454,9 +507,11 @@ def thank_new_followers():
     if new_followers:
         # print("Thanking new followers.")
         trouble = False
-        to_string = "Appreciate you following me! Also, follow @CalendarKy for more market information!"
+        to_string = "Appreciate you following me! Check out my github if you're intereseted in programming! " + \
+            "Also, if you'd like to create a twitter bot of your own, you can find how to do that there!\n" + \
+            "Github: https://github.com/abspen1"
         if limit:
-            to_string = f"{to_string} Sorry, I've hit a following limit and will follow you back ASAP!"
+            to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
         for follower in new_followers:
             if not trouble:
                 try:
@@ -505,22 +560,26 @@ def specific_favorite():
 
 print(time.ctime())
 schedule.every().week.do(unfollow)
-schedule.every(3).days.at("09:01").do(auto_follow2)
+# schedule.every(3).days.at("09:01").do(auto_follow2)
 schedule.every().thursday.at("03:37").do(unfollow)
-schedule.every().monday.at("03:37").do(unfollow)
+# schedule.every().monday.at("03:37").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
-schedule.every(4).hours.do(ifb_bot)
+# schedule.every(4).hours.do(ifb_bot)
 schedule.every(20).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(15).minutes.do(thank_new_followers)
-schedule.every(3).minutes.do(specific_favorite)
+schedule.every(7).minutes.do(specific_favorite)
 
 
 while True:
-    schedule.run_pending()
-    time.sleep(1)
-print("We errored out! :(")
+    try:
+        schedule.run_pending()
+        time.sleep(1)
+    except tweepy.TweepError as e:
+        print(e.reason)
+        print("We errored out.. going to sleep for 2 hours..")
+        time.sleep(2*60*60)
