@@ -556,7 +556,18 @@ def specific_favorite():
                 print(e.reason)
             time.sleep(3)
         time.sleep(1)
-        
+
+
+def send_error_message(follower):
+    try:
+        to_string = "I errored out.. going to sleep for 2 hours.."
+        api.send_direct_message(follower, to_string)
+        print("Sent dm to 441228378 since we errored out.")
+    except tweepy.TweepError as e:
+        if e.reason[:13] != "[{'code': 139" or e.reason[:13] != "[{'code': 226" or e.reason[:13] != "[{'code': 429":
+            print(e.reason)
+        time.sleep(10*60)
+        send_error_message(441228378)
 
 print(time.ctime())
 schedule.every().week.do(unfollow)
@@ -581,5 +592,5 @@ while True:
         time.sleep(1)
     except tweepy.TweepError as e:
         print(e.reason)
-        print("We errored out.. going to sleep for 2 hours..")
+        send_error_message(441228378)
         time.sleep(2*60*60)
