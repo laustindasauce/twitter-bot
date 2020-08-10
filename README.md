@@ -56,7 +56,7 @@ docker push 10.10.10.1:5000/bot-name
 ```
 
 ### Contributions are welcomed! 💚
-**Talk to me here if you have any ideas [![Issues][1.4]][1]
+**If you have any ideas, talk to me here: [![Issues][1.4]][1]**
 
 **Check out my personal bot account here: [![Twitter][1.2]][2]**
 
