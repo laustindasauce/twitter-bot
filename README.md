@@ -73,4 +73,4 @@ docker push 10.10.10.1:5000/bot-name
 <!-- icons without padding -->
 
 [1.2]: http://i.imgur.com/wWzX9uB.png (twitter icon without padding)
-[1.4]: https://imgur.com/gallery/oiBlB (mail icon without padding)
+[1.4]: https://i.imgur.com/2SqWbO1.png (mail icon without padding)
