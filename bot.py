@@ -15,15 +15,14 @@ consumer_key = os.getenv("CONSUMER_KEY")
 consumer_secret = os.getenv("CONSUMER_SECRET")
 key = os.getenv("KEY")
 secret = os.getenv("SECRET")
-
 client = redis.Redis(host="10.10.10.1", port=6379,
                      password=os.getenv("REDIS_PASS"))
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-
 png_file = "/tmp/plot.png"
+
 
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
@@ -36,9 +35,7 @@ def store_last_seen(last_seen_id):
 
 
 def reply():
-    print("Running reply()")
-    tweets = api.mentions_timeline(
-        read_last_seen(), tweet_mode='extended')
+    tweets = api.mentions_timeline(read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
         try:
             username = tweet.user.screen_name
@@ -135,27 +132,6 @@ def searchBot3():
             time.sleep(2)
 
 
-def ifb_bot():
-    print("Running ifb search.")
-    tweets = tweepy.Cursor(api.search, "ifb").items(150)
-    i = 0
-    for tweet in tweets:
-        i += 1
-        try:
-            if i % 50 == 0:
-                print(f"Favorited {i} ifb tweets")
-            api.create_favorite(tweet.id)
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 139":
-                continue
-            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
-                print("Malicious activity suspected. Ending ifb_bot.")
-                return
-            else:
-                print(e.reason)
-        time.sleep(4)
-
-
 def tweet_sentiment():
     print("Running tweet_sentiment()")
     client = redis.Redis(host="10.10.10.1", port=6379,
@@ -205,7 +181,6 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
             # Just exit if any error
             print("some error : " + str(e))
             break
-    # print(f"Downloaded {tweetCount} tweets; Saved to {redisDataBase}")
 
 
 def clean(tweet):
@@ -244,14 +219,10 @@ def run_scraper():
             bullish_count += 1
         elif tweet_polarity[idx] < 0.00 and tweet_subjectivity[idx] < 0.5:
             bearish_count += 1
-    # sns.scatterplot(tweet_polarity,  # X-axis
-    #                 tweet_subjectivity,  # Y-axis
-                    # s=100)
+
     bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
-    # print(f"Bullish count is {bullish_count}")
-    # print(f"Bearish count is {bearish_count}")
-    # print(f"Sentiment count is {sentiment}")
+
     if sentiment > 5:
         to_string = f"Twitter sentiment of the stock market is bullish with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
@@ -268,13 +239,6 @@ def run_scraper():
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
-    # plt.title("Sentiment Analysis", fontsize=20)
-    # plt.xlabel('← Negative — — — — — — Positive →', fontsize=15)
-    # plt.ylabel('← Facts — — — — — — — Opinions →', fontsize=15)
-    # plt.tight_layout()
-    # plt.savefig(png_file)
-    # api.update_with_media(png_file, to_string)
-    # plt.show()
 
 
 # This is trying to get followers that will be active and interested in my content
@@ -309,39 +273,9 @@ def auto_follow():
             else:
                 print(e.reason)
             time.sleep(2)
+
+    # Switch up the query
     query = "programming"
-    # print(f"Following users who have tweeted about the {query}")
-    # Switch up the query
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(10)
-    for tweet in search:
-        if tweet.user.followers_count > 3000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(5)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 160":
-                continue
-            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
-                print("Followed too many people... ending auto_follow")
-                print(f"Now following {num_followed} more users.")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
-    print(f"Now following {num_followed} more users.")
-    query = "python program"
-    # print(f"Following users who have tweeted about the {query}")
-    # Switch up the query
     search = tweepy.Cursor(api.search, q=query,
                            result_type="recent", lang="en").items(10)
     for tweet in search:
@@ -370,43 +304,10 @@ def auto_follow():
             time.sleep(2)
     print(f"Now following {num_followed} more users.")
 
-# This is to purely try to get my follower count up
-def auto_follow2():
-    print("Running auto_follow2()")
-    query = "ifb"
-    # print(f"Following users who have tweeted about the {query}")
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(25)
-    num_followed = 0
-    for tweet in search:
-        if tweet.user.followers_count > 3000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(5)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 160":
-                continue
-            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
-                print(f"Now following {num_followed} more users.")
-                print("Followed too many people... ending auto_follow")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
-    query = "follow back"
-    # print(f"Following users who have tweeted about the {query}")
     # Switch up the query
+    query = "python program"
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(25)
+                           result_type="recent", lang="en").items(10)
     for tweet in search:
         if tweet.user.followers_count > 3000:
             continue
@@ -463,7 +364,6 @@ def unfollow():
 
 
 def thank_new_followers():
-    print("Running thank_new_followers()")
     total_followers = client.scard('followers_thanked')
     followers_thanked = []
     followers = []
@@ -505,7 +405,6 @@ def thank_new_followers():
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
-        # print("Thanking new followers.")
         trouble = False
         to_string = "\nAppreciate you following me! Check out my github if you're intereseted in programming! " + \
             "Also, if you'd like to create a twitter bot of your own, you can find how to do that there!\n" + \
@@ -569,17 +468,15 @@ def send_error_message(follower):
         time.sleep(10*60)
         send_error_message(441228378)
 
+
 print(time.ctime())
 schedule.every().week.do(unfollow)
-# schedule.every(3).days.at("09:01").do(auto_follow2)
 schedule.every().thursday.at("03:37").do(unfollow)
-# schedule.every().monday.at("03:37").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
-# schedule.every(4).hours.do(ifb_bot)
 schedule.every(20).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(15).minutes.do(thank_new_followers)
