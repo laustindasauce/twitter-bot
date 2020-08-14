@@ -1,11 +1,10 @@
 # Twitter Bot Implementing Redis Database 
-
-This is messing around learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are 
-tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion redis is as easy, if not easier, to use.
+This learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are automatically tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion redis is as easy, if not easier, to use. It also lowers CPU storage space, especially while doing the sentiment analysis which can download thousands of tweets.
 
 ## Prerequisites
-**Twitter Developer Set Up**
-* Sign into Twitter at apps.twitter.com
+
+# Twitter Developer Set Up
+* Sign into Twitter [here](apps.twitter.com)
 * Create a new application and fill out your information
 * Generate your access token
 * Write down your needed keys
@@ -14,8 +13,8 @@ tweeting, replying to mentions, following users back and more. Most of the examp
   * Key ID
   * Secret Key ID
 
-**Redis Setup**
-* Download redis and activate your redis server, a simple youtube search will do
+# Redis Setup
+* Download redis and activate your redis server -> [youtube example](https://www.youtube.com/watch?v=dlI-xpQxcuE)
 * Start running your redis-server
 * Next open your redis-cli
   * Be sure to change the requirepass within your config to secure your server
@@ -29,7 +28,7 @@ tweeting, replying to mentions, following users back and more. Most of the examp
 
 ## Running
 
-**This is built to be ran 24/7 using docker.**
+# This is built to be ran 24/7 using docker
 
 ```bash
 docker pull 10.10.10.1:5000/bot-name \
@@ -46,10 +45,9 @@ docker pull 10.10.10.1:5000/bot-name \
 
 ## Build & Push 
 
-**Bot Container**
+# Docker Container
+**Make sure you are in the directory that has you Dockerfile and bot script**
 ```bash
-# Make sure you are in the directory that has you Dockerfile and bot script
-
 docker build --no-cache -t 10.10.10.1:5000/bot-name .
 
 docker push 10.10.10.1:5000/bot-name
