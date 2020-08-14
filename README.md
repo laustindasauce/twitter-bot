@@ -3,7 +3,7 @@ This learning python using tweepy and twitter API to automate twitter functions.
 
 ## Prerequisites
 
-# Twitter Developer Set Up
+### Twitter Developer Set Up
 * Sign into Twitter [here](apps.twitter.com)
 * Create a new application and fill out your information
 * Generate your access token
@@ -13,7 +13,7 @@ This learning python using tweepy and twitter API to automate twitter functions.
   * Key ID
   * Secret Key ID
 
-# Redis Setup
+### Redis Setup
 * Download redis and activate your redis server -> [youtube example](https://www.youtube.com/watch?v=dlI-xpQxcuE)
 * Start running your redis-server
 * Next open your redis-cli
@@ -28,7 +28,7 @@ This learning python using tweepy and twitter API to automate twitter functions.
 
 ## Running
 
-# This is built to be ran 24/7 using docker
+### This is built to be ran 24/7 using docker
 
 ```bash
 docker pull 10.10.10.1:5000/bot-name \
@@ -45,7 +45,7 @@ docker pull 10.10.10.1:5000/bot-name \
 
 ## Build & Push 
 
-# Docker Container
+### Docker Container
 **Make sure you are in the directory that has you Dockerfile and bot script**
 ```bash
 docker build --no-cache -t 10.10.10.1:5000/bot-name .
@@ -53,7 +53,7 @@ docker build --no-cache -t 10.10.10.1:5000/bot-name .
 docker push 10.10.10.1:5000/bot-name
 ```
 
-### Contributions are welcomed! 💚
+## Contributions are welcomed! 💚
 **If you have any ideas, talk to me here: [![Issues][1.4]][1]**
 
 **Check out my personal bot account here: [![Twitter][1.2]][2]**
