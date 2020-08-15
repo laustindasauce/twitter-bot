@@ -62,6 +62,27 @@ def reply():
             time.sleep(2)
 
 
+def get_dms():
+    last_seen = int(client.get('dm_seen'))
+    messages = api.list_direct_messages(last_seen)
+    for message in reversed(messages):
+        sender_id = message.message_create['sender_id']
+        # Don't worry about DM's that you sent
+        if sender_id != 'Your user id':
+            text = message.message_create['message_data']['text']
+            print(text)
+            reply_dm(sender_id)
+        last_seen = message.id
+    # Update our last seen dm ID
+    client.set('dm_seen', str(last_seen))
+
+
+def reply_dm(sender_id):
+    to_string = "Example auto-reply"
+    api.send_direct_message(sender_id, to_string)
+    print("Sent reply dm")
+
+
 def searchBot():
     tweets = tweepy.Cursor(api.search, "whatever you want here").items(2)
     print("Running first search.")
