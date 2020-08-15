@@ -406,9 +406,8 @@ def thank_new_followers():
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
         trouble = False
-        to_string = "\nAppreciate you following me! Check out my github if you're intereseted in programming! " + \
-            "Also, if you'd like to create a twitter bot of your own, you can find how to do that there!\n" + \
-            "https://github.com/abspen1"
+        to_string = "\nAppreciate you following me! If you're intereste in programming or if you'd like to create a twitter bot of your own, I can send you a link to my github!\n" + \
+            "Reply 'yes' if you'd like me to send you a link!"
         if limit:
             to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
         for follower in new_followers:
