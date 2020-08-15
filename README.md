@@ -25,12 +25,12 @@ This learning python using tweepy and twitter API to automate twitter functions.
   * Within redis-cli// > config set requirepass yourPasswordHere (recommended at least 32 characters long)
 
 
-
 # Running
 
 ### This is built to be ran 24/7 using docker
 
 ```bash
+# Pull the most recent image
 docker pull 10.10.10.1:5000/bot-name \
 && docker run -d \
   --name bot_name \
