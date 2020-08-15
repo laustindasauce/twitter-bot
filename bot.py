@@ -72,8 +72,11 @@ def dm_reply():
                 elif flag == 1 and char == 'E':
                     flag = 2
                 elif flag == 2 and char == 'S':
-                    flag = 3
                     github_dm(sender_id)
+                    break
+                elif flag == 2 and char == 'A':
+                    github_dm(sender_id)
+                    break
 
         last_seen = message.id
     client.set('dm_seen', str(last_seen))
