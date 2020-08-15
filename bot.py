@@ -56,6 +56,7 @@ def reply():
             print(e.reason)
         time.sleep(2)
 
+
 def dm_reply():
     last_seen = int(client.get('dm_seen'))
     messages = api.list_direct_messages(last_seen)
@@ -77,6 +78,7 @@ def dm_reply():
         last_seen = message.id
     client.set('dm_seen', str(last_seen))
 
+
 def github_dm(sender_id):
     if client.sismember('sent_dm', str(sender_id)):
         print("DM from someone who already has link!")
@@ -88,6 +90,7 @@ def github_dm(sender_id):
     client.incr('github_dms')
     num = int(client.get('github_dms'))
     print(f"Sent github dm : {num}")
+
 
 def searchBot():
     print("Running #python search.")
@@ -254,18 +257,19 @@ def run_scraper():
 
     bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
-    client.incr('sentiment_number')
-    sent_num = int(client.get('sentiment_number'))
+    client.incr('sent_number')
+    sent_num = int(client.get('sent_number'))
+    to_string = f"Reading #{sent_num} => Twitter's sentiment of the stock market is"
     if sentiment > 5:
-        to_string = f"Twitter sentiment of the stock market is bullish with a reading of {sentiment}."
+        to_string = f"{to_string} bullish with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
         if sentiment > current_high:
             client.set('highest_sentiment', str(sentiment))
             to_string = f"{to_string} This is the highest reading to date."
     elif sentiment > -5:
-        to_string = f"Twitter sentiment of the stock market is nuetral with a reading of {sentiment}."
+        to_string = f"{to_string} nuetral with a reading of {sentiment}."
     else:
-        to_string = f"Twitter sentiment of the stock market is bearish with a reading of {sentiment}."
+        to_string = f"{to_string} bearish with a reading of {sentiment}."
         current_low = int(client.get('lowest_sentiment'))
         if sentiment < current_low:
             client.set('lowest_sentiment', str(sentiment))
@@ -503,7 +507,6 @@ def send_error_message(follower):
         send_error_message(441228378)
 
 
-dm_reply()
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every().thursday.at("03:37").do(unfollow)
