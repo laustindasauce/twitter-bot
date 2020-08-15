@@ -56,6 +56,38 @@ def reply():
             print(e.reason)
         time.sleep(2)
 
+def dm_reply():
+    last_seen = int(client.get('dm_seen'))
+    messages = api.list_direct_messages(last_seen)
+    for message in reversed(messages):
+        sender_id = message.message_create['sender_id']
+        if sender_id != '1243690297747312642':
+            text = message.message_create['message_data']['text']
+            print(text)
+            flag = 0
+            for char in text.upper():
+                if flag == 0 and char == 'Y':
+                    flag = 1
+                elif flag == 1 and char == 'E':
+                    flag = 2
+                elif flag == 2 and char == 'S':
+                    flag = 3
+                    github_dm(sender_id)
+
+        last_seen = message.id
+    client.set('dm_seen', str(last_seen))
+
+def github_dm(sender_id):
+    if client.sismember('sent_dm', str(sender_id)):
+        print("DM from someone who already has link!")
+        return
+    client.sadd('sent_dm', str(sender_id))
+    to_string = "\nAwesome, here is the link! If you have any questions about anything you can either create an issue within github or message me here! :)\n" + \
+        "https://github.com/abspen1"
+    api.send_direct_message(sender_id, to_string)
+    client.incr('github_dms')
+    num = int(client.get('github_dms'))
+    print(f"Sent github dm : {num}")
 
 def searchBot():
     print("Running #python search.")
@@ -222,7 +254,8 @@ def run_scraper():
 
     bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
-
+    client.incr('sentiment_number')
+    sent_num = int(client.get('sentiment_number'))
     if sentiment > 5:
         to_string = f"Twitter sentiment of the stock market is bullish with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
@@ -406,8 +439,8 @@ def thank_new_followers():
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
         trouble = False
-        to_string = "\nAppreciate you following me! If you're intereste in programming or if you'd like to create a twitter bot of your own, I can send you a link to my github!\n" + \
-            "Reply 'yes' if you'd like me to send you a link!"
+        to_string = "\nAppreciate you following me! If you're interested in programming or if you'd like to create a twitter bot of your own, I can send you a link to my github!\n" + \
+            "If your next message has 'yes' anywhere in it I will send you a link!"
         if limit:
             to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
         for follower in new_followers:
@@ -430,6 +463,8 @@ def thank_new_followers():
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
+    time.sleep(60)
+    dm_reply()
 
 
 def specific_favorite():
@@ -468,6 +503,7 @@ def send_error_message(follower):
         send_error_message(441228378)
 
 
+dm_reply()
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every().thursday.at("03:37").do(unfollow)
@@ -479,6 +515,7 @@ schedule.every().day.at("17:07").do(searchBot3)
 schedule.every(20).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(15).minutes.do(thank_new_followers)
+schedule.every(5).minutes.do(dm_reply)
 schedule.every(7).minutes.do(specific_favorite)
 
 
