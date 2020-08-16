@@ -40,7 +40,18 @@ def reply():
         try:
             username = tweet.user.screen_name
             if username != "CalendarKy" and username != "statutorywheel" and tweet.full_text[:11] != "@CalendarKy" \
-                and tweet.full_text[:11] != "@statutorywheel" and tweet.full_text[:17] != "@InternTendie and":
+                    and tweet.full_text[:11] != "@statutorywheel" and tweet.full_text[:17] != "@InternTendie and" \
+                        and tweet.full_text[:17] != "@InternTendie @Cal" and tweet.full_text[:17] != "@InternTendie @statu":
+                if 'follow back' in tweet.full_text.lower() and 'thanks' not in tweet.full_text.lower():
+                    api.update_status("@" + username +
+                                      " please be patient.")
+                    print("Replied to follow back request")
+                    try:
+                        api.destroy_friendship(username)
+                        print(f"Terminated friendship with {username}")
+                    except Tweepy.TweepError as e:
+                        print(e)
+                    return
                 print("Replied to - " + username +
                       " - " + tweet.full_text)
                 api.update_status("@" + username +
@@ -66,18 +77,8 @@ def dm_reply():
             text = message.message_create['message_data']['text']
             print(text)
             flag = 0
-            for char in text.upper():
-                if flag == 0 and char == 'Y':
-                    flag = 1
-                elif flag == 1 and char == 'E':
-                    flag = 2
-                elif flag == 2 and char == 'S':
-                    github_dm(sender_id)
-                    break
-                elif flag == 2 and char == 'A':
-                    github_dm(sender_id)
-                    break
-
+            if 'yes' in text.lower() or 'yea' in text.lower() or 'send it' in text.lower() or 'yep' in text.lower():
+                github_dm(sender_id)
         last_seen = message.id
     client.set('dm_seen', str(last_seen))
 
