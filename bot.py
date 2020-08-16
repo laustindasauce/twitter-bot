@@ -39,9 +39,7 @@ def reply():
     for tweet in reversed(tweets):
         try:
             username = tweet.user.screen_name
-            if username != "CalendarKy" and username != "statutorywheel" and tweet.full_text[:11] != "@CalendarKy" \
-                    and tweet.full_text[:11] != "@statutorywheel" and tweet.full_text[:17] != "@InternTendie and" \
-                        and tweet.full_text[:17] != "@InternTendie @Cal" and tweet.full_text[:17] != "@InternTendie @statu":
+            if check_reply(username, tweet):
                 if 'follow back' in tweet.full_text.lower() and 'thanks' not in tweet.full_text.lower():
                     api.update_status("@" + username +
                                       " please be patient.")
@@ -51,12 +49,14 @@ def reply():
                         print(f"Terminated friendship with {username}")
                     except Tweepy.TweepError as e:
                         print(e)
+                    store_last_seen(tweet.id)
                     return
                 print("Replied to - " + username +
                       " - " + tweet.full_text)
                 api.update_status("@" + username +
                                     " Hello, " + username + ", just a moment. " + 
                                     "@CalendarKy @statutorywheel, can I please get some help?", tweet.id)
+                store_last_seen(tweet.id)
             else:
                 print("Favorited " + username +
                       " - " + tweet.full_text)
@@ -68,6 +68,13 @@ def reply():
         time.sleep(2)
 
 
+def check_reply(username, tweet):
+    if username != "CalendarKy" and username != "statutorywheel" and tweet.full_text[:11] != "@CalendarKy" \
+            and tweet.full_text[:11] != "@statutorywheel" and tweet.full_text[:17] != "@InternTendie and" \
+            and tweet.full_text[:17] != "@InternTendie @Cal" and tweet.full_text[:17] != "@InternTendie @statu":
+        return True
+    return False
+
 def dm_reply():
     last_seen = int(client.get('dm_seen'))
     messages = api.list_direct_messages(last_seen)
@@ -76,12 +83,16 @@ def dm_reply():
         if sender_id != '1243690297747312642':
             text = message.message_create['message_data']['text']
             print(text)
-            flag = 0
-            if 'yes' in text.lower() or 'yea' in text.lower() or 'send it' in text.lower() or 'yep' in text.lower():
+            if check_dm(text.lower()):
                 github_dm(sender_id)
         last_seen = message.id
     client.set('dm_seen', str(last_seen))
 
+
+def check_dm(text):
+    if 'yes' in text.lower() or 'yea' in text.lower() or 'send it' in text.lower() or 'yep' in text.lower():
+        return True
+    return False
 
 def github_dm(sender_id):
     if client.sismember('sent_dm', str(sender_id)):
@@ -125,7 +136,6 @@ def searchBot():
 def searchBot2():
     print("Running javascript search.")
     tweets = tweepy.Cursor(api.search, "javascript").items(10)
-    # print("Running second search.")
     print(time.ctime())
     i = 0
     for tweet in tweets:
