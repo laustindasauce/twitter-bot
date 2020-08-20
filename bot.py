@@ -50,8 +50,7 @@ def reply():
             print("Replied to - " + username +
                     " - " + tweet.full_text)
             api.update_status("@" + username +
-                                " Hello, " + username + ", just a moment. " + 
-                                "@CalendarKy could you please help me out?", tweet.id)
+                                " Hello, " + username + ", this is an auto reply :)", tweet.id)
 
             print("Favorited " + username + " - " + tweet.full_text)
             api.create_favorite(tweet.id)
