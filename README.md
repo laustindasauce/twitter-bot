@@ -25,12 +25,33 @@ This learning python using tweepy and twitter API to automate twitter functions.
   * Within redis-cli// > config set requirepass yourPasswordHere (recommended at least 32 characters long)
 
 
+
 # Running
 
 ### This is built to be ran 24/7 using docker
+**Be sure to CD into your working directory with dockerfile and bot.py within**
 
 ```bash
-# Pull the most recent image
+**This is for running locally**
+
+$ docker build twitter-bot
+
+$ docker run -d \
+  --name bot_name \
+  --restart unless-stopped \
+  -e CONSUMER_KEY="some consumer ID" \
+  -e CONSUMER_SECRET="some consumer secret KEY" \
+  -e KEY="some key ID" \
+  -e SECRET="some secret key ID" \
+  -e REDIS_PASS="some password" \
+  -v $PWD:/work \
+  twitter-bot
+```
+
+
+```bash
+**This is for Runing on remote server**
+
 docker pull 10.10.10.1:5000/bot-name \
 && docker run -d \
   --name bot_name \
