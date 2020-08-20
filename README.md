@@ -25,8 +25,19 @@ This learning python using tweepy and twitter API to automate twitter functions.
   * Within redis-cli// > config set requirepass yourPasswordHere (recommended at least 32 characters long)
 
 
-
 # Running
+**Be sure to CD into your working directory with dockerfile and bot.py within**
+
+### Be sure to export your variables to be read with os.getenv()
+```bash
+export CONSUMER_KEY="your key" \
+&& export CONSUMER_SECRET="your secret" \
+&& export SECRET="your secret"\
+&& export REDIS_PASS="your redis password"\
+&& export KEY="your key"
+```
+
+# Running 24/7
 
 ### This is built to be ran 24/7 using docker
 **Be sure to CD into your working directory with dockerfile and bot.py within**
