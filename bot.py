@@ -19,8 +19,16 @@ secret = os.getenv("SECRET")
 
 
 """ Download Redis and have a server running check README """
+
+### REMOTE REDIS SERVER ###
 client = redis.Redis(host="10.10.10.1", port=6379,
                      password=os.getenv("REDIS_PASS"))
+
+### LOCAL REDIS SERVER ###
+client = redis.Redis(host="127.0.0.1", password="IF YOU SET ONE")
+
+
+### TWEEPY SETUP ###
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(key, secret)
 auth.secure = True
