@@ -47,7 +47,7 @@ def reply():
                     try:
                         api.destroy_friendship(username)
                         print(f"Terminated friendship with {username}")
-                    except Tweepy.TweepError as e:
+                    except tweepy.TweepError as e:
                         print(e)
                     store_last_seen(tweet.id)
                     return
