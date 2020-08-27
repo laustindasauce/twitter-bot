@@ -4,7 +4,7 @@ This learning python using tweepy and twitter API to automate twitter functions.
 # Prerequisites
 
 ### Twitter Developer Set Up
-* Sign into Twitter [here](apps.twitter.com)
+* Sign into Twitter [here](https://developer.twitter.com/en)
 * Create a new application and fill out your information
 * Generate your access token
 * Write down your needed keys
