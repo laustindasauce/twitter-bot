@@ -97,8 +97,8 @@ def check_dm(text):
 
 def github_dm(sender_id):
     client.sadd('sent_dm', str(sender_id))
-    to_string = "\nAwesome, here is the link! If you have any questions about anything you can either create an issue within github or message me here! :)\n" + \
-        "https://github.com/abspen1"
+    to_string = "\nAwesome, here is the link! Star the repository to be notified when I make any updates! Also, feel free to check out my other repositories and if you have any questions about anything you can either create an issue within github or message me here! :)\n" + \
+        "https://github.com/abspen1/twitter-bot"
     api.send_direct_message(sender_id, to_string)
 
     # Subtract one here since I added my ID to ignore also
