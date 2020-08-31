@@ -111,7 +111,7 @@ apt-get update
 apt-get install -y docker-ce
 ```
 Check that install worked
-* $ docker --version 
+* $ sudo docker --version 
 * If this shows your docker version then you've successfully installed docker on your vm instance
 ### clone your git repository to run within docker
 * First check that git is installed
