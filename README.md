@@ -1,5 +1,5 @@
 # Twitter Bot Implementing Redis Database 
-This learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are automatically tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion redis is as easy, if not easier, to use. It also lowers CPU storage space, especially while doing the sentiment analysis which can download thousands of tweets.
+Learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are automatically tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion redis is as easy, if not easier, to use. Redis also lowers CPU storage space, especially while doing the sentiment analysis which can download thousands of tweets. Redis also works really well with Docker which is how this script will be ran 24/7.
 
 # Prerequisites
 
