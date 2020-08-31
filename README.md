@@ -37,44 +37,6 @@ export CONSUMER_KEY="your key" \
 && export KEY="your key"
 ```
 
-# Running 24/7
-
-### This is built to be ran 24/7 using docker
-**Be sure to CD into your working directory with dockerfile and bot.py within**
-
-```bash
-**This is for running locally**
-
-$ docker build twitter-bot
-
-$ docker run -d \
-  --name bot_name \
-  --restart unless-stopped \
-  -e CONSUMER_KEY="some consumer ID" \
-  -e CONSUMER_SECRET="some consumer secret KEY" \
-  -e KEY="some key ID" \
-  -e SECRET="some secret key ID" \
-  -e REDIS_PASS="some password" \
-  -v $PWD:/work \
-  twitter-bot
-```
-
-
-```bash
-**This is for Runing on remote server**
-
-docker pull 10.10.10.1:5000/bot-name \
-&& docker run -d \
-  --name bot_name \
-  --restart unless-stopped \
-  -e CONSUMER_KEY="some consumer ID" \
-  -e CONSUMER_SECRET="some consumer secret KEY" \
-  -e KEY="some key ID" \
-  -e SECRET="some secret key ID" \
-  -e REDIS_PASS="some password" \
-  10.10.10.1:5000/bot-name
-```
-
 # Running 24/7 with Docker in Google Cloud Instance
 * First you need to set up your Google Cloud Instance
  * I suggest youtube to help you set it up
@@ -149,7 +111,47 @@ $ sudo docker run -d \
 ![Alt text](/images/cmds1.png "cmds1")
 ![Alt text](/images/cmds2.png "cmds2")
 
-# Build & Push 
+
+# Running 24/7
+
+### This is built to be ran 24/7 using docker
+**Be sure to CD into your working directory with dockerfile and bot.py within**
+
+```bash
+**This is for running locally**
+
+$ docker build twitter-bot
+
+$ docker run -d \
+  --name bot_name \
+  --restart unless-stopped \
+  -e CONSUMER_KEY="some consumer ID" \
+  -e CONSUMER_SECRET="some consumer secret KEY" \
+  -e KEY="some key ID" \
+  -e SECRET="some secret key ID" \
+  -e REDIS_PASS="some password" \
+  -v $PWD:/work \
+  twitter-bot
+```
+
+
+```bash
+**This is for Runing on remote server**
+
+docker pull 10.10.10.1:5000/bot-name \
+&& docker run -d \
+  --name bot_name \
+  --restart unless-stopped \
+  -e CONSUMER_KEY="some consumer ID" \
+  -e CONSUMER_SECRET="some consumer secret KEY" \
+  -e KEY="some key ID" \
+  -e SECRET="some secret key ID" \
+  -e REDIS_PASS="some password" \
+  10.10.10.1:5000/bot-name
+```
+
+
+# Build & Push to remote location
 
 ### Docker Container
 **Make sure you are in the directory that has you Dockerfile and bot script**
@@ -160,9 +162,9 @@ docker push 10.10.10.1:5000/bot-name
 ```
 
 ## Contributions are welcomed! 💚
-**If you have any ideas, talk to me here: [![Issues][1.4]][1]**
+**If you have any ideas, talk to me here:  [![Issues][1.4]][1]**
 
-**Check out my personal bot account here: [![Twitter][1.2]][2]**
+**Check out my personal bot account here:  [![Twitter][1.2]][2]**
 
 
 
