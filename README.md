@@ -75,6 +75,17 @@ docker pull 10.10.10.1:5000/bot-name \
   10.10.10.1:5000/bot-name
 ```
 
+# Running 24/7 with Docker in Google Cloud Instance
+* First you need to set up your Google Cloud Instance
+ * I suggest youtube to help you set it up
+ * You will need to go to [Google Cloud Platform](https://cloud.google.com/gcp/?utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-skws-all-all-trial-b-dr-1009135&utm_content=text-ad-none-any-DEV_c-CRE_109860918967-ADGP_Hybrid+%7C+AW+SEM+%7C+SKWS+%7C+US+%7C+en+%7C+Multi+~+Cloud-KWID_43700009609890930-kwd-19383198255&utm_term=KW_%2Bcloud-ST_%2Bcloud&&gclid=Cj0KCQjwv7L6BRDxARIsAGj-34qcziciZyZZMes6maVVBfg7lmWjgqQkUNXdwg8lHqQwTPVtNEWX0xoaAgGPEALw_wcB)
+ * Then to console where you can set up your compute engine
+ * Watch this video for help with inital setup [video](https://www.youtube.com/watch?v=p5wl1s5gKY0)
+* Next you will need to ssh into your vm 
+* I prefer to do this on my local machine but you can also do it in browser on a shell
+ * There will be a generated ssh that you can copy and paste into your terminal to ssh into your vm instance
+![Alt text](/images/ssh.png "ssh")
+
 # Build & Push 
 
 ### Docker Container
