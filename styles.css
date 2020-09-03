@@ -149,13 +149,20 @@ h1, h2, h3, h4, h5, h6 {
 .twitter-data {
     position: relative;
     /* width: 200px; */
+    min-width: 350px;
     height: auto;
-    border: #b5e853;
-    border-width: 20px;
+    /* border: solid #b5e853; */
+    border-width: 5px;
 }
 
 .latest-tweet {
-    margin-left: 100px;
+    /* margin-left: 100px; */
+    position: relative;
+    /* width: 200px; */
+    min-width: 350px;
+    height: auto;
+    border: solid #b5e853;
+    border-width: 5px;
 }
 
 .tweet-cont {
@@ -163,8 +170,9 @@ h1, h2, h3, h4, h5, h6 {
     /* border-width: 30px; */
     height: auto;
     width: auto;
-    max-width: 500px;
+    max-width: 800px;
     min-height: 90px;
+    min-width: 450px;
     padding-right: 10px;
     background: #15202B;
 }
@@ -185,8 +193,33 @@ h1, h2, h3, h4, h5, h6 {
 
 #latest_tweet {
     color: #eaeaea;
+    min-width: 500px;
 }
 
 span {
     color: #1C9CE9;
+}
+
+.twitter-data a {
+    /* text-decoration: none; */
+    color: #eaeaea;
+}
+
+.twitter-data a:hover {
+    color: #eaeaea8c;
+}
+
+.issues {
+    margin-left: 15px;
+    min-width: 195px;
+    /* border: solid #b5e853; */
+}
+
+#footer {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #eaeaea;
+    text-align: center;
+    padding: 1rem;
+    font-size: 12px;
+    margin-top: 0rem;
 }
