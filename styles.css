@@ -137,10 +137,10 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.03em;
     text-shadow: 0 1px 1px rgba(0,0,0,0.1), 0 0 5px rgba(181,232,83,0.1), 0 0 10px rgba(181,232,83,0.1);
 }
-/* 
+
 h1, h2, h3, h4, h5, h6 {
     margin: 0 0 20px;
-} */
+}
 
 .data {
     display: flex;
@@ -148,11 +148,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .twitter-data {
     position: relative;
-    /* width: 200px; */
     min-width: 350px;
+    max-width: 370px;
+    padding: 2px;
     height: auto;
-    /* border: solid #b5e853; */
-    border-width: 5px;
+    background: #425b5f10;
 }
 
 .latest-tweet {
@@ -167,7 +167,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .tweet-cont {
     border: solid #38444D;
-    /* border-width: 30px; */
     height: auto;
     width: auto;
     max-width: 800px;
