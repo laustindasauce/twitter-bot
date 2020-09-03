@@ -22,6 +22,7 @@ auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 png_file = "/tmp/plot.png"
+tweets_read = int(client.get("tendie_read"))
 
 
 def read_last_seen():
@@ -37,6 +38,8 @@ def store_last_seen(last_seen_id):
 def reply():
     tweets = api.mentions_timeline(read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
+        global tweets_read
+        tweets_read += 1
         try:
             username = tweet.user.screen_name
             if check_reply(username, tweet):
@@ -107,8 +110,10 @@ def github_dm(sender_id):
 
 
 def searchBot():
+    global tweets_read
+    tweets_read += 50
     print("Running #python search.")
-    tweets = tweepy.Cursor(api.search, "#python").items(20)
+    tweets = tweepy.Cursor(api.search, "#python").items(50)
     # print("Running first search.")
     print(time.ctime())
     i = 0
@@ -133,8 +138,10 @@ def searchBot():
 
 
 def searchBot2():
+    global tweets_read
+    tweets_read += 40
     print("Running javascript search.")
-    tweets = tweepy.Cursor(api.search, "javascript").items(10)
+    tweets = tweepy.Cursor(api.search, "javascript").items(40)
     print(time.ctime())
     i = 0
     for tweet in tweets:
@@ -157,8 +164,10 @@ def searchBot2():
 
 
 def searchBot3():
+    global tweets_read
+    tweets_read += 30
     print("Running algorithm search.")
-    tweets = tweepy.Cursor(api.search, "algorithm").items(10)
+    tweets = tweepy.Cursor(api.search, "algorithm").items(30)
     # print("Running third search.")
     print(time.ctime())
     i = 0
@@ -229,6 +238,8 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
             # Just exit if any error
             print("some error : " + str(e))
             break
+    global tweets_read
+    tweets_read += tweetCount
 
 
 def clean(tweet):
@@ -293,7 +304,9 @@ def run_scraper():
 
 # This is trying to get followers that will be active and interested in my content
 def auto_follow():
+    global tweets_read
     print("Running auto_follow()")
+    tweets_read += 10
     query = "computer science"
     # print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
@@ -325,6 +338,7 @@ def auto_follow():
             time.sleep(2)
 
     # Switch up the query
+    tweets_read += 10
     query = "programming"
     search = tweepy.Cursor(api.search, q=query,
                            result_type="recent", lang="en").items(10)
@@ -355,6 +369,7 @@ def auto_follow():
     print(f"Now following {num_followed} more users.")
 
     # Switch up the query
+    tweets_read += 10
     query = "python program"
     search = tweepy.Cursor(api.search, q=query,
                            result_type="recent", lang="en").items(10)
@@ -485,13 +500,15 @@ def thank_new_followers():
 
 
 def specific_favorite():
+    global tweets_read
     client = redis.Redis(host="10.10.10.1", port=6379, db=0,
                          password=os.getenv("REDIS_PASS"))
     sinceId = 'ky_since_id'
-    client.set(sinceId, '1285706104433979392')
+    # client.set(sinceId, '1285706104433979392')
     tweet_id = int(client.get(sinceId))
     tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
     for tweet in reversed(tweets):
+        tweets_read += 1
         client.set(sinceId, str(tweet.id))
         try:
             if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
@@ -520,6 +537,14 @@ def send_error_message(follower):
         send_error_message(441228378)
 
 
+def webapp_update():
+    acct = api.get_user("interntendie")
+    client.set("tendie_followers", str(acct.followers_count))
+    client.set("tendie_favorites", str(acct.favourites_count))
+    client.set("tendie_statuses", str(acct.statuses_count))
+    client.set("tendie_read", str(tweets_read))
+
+webapp_update()
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every().thursday.at("03:37").do(unfollow)
@@ -533,6 +558,7 @@ schedule.every(7).hours.do(run_scraper)
 schedule.every(15).minutes.do(thank_new_followers)
 schedule.every(5).minutes.do(dm_reply)
 schedule.every(7).minutes.do(specific_favorite)
+schedule.every(13).minutes.do(webapp_update)
 
 
 while True:
