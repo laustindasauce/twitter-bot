@@ -10,7 +10,6 @@ const BASE_URL = 'https://guldentech.com'
 const getTwitterData = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/austinapi/tendie-intern`);
-        console.log(response)
 
         followers_span.innerHTML = numberWithCommas(response.data.Followers)
         tweets_liked_span.innerHTML = numberWithCommas(response.data.TweetsLiked)
@@ -18,7 +17,7 @@ const getTwitterData = async () => {
         tweets_span.innerHTML = numberWithCommas(response.data.Tweets)
         tweets_read_span.innerHTML = numberWithCommas(response.data.TweetsRead)
 
-        console.log(response)
+        console.log(response.data)
     } catch (e) {
         console.error(e);
     }
@@ -30,6 +29,7 @@ function numberWithCommas(x) {
 
 // This is to set up our existing projects on reload of site
 function main() {
+    console.log("Welcome to twitter-bot github pages")
     getTwitterData()
 }
 
