@@ -26,9 +26,7 @@ png_file = "/tmp/plot.png"
 
 def main():
     acct = api.get_user("interntendie")
-    print(acct.followers_count)
-    print(acct.favourites_count)
-    print(acct.statuses_count)
+    print(acct.status._json["text"])
 
 if __name__ == "__main__":
     main()

@@ -86,7 +86,7 @@ def dm_reply():
         ## moving this if statement for quicker runtime ;]
         if not client.sismember('sent_dm', str(sender_id)):
             text = message.message_create['message_data']['text']
-            print(text)
+            # print(text)
             if check_dm(text.lower()):
                 github_dm(sender_id)
         last_seen = message.id
@@ -538,11 +538,13 @@ def send_error_message(follower):
 
 
 def webapp_update():
+    print("Updating our webapp")
     acct = api.get_user("interntendie")
     client.set("tendie_followers", str(acct.followers_count))
     client.set("tendie_favorites", str(acct.favourites_count))
     client.set("tendie_statuses", str(acct.statuses_count))
     client.set("tendie_read", str(tweets_read))
+    client.set("tendie_recent", str(acct.status._json["text"]))
 
 webapp_update()
 print(time.ctime())
