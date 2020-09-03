@@ -129,12 +129,49 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 0 20px;
 }
 
+.data {
+    display: flex;
+}
+
 .twitter-data {
     position: relative;
     /* width: 200px; */
     height: auto;
     border: #b5e853;
     border-width: 20px;
+}
+
+.latest-tweet {
+    margin-left: 100px;
+}
+
+.tweet-cont {
+    border: solid #38444D;
+    /* border-width: 30px; */
+    height: auto;
+    width: auto;
+    max-width: 600px;
+    min-height: 90px;
+    padding-right: 10px;
+    background: #15202B;
+}
+
+.tweet .icon {
+    height: 60px;
+    width: 60px;
+    margin: -5px 10px 0 10px;
+    float: left;
+    border-radius: 30px;
+}
+
+.tweet {
+    /* position: absolute; */
+    padding-top: 7px;
+    font-size: 15px;
+}
+
+#latest_tweet {
+    color: #eaeaea;
 }
 
 span {
