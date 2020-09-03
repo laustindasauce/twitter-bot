@@ -541,6 +541,8 @@ def webapp_update():
     print("Updating our webapp")
     acct = api.get_user("interntendie")
     client.set("tendie_followers", str(acct.followers_count))
+    print(acct.followers_count)
+    print(client.get("tendie_followers"))
     client.set("tendie_favorites", str(acct.favourites_count))
     client.set("tendie_statuses", str(acct.statuses_count))
     client.set("tendie_read", str(tweets_read))
