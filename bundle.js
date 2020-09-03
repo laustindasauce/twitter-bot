@@ -11,6 +11,7 @@ const BASE_URL = 'https://guldentech.com'
 const getTwitterData = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/austinapi/tendie-intern`);
+        console.log(response)
 
         followers_span.innerHTML = numberWithCommas(response.data.Followers)
         tweets_liked_span.innerHTML = numberWithCommas(response.data.TweetsLiked)
