@@ -161,8 +161,8 @@ h1, h2, h3, h4, h5, h6 {
     /* width: 200px; */
     min-width: 350px;
     height: auto;
-    border: solid #b5e853;
-    border-width: 5px;
+    /* border: solid #b5e853; */
+    /* border-width: 5px; */
 }
 
 .tweet-cont {
@@ -173,7 +173,7 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 800px;
     min-height: 90px;
     min-width: 450px;
-    padding-right: 10px;
+    padding-right: 1px;
     background: #15202B;
 }
 
@@ -193,7 +193,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #latest_tweet {
     color: #eaeaea;
-    min-width: 500px;
+    /* min-width: 500px; */
 }
 
 span {
