@@ -4,7 +4,7 @@ body {
     background: #151515;
     color: #eaeaea;
     font-size: 16px;
-    line-height: 1.5;
+    /* line-height: 1.5; */
     font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
 }
 
@@ -24,6 +24,19 @@ header {
     width: 90%;
     max-width: 1000px;
     margin: 0 auto;
+}
+
+#pic {
+    width: 100%;
+    height: auto;
+    max-width: 800px;
+    /* max-height: 400px; */
+}
+
+#disclaimer {
+    text-decoration: none;
+    width: 800px;
+    color: #eaeaea;
 }
 
 div {
@@ -124,10 +137,10 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.03em;
     text-shadow: 0 1px 1px rgba(0,0,0,0.1), 0 0 5px rgba(181,232,83,0.1), 0 0 10px rgba(181,232,83,0.1);
 }
-
+/* 
 h1, h2, h3, h4, h5, h6 {
     margin: 0 0 20px;
-}
+} */
 
 .data {
     display: flex;
