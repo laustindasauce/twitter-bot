@@ -131,12 +131,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .twitter-data {
     position: relative;
-    width: 200px;
+    /* width: 200px; */
     height: auto;
     border: #b5e853;
     border-width: 20px;
 }
 
 span {
-    color: #63c0f5;
+    color: #1C9CE9;
 }
