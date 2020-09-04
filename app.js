@@ -5,6 +5,7 @@ const tweets_span = document.getElementById("tweets")
 const followers_span = document.getElementById("followers")
 const tweets_read_span = document.getElementById("tweets-read")
 const latest_tweet_span = document.getElementById("latest_tweet")
+const sentiment_accuracy_span = document.getElementById("sentiment_accuracy")
 
 const BASE_URL = 'https://guldentech.com'
 
@@ -14,13 +15,13 @@ const getTwitterData = async () => {
 
         followers_span.innerHTML = numberWithCommas(response.data.Followers)
         tweets_liked_span.innerHTML = numberWithCommas(response.data.TweetsLiked)
-
         tweets_span.innerHTML = numberWithCommas(response.data.Tweets)
         tweets_read_span.innerHTML = numberWithCommas(response.data.TweetsRead)
-
+        sentiment_accuracy_span.innerHTML = response.data.Accuracy + "%"
         latest_tweet_span.innerHTML = response.data.LatestTweet
 
         console.log(response.data)
+        
     } catch (e) {
         console.error(e);
     }
