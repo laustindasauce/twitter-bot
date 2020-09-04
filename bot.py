@@ -100,8 +100,8 @@ def check_dm(text):
 
 def github_dm(sender_id):
     client.sadd('sent_dm', str(sender_id))
-    to_string = "\nAwesome, here is the link! Star the repository to be notified when I make any updates! Also, feel free to check out my other repositories and if you have any questions about anything you can either create an issue within github or message me here! :)\n" + \
-        "https://github.com/abspen1/twitter-bot"
+    to_string = "\nAwesome, here is the link! Let me know what you think!\n" + \
+        "https://abspen1.github.io/twitter-bot/"
     api.send_direct_message(sender_id, to_string)
 
     # Subtract one here since I added my ID to ignore also
@@ -471,7 +471,7 @@ def thank_new_followers():
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
         trouble = False
-        to_string = "\nAppreciate you following me! If you're interested in programming or if you'd like to create a twitter bot of your own, I can send you a link to my github!\n" + \
+        to_string = "\nAppreciate you following me! I am a fully automated twitter account. If you're interested in programming or if you'd like to create an automated twitter account of your own, I can send you a link to my twitter-bot WebPage!\n" + \
             "If your next message has 'yes' anywhere in it I will send you a link!"
         if limit:
             to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
@@ -548,7 +548,7 @@ def webapp_update():
     client.set("tendie_read", str(tweets_read))
     client.set("tendie_recent", str(acct.status._json["text"]))
 
-webapp_update()
+
 print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every().thursday.at("03:37").do(unfollow)
