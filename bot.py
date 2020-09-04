@@ -1,28 +1,46 @@
-import tweepy
-from textblob import TextBlob
-import pandas as pd
+import alpaca_trade_api as tradeapi
+import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-import redis
-import seaborn as sns
-import schedule
-import time
-import re
 import os
+import pandas as pd
+import re
+import redis
+import schedule
+from textblob import TextBlob
+import time
+import tweepy
 
-
+### Twitter
 consumer_key = os.getenv("CONSUMER_KEY")
 consumer_secret = os.getenv("CONSUMER_SECRET")
 key = os.getenv("KEY")
 secret = os.getenv("SECRET")
+
+### Redis
 client = redis.Redis(host="10.10.10.1", port=6379, db=0,
                      password=os.getenv("REDIS_PASS"))
+
+### Tweepy
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-png_file = "/tmp/plot.png"
+
+### Alpaca
+APCA_API_BASE_URL = os.getenv("APCA_API_BASE_URL")
+APCA_API_KEY_ID = os.getenv("APCA_API_KEY_ID")
+APCA_API_SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
+alpaca = tradeapi.REST(APCA_API_KEY_ID,
+                       APCA_API_SECRET_KEY,
+                       APCA_API_BASE_URL,
+                       api_version='v2'
+                       )
+
+### Global Variables
 tweets_read = int(client.get("tendie_read"))
+correct = 0
+wrong = 0
 
 
 def read_last_seen():
@@ -285,6 +303,7 @@ def run_scraper():
     sent_num = int(client.get('sent_number'))
     to_string = f"Reading #{sent_num} => Twitter's sentiment of the stock market is"
     if sentiment > 5:
+        client.sadd("bullish_date", str(datetime.date.today()))
         to_string = f"{to_string} bullish with a reading of {sentiment}."
         current_high = int(client.get('highest_sentiment'))
         if sentiment > current_high:
@@ -293,6 +312,7 @@ def run_scraper():
     elif sentiment > -5:
         to_string = f"{to_string} nuetral with a reading of {sentiment}."
     else:
+        client.sadd("bearish_date", str(datetime.date.today()))
         to_string = f"{to_string} bearish with a reading of {sentiment}."
         current_low = int(client.get('lowest_sentiment'))
         if sentiment < current_low:
@@ -596,6 +616,71 @@ def send_error_message(follower):
         send_error_message(441228378)
 
 
+def cleanDates():
+    bullish = client.smembers("bullish_date")
+    bearish = client.smembers("bearish_date")
+    delete = 0
+    for date in bullish:
+        if date in bearish:
+            print(date.decode("utf-8"))
+            client.srem("bearish_date", date.decode("utf-8"))
+            delete += 1
+    print(f"removed {delete} dates from bearish")
+
+
+def getSentimentAccuracy():
+    cleanDates()
+    bullishDates = client.smembers("bullish_date")
+    bearishDates = client.smembers("bearish_date")
+    for date in bullishDates:
+        date = date.decode("utf-8") + "T09:30:00-04:00"
+        checkBullish(date)
+
+    for date in bearishDates:
+        date = date.decode("utf-8") + "T09:30:00-04:00"
+        checkBearish(date)
+    getPct()
+
+def checkBullish(date):
+    global correct
+    global wrong
+    bars = alpaca.get_barset("SPY", "day", start=date, limit=100)
+    day1 = bars["SPY"][0].c
+    try:
+        day2 = bars["SPY"][1].c
+    except Exception as e:
+        print(e)
+        return
+
+    if day2 > day1:
+        correct += 1
+    else:
+        wrong += 1
+
+
+def checkBearish(date):
+    global correct
+    global wrong
+    bars = alpaca.get_barset("SPY", "day", start=date, limit=100)
+    day1 = bars["SPY"][0].c
+    try:
+        day2 = bars["SPY"][1].c
+    except Exception as e:
+        if e != "list index out of range":
+            print(e)
+        return
+    if day2 > day1:
+        wrong += 1
+    else:
+        correct += 1
+
+def getPct():
+    pct = (correct / (correct + wrong)) * 100
+    pct = "{:.2f}".format(pct)
+    print(f"Correct: {correct} Incorrect: {wrong}")
+    print(f"Percentage of accuracy: {pct}%")
+    client.set("tendie_pct", pct)
+
 def webapp_update():
     acct = api.get_user("interntendie")
     client.set("tendie_followers", str(acct.followers_count))
@@ -606,20 +691,25 @@ def webapp_update():
 
 
 print(time.ctime())
-schedule.every().week.do(unfollow)
-schedule.every().thursday.at("03:37").do(unfollow)
-schedule.every().day.at("13:26").do(auto_follow)
-schedule.every().day.at("08:26").do(auto_follow2)
-schedule.every().day.at("15:13").do(tweet_sentiment)
-schedule.every().day.at("10:17").do(searchBot)
-schedule.every().day.at("12:12").do(searchBot2)
-schedule.every().day.at("17:07").do(searchBot3)
-schedule.every(10).minutes.do(reply)
-schedule.every(7).hours.do(run_scraper)
-schedule.every(15).minutes.do(thank_new_followers)
+## Multiple runs per day
 schedule.every(5).minutes.do(dm_reply)
 schedule.every(7).minutes.do(specific_favorite)
-schedule.every(3).minutes.do(webapp_update)
+schedule.every(9).minutes.do(webapp_update)
+schedule.every(10).minutes.do(reply)
+schedule.every(15).minutes.do(thank_new_followers)
+schedule.every(7).hours.do(run_scraper)
+## Daily runs
+schedule.every().day.at("01:00").do(cleanDates)
+schedule.every().day.at("08:26").do(auto_follow2)
+schedule.every().day.at("10:17").do(searchBot)
+schedule.every().day.at("13:26").do(auto_follow)
+schedule.every().day.at("12:12").do(searchBot2)
+schedule.every().day.at("15:13").do(tweet_sentiment)
+schedule.every().day.at("17:07").do(searchBot3)
+## Weekly runs
+schedule.every().thursday.at("03:37").do(unfollow)
+schedule.every().week.do(unfollow)
+
 
 
 while True:
