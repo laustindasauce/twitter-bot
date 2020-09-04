@@ -42,27 +42,27 @@ def reply():
         tweets_read += 1
         try:
             username = tweet.user.screen_name
-            if check_reply(username, tweet):
-                if 'follow back' in tweet.full_text.lower() and 'thanks' not in tweet.full_text.lower():
-                    api.update_status("@" + username +
-                                      " please be patient.")
-                    print("Replied to follow back request")
-                    try:
-                        api.destroy_friendship(username)
-                        print(f"Terminated friendship with {username}")
-                    except tweepy.TweepError as e:
-                        print(e)
-                    store_last_seen(tweet.id)
-                    return
-                print("Replied to - " + username +
-                      " - " + tweet.full_text)
-                api.update_status("@" + username +
-                                    " Hello, " + username + ", just a moment. " + 
-                                    "@CalendarKy @statutorywheel, can I please get some help?", tweet.id)
-                store_last_seen(tweet.id)
-            else:
-                print("Favorited " + username +
-                      " - " + tweet.full_text)
+            # if check_reply(username, tweet):
+            #     if 'follow back' in tweet.full_text.lower() and 'thanks' not in tweet.full_text.lower():
+            #         api.update_status("@" + username +
+            #                           " please be patient.")
+            #         print("Replied to follow back request")
+            #         try:
+            #             api.destroy_friendship(username)
+            #             print(f"Terminated friendship with {username}")
+            #         except tweepy.TweepError as e:
+            #             print(e)
+            #         store_last_seen(tweet.id)
+            #         return
+            #     print("Replied to - " + username +
+            #           " - " + tweet.full_text)
+            #     api.update_status("@" + username +
+            #                         " Hello, " + username + ", just a moment. " + 
+            #                         "@CalendarKy @statutorywheel, can I please get some help?", tweet.id)
+            #     store_last_seen(tweet.id)
+            
+            print("Favorited " + username +
+                    " - " + tweet.full_text)
             api.create_favorite(tweet.id)
             store_last_seen(tweet.id)
         except tweepy.TweepError as e:
@@ -300,6 +300,65 @@ def run_scraper():
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
+
+
+# This is purely to gain followers by following people that follow back
+def auto_follow2():
+    global tweets_read
+    tweets_read += 50
+    query = "ifb"
+    print(f"Following users who have tweeted about the {query}")
+    search = tweepy.Cursor(api.search, q=query,
+                           result_type="recent", lang="en").items(50)
+    num_followed = 0
+    for tweet in search:
+        if tweet.user.followers_count > 5000:
+            continue
+        try:
+            api.create_favorite(tweet.id)
+            time.sleep(2)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(2)
+        try:
+            api.create_friendship(tweet.user.id)
+            time.sleep(2)
+            num_followed += 1
+        except tweepy.TweepError as e:
+            if e.reason[:13] == "[{'code': 160":
+                continue
+            elif e.reason[:13] == "[{'code': 429":
+                print("Followed too many people... ending auto_follow2")
+                return
+            time.sleep(2)
+    tweets_read += 50
+    query = "follow back"
+    print(f"Following users who have tweeted about the {query}")
+    search = tweepy.Cursor(api.search, q=query,
+                           result_type="recent", lang="en").items(50)
+    for tweet in search:
+        if tweet.user.followers_count > 5000:
+            continue
+        try:
+            api.create_favorite(tweet.id)
+            time.sleep(2)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(2)
+        try:
+            api.create_friendship(tweet.user.id)
+            time.sleep(2)
+            num_followed += 1
+        except tweepy.TweepError as e:
+            if e.reason[:13] == "[{'code': 160":
+                continue
+            elif e.reason[:13] == "[{'code': 429":
+                print("Followed too many people... ending auto_follow2")
+                return
+            time.sleep(2)
+    print(f"Now following {num_followed} more users.")
 
 
 # This is trying to get followers that will be active and interested in my content
@@ -553,11 +612,12 @@ print(time.ctime())
 schedule.every().week.do(unfollow)
 schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
+schedule.every().day.at("08:26").do(auto_follow2)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().day.at("10:17").do(searchBot)
 schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("17:07").do(searchBot3)
-schedule.every(20).minutes.do(reply)
+schedule.every(10).minutes.do(reply)
 schedule.every(7).hours.do(run_scraper)
 schedule.every(15).minutes.do(thank_new_followers)
 schedule.every(5).minutes.do(dm_reply)
