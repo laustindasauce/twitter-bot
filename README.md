@@ -162,7 +162,8 @@ docker push 10.10.10.1:5000/bot-name
 ```
 
 ## Contributions are welcomed! 💚
-**If you have any ideas, talk to me here:  [![Issues][1.4]][1]**
+**If you have any ideas, talk to me here:  [![Issues][1.4]][2]**
+**Or submit an [issue]([1])
 
 **Check out my personal bot account here:  [![Twitter][1.2]][2]**
 
@@ -171,6 +172,10 @@ docker push 10.10.10.1:5000/bot-name
 <!-- link to issues page -->
 
 [1]: https://github.com/abspen1/twitter-bot/issues
+
+<!-- link to messaging webapp page -->
+
+[2]: https://abspen1.github.io/about/contact/contact.html
 
 <!-- links to your social media accounts -->
 
