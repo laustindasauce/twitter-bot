@@ -328,7 +328,7 @@ def auto_follow2():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 160":
                 continue
-            elif e.reason[:13] == "[{'code': 429":
+            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 326":
                 print("Followed too many people... ending auto_follow2")
                 return
             time.sleep(2)
@@ -354,7 +354,7 @@ def auto_follow2():
         except tweepy.TweepError as e:
             if e.reason[:13] == "[{'code': 160":
                 continue
-            elif e.reason[:13] == "[{'code': 429":
+            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 326":
                 print("Followed too many people... ending auto_follow2")
                 return
             time.sleep(2)
