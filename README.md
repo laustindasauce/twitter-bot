@@ -1,83 +1,21 @@
-# Twitter Bot Implementing Redis Database 
-This learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are automatically tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion redis is as easy, if not easier, to use. It also lowers CPU storage space, especially while doing the sentiment analysis which can download thousands of tweets.
+# Twitter Bot Implementing Redis Database (coding branch)
+Learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are automatically tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion redis is as easy, if not easier, to use. Redis also lowers CPU storage space, especially while doing the sentiment analysis which can download thousands of tweets. Redis also works really well with Docker which is how this script will be ran 24/7. This branch will use programming keywords to try to get followers interested in programming.
+
+
+## Sentiment Analysis Accuracy
+The accuracy for our twitter sentiment analysis has been added. Pretty easy implementation using Alpaca's tradeapi package. What I'm doing is saving the dates where sentiment is bullish and the dates where sentiment is bearish into their respective redis sets. Since the market goes up over time I am weighing bullish heavier than bearish. What I mean by that –– there are multiple reading per day, if one of those readings is bullish then we are considering the overall sentiment for the day bullish. The only way a day can be bearish is if each reading during that day is bearish. After that we are using SPY pricing to consider whether the day was positive or negative. If we overall bullish on the day then what I'm expecting is a positive day the next day, opposite if bearish. When correct we are incrementing global variable 'correct' and when we are incorrect we are incrementing global variable 'wrong'. Then we just sum the two and divide correct by the sum to get our accuracy. 
+### Upgrades / To Do
+I need to eventually move the global variables into redis key/value pairs and remove the dates once the accuracy is figured. This way I don't need to iterate through each date every time I calculate the accuracy. Instead, we would at most have 2 dates in our sets and the correct and wrong values would be stored in redis so no need to calculate each time.
+
 
 # Prerequisites
+Check master branch
 
-### Twitter Developer Set Up
-* Sign into Twitter [here](apps.twitter.com)
-* Create a new application and fill out your information
-* Generate your access token
-* Write down your needed keys
-  * Consumer ID
-  * Consumer Secret Key
-  * Key ID
-  * Secret Key ID
-
-### Redis Setup
-* Download redis and activate your redis server -> [youtube example](https://www.youtube.com/watch?v=dlI-xpQxcuE)
-* Start running your redis-server
-* Next open your redis-cli
-  * Be sure to change the requirepass within your config to secure your server
-  * Within redis-cli// > config get requirepass
-    1. "requirepass"
-    2. "This Will Be Empty"
-* Set your password
-  * Within redis-cli// > config set requirepass yourPasswordHere (recommended at least 32 characters long)
-
-
-
-# Running
-
-### This is built to be ran 24/7 using docker
-**Be sure to CD into your working directory with dockerfile and bot.py within**
-
-```bash
-**This is for running locally**
-
-$ docker build twitter-bot
-
-$ docker run -d \
-  --name bot_name \
-  --restart unless-stopped \
-  -e CONSUMER_KEY="some consumer ID" \
-  -e CONSUMER_SECRET="some consumer secret KEY" \
-  -e KEY="some key ID" \
-  -e SECRET="some secret key ID" \
-  -e REDIS_PASS="some password" \
-  -v $PWD:/work \
-  twitter-bot
-```
-
-
-```bash
-**This is for Runing on remote server**
-
-docker pull 10.10.10.1:5000/bot-name \
-&& docker run -d \
-  --name bot_name \
-  --restart unless-stopped \
-  -e CONSUMER_KEY="some consumer ID" \
-  -e CONSUMER_SECRET="some consumer secret KEY" \
-  -e KEY="some key ID" \
-  -e SECRET="some secret key ID" \
-  -e REDIS_PASS="some password" \
-  10.10.10.1:5000/bot-name
-```
-
-# Build & Push 
-
-### Docker Container
-**Make sure you are in the directory that has you Dockerfile and bot script**
-```bash
-docker build --no-cache -t 10.10.10.1:5000/bot-name .
-
-docker push 10.10.10.1:5000/bot-name
-```
 
 ## Contributions are welcomed! 💚
-**If you have any ideas, talk to me here: [![Issues][1.4]][1]**
+**If you have any ideas, talk to me here:  [![Issues][1.4]][1]**
 
-**Check out my personal bot account here: [![Twitter][1.2]][2]**
+**Check out my personal bot account here:  [![Twitter][1.2]][2]**
 
 
 
