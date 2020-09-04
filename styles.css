@@ -217,6 +217,36 @@ span {
     /* border: solid #b5e853; */
 }
 
+.btn-contact {
+    /* display: inline-block; */
+    background: -webkit-linear-gradient(top, rgba(240, 233, 233, 0.932), rgba(231, 221, 221, 0.918) 50%, rgba(248, 233, 233, 0.884) 50%, rgba(255, 254, 254, 0.925));
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 2px solid rgba(0,0,0,0.7);
+    border-bottom: 2px solid rgba(0,0,0,0.7);
+    border-top: 2px solid #000;
+    color: rgb(3, 3, 3);
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    text-decoration: none;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.75);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.btn-contact .icon {
+    width: 18px;
+    height: 18px;
+    margin: 0 8px 0 0;
+    float: left;
+}
+
+#downloads .btn-contact {
+    display: inline-block;
+    text-align: center;
+    margin: 0;
+}
+
 #footer {
     background-color: rgba(0, 0, 0, 0.2);
     color: #eaeaea;
