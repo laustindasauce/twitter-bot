@@ -72,7 +72,7 @@ section {
 }
 
 a {
-    color: #63c0f5;
+    color: #1C9CE9;
     text-shadow: 0 0 5px rgba(104,182,255,0.5);
 }
 
@@ -144,6 +144,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .data {
     display: flex;
+    background: #425b5f10;
+    min-width: 350px;
+    max-width: 450px;
 }
 
 .twitter-data {
