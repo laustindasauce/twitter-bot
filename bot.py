@@ -36,9 +36,9 @@ def store_last_seen(last_seen_id):
 
 
 def reply():
+    global tweets_read
     tweets = api.mentions_timeline(read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
-        global tweets_read
         tweets_read += 1
         try:
             username = tweet.user.screen_name
@@ -597,11 +597,8 @@ def send_error_message(follower):
 
 
 def webapp_update():
-    print("Updating our webapp")
     acct = api.get_user("interntendie")
     client.set("tendie_followers", str(acct.followers_count))
-    print(acct.followers_count)
-    print(client.get("tendie_followers"))
     client.set("tendie_favorites", str(acct.favourites_count))
     client.set("tendie_statuses", str(acct.statuses_count))
     client.set("tendie_read", str(tweets_read))
@@ -622,7 +619,7 @@ schedule.every(7).hours.do(run_scraper)
 schedule.every(15).minutes.do(thank_new_followers)
 schedule.every(5).minutes.do(dm_reply)
 schedule.every(7).minutes.do(specific_favorite)
-schedule.every(13).minutes.do(webapp_update)
+schedule.every(3).minutes.do(webapp_update)
 
 
 while True:
