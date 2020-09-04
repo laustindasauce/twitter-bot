@@ -1,3 +1,4 @@
+import datetime
 import tweepy
 from textblob import TextBlob
 import alpaca_trade_api as tradeapi
@@ -149,8 +150,10 @@ def ifBearish(date):
 
 def getPct():
     pct = (correct / (correct + wrong)) * 100
+    pct = "{:.2f}".format(pct)
     print(f"Correct: {correct} Incorrect: {wrong}")
     print(f"Percentage of accuracy: {pct}%")
+    client.set("tendie_pct", pct)
 
 
 def main():
@@ -159,8 +162,11 @@ def main():
     # readTweets()
     # preferBullish()
     # checkAccuracy()
-    print(client.scard("bullish_date"))
-    print(client.scard("bearish_date"))
+    # print(client.get("tendie_pct"))
+    client.set("testing", str(datetime.date.today()))
+    print(client.get("testing"))
+    # print(client.scard("bullish_date"))
+    # print(client.scard("bearish_date"))
     # acct = api.get_user("interntendie")
     # print(acct.followers_count)
 
