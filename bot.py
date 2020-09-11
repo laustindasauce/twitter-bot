@@ -112,7 +112,7 @@ def dm_reply():
 
 
 def check_dm(text):
-    if 'yes' in text.lower() or 'yea' in text.lower() or 'send it' in text.lower() or 'yep' in text.lower() or 'sure' in text.lower() or 'ya' in text.lower():
+    if 'yes' in text.lower() or 'yea' in text.lower() or 'send it' in text.lower() or 'yep' in text.lower() or 'sure' in text.lower() or 'ya' in text.lower() or 'yuh' in text.lower():
         return True
     return False
 
@@ -690,6 +690,7 @@ def webapp_update():
     client.set("tendie_recent", str(acct.status._json["text"]))
 
 
+dm_reply()
 print(time.ctime())
 ## Multiple runs per day
 schedule.every(5).minutes.do(dm_reply)
