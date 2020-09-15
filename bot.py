@@ -549,28 +549,30 @@ def thank_new_followers():
     followers_set = set(followers)
     new_followers = followers_set.difference(followers_thanked)
     if new_followers:
-        trouble = False
-        to_string = "\nAppreciate you following me! I am a fully automated twitter account. If you're interested in programming or if you'd like to create an automated twitter account of your own, I can send you a link to my twitter-bot WebPage!\n" + \
-            "If your next message has 'yes' anywhere in it I will send you a link!"
-        if limit:
-            to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
         for follower in new_followers:
-            if not trouble:
-                try:
-                    client.sadd('followers_thanked', str(follower))
-                    api.send_direct_message(follower, to_string)
-                except tweepy.TweepError as e:
-                    if e.reason[:13] == "[{'code': 226" or e.reason[:13] == "[{'code': 429":
-                        print("They think this is spam...")
-                        trouble = True
-                    else:
-                        print(e)
-                time.sleep(3)
-            else:
-                try:
-                    client.sadd('followers_thanked', str(follower))
-                except tweepy.TweepError as e:                        
-                    print(e)
+            client.sadd('followers_thanked', str(follower))
+        # trouble = False
+        # to_string = "\nAppreciate you following me! I am a fully automated twitter account. If you're interested in programming or if you'd like to create an automated twitter account of your own, I can send you a link to my twitter-bot WebPage!\n" + \
+        #     "If your next message has 'yes' anywhere in it I will send you a link!"
+        # if limit:
+        #     to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
+        # for follower in new_followers:
+        #     if not trouble:
+        #         try:
+        #             client.sadd('followers_thanked', str(follower))
+        #             api.send_direct_message(follower, to_string)
+        #         except tweepy.TweepError as e:
+        #             if e.reason[:13] == "[{'code': 226" or e.reason[:13] == "[{'code': 429":
+        #                 print("They think this is spam...")
+        #                 trouble = True
+        #             else:
+        #                 print(e)
+        #         time.sleep(3)
+        #     else:
+        #         try:
+        #             client.sadd('followers_thanked', str(follower))
+        #         except tweepy.TweepError as e:                        
+        #             print(e)
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
