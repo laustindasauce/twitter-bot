@@ -92,7 +92,7 @@ def reply():
 def check_reply(username, tweet):
     if username != "CalendarKy" and username != "statutorywheel" and tweet.full_text[:11] != "@CalendarKy" \
             and tweet.full_text[:11] != "@statutorywheel" and tweet.full_text[:17] != "@InternTendie and" \
-            and tweet.full_text[:17] != "@InternTendie @Cal" and tweet.full_text[:17] != "@InternTendie @statu":
+            and tweet.full_text[:14] != "@InternTendie @":
         return True
     return False
 
