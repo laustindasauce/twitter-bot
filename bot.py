@@ -119,7 +119,7 @@ def check_dm(text):
 def github_dm(sender_id):
     client.sadd('sent_dm', str(sender_id))
     to_string = "\nAwesome, here is the link! Let me know what you think!\n" + \
-        "https://abspen1.github.io/twitter-bot/"
+        "https://github.com/abspen1/twitter-bot"
     api.send_direct_message(sender_id, to_string)
 
     # Subtract one here since I added my ID to ignore also
@@ -551,28 +551,28 @@ def thank_new_followers():
     if new_followers:
         for follower in new_followers:
             client.sadd('followers_thanked', str(follower))
-        # trouble = False
-        # to_string = "\nAppreciate you following me! I am a fully automated twitter account. If you're interested in programming or if you'd like to create an automated twitter account of your own, I can send you a link to my twitter-bot WebPage!\n" + \
-        #     "If your next message has 'yes' anywhere in it I will send you a link!"
-        # if limit:
-        #     to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
-        # for follower in new_followers:
-        #     if not trouble:
-        #         try:
-        #             client.sadd('followers_thanked', str(follower))
-        #             api.send_direct_message(follower, to_string)
-        #         except tweepy.TweepError as e:
-        #             if e.reason[:13] == "[{'code': 226" or e.reason[:13] == "[{'code': 429":
-        #                 print("They think this is spam...")
-        #                 trouble = True
-        #             else:
-        #                 print(e)
-        #         time.sleep(3)
-        #     else:
-        #         try:
-        #             client.sadd('followers_thanked', str(follower))
-        #         except tweepy.TweepError as e:                        
-        #             print(e)
+        trouble = False
+        to_string = "\nAppreciate you following me! I am a fully automated twitter account. If you're interested in programming or if you'd like to create an automated twitter account of your own, I can send you a link to my GitHub Repository!\n" + \
+            "If your next message has 'yes' anywhere in it I will send you a link!"
+        if limit:
+            to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
+        for follower in new_followers:
+            if not trouble:
+                try:
+                    client.sadd('followers_thanked', str(follower))
+                    api.send_direct_message(follower, to_string)
+                except tweepy.TweepError as e:
+                    if e.reason[:13] == "[{'code': 226" or e.reason[:13] == "[{'code': 429":
+                        print("They think this is spam...")
+                        trouble = True
+                    else:
+                        print(e)
+                time.sleep(3)
+            else:
+                try:
+                    client.sadd('followers_thanked', str(follower))
+                except tweepy.TweepError as e:                        
+                    print(e)
         new_total_followers = client.scard('followers_thanked')
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
@@ -695,8 +695,8 @@ def webapp_update():
 dm_reply()
 print(time.ctime())
 ## Multiple runs per day
-schedule.every(5).minutes.do(dm_reply)
-schedule.every(7).minutes.do(specific_favorite)
+schedule.every(3).minutes.do(dm_reply)
+# schedule.every(7).minutes.do(specific_favorite)
 schedule.every(9).minutes.do(webapp_update)
 schedule.every(10).minutes.do(reply)
 schedule.every(15).minutes.do(thank_new_followers)
