@@ -16,19 +16,20 @@ Check master branch
 
 
 ## Contributions are welcomed! 💚
-**If you have any ideas, talk to me here:  [![Issues][1.4]][1]**
+**If you have any ideas, open an issue here:  [![Issues][1.4]][1] or message me here: [![Contact][1.4]][2]**
 
-**Check out my personal bot account here:  [![Twitter][1.2]][2]**
+**Check out my personal bot account here:  [![Twitter][1.2]][3]**
 
 
 
-<!-- link to issues page -->
+<!-- link to issues page and messaging page -->
 
 [1]: https://github.com/abspen1/twitter-bot/issues
+[2]: https://austinspencer.works/about/contact/ 
 
 <!-- links to your social media accounts -->
 
-[2]: https://twitter.com/interntendie
+[3]: https://twitter.com/interntendie
 
 <!-- icons without padding -->
 
