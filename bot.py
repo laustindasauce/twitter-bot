@@ -692,7 +692,6 @@ def webapp_update():
     client.set("tendie_recent", str(acct.status._json["text"]))
 
 
-dm_reply()
 print(time.ctime())
 ## Multiple runs per day
 schedule.every(3).minutes.do(dm_reply)
