@@ -38,7 +38,6 @@ alpaca = tradeapi.REST(APCA_API_KEY_ID,
                        )
 
 ### Global Variables
-tweets_read = int(client.get("tendie_read"))
 correct = 0
 wrong = 0
 
@@ -54,10 +53,9 @@ def store_last_seen(last_seen_id):
 
 
 def reply():
-    global tweets_read
     tweets = api.mentions_timeline(read_last_seen(), tweet_mode='extended')
     for tweet in reversed(tweets):
-        tweets_read += 1
+        client.incr("tendie_read")
         try:
             username = tweet.user.screen_name
             # if check_reply(username, tweet):
@@ -128,8 +126,7 @@ def github_dm(sender_id):
 
 
 def searchBot():
-    global tweets_read
-    tweets_read += 50
+    client.incr("tendie_read", 50)
     print("Running #python search.")
     tweets = tweepy.Cursor(api.search, "#python").items(50)
     # print("Running first search.")
@@ -156,8 +153,8 @@ def searchBot():
 
 
 def searchBot2():
-    global tweets_read
-    tweets_read += 40
+    client.incr("tendie_read", 50)
+
     print("Running javascript search.")
     tweets = tweepy.Cursor(api.search, "javascript").items(40)
     print(time.ctime())
@@ -182,8 +179,8 @@ def searchBot2():
 
 
 def searchBot3():
-    global tweets_read
-    tweets_read += 30
+    client.incr("tendie_read", 30)
+
     print("Running algorithm search.")
     tweets = tweepy.Cursor(api.search, "algorithm").items(30)
     # print("Running third search.")
@@ -256,8 +253,7 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
             # Just exit if any error
             print("some error : " + str(e))
             break
-    global tweets_read
-    tweets_read += tweetCount
+    client.incr('tendie_read', tweetCount)
 
 
 def clean(tweet):
@@ -324,8 +320,7 @@ def run_scraper():
 
 # This is purely to gain followers by following people that follow back
 def auto_follow2():
-    global tweets_read
-    tweets_read += 50
+    client.incr('tendie_read', 50)
     query = "ifb"
     print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
@@ -352,7 +347,7 @@ def auto_follow2():
                 print("Followed too many people... ending auto_follow2")
                 return
             time.sleep(2)
-    tweets_read += 50
+    client.incr('tendie_read', 50)
     query = "follow back"
     print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
@@ -383,13 +378,12 @@ def auto_follow2():
 
 # This is trying to get followers that will be active and interested in my content
 def auto_follow():
-    global tweets_read
-    print("Running auto_follow()")
-    tweets_read += 10
+    client.incr('tendie_read', 50)
+
     query = "computer science"
     # print(f"Following users who have tweeted about the {query}")
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(10)
+                           result_type="recent", lang="en").items(50)
     num_followed = 0
     for tweet in search:
         if tweet.user.followers_count > 3000:
@@ -417,10 +411,11 @@ def auto_follow():
             time.sleep(2)
 
     # Switch up the query
-    tweets_read += 10
+    client.incr('tendie_read', 50)
+
     query = "programming"
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(10)
+                           result_type="recent", lang="en").items(50)
     for tweet in search:
         if tweet.user.followers_count > 3000:
             continue
@@ -448,10 +443,11 @@ def auto_follow():
     print(f"Now following {num_followed} more users.")
 
     # Switch up the query
-    tweets_read += 10
+    client.incr('tendie_read', 20)
+
     query = "python program"
     search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(10)
+                           result_type="recent", lang="en").items(20)
     for tweet in search:
         if tweet.user.followers_count > 3000:
             continue
@@ -581,7 +577,6 @@ def thank_new_followers():
 
 
 def specific_favorite():
-    global tweets_read
     client = redis.Redis(host="10.10.10.1", port=6379, db=0,
                          password=os.getenv("REDIS_PASS"))
     sinceId = 'ky_since_id'
@@ -589,7 +584,7 @@ def specific_favorite():
     tweet_id = int(client.get(sinceId))
     tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
     for tweet in reversed(tweets):
-        tweets_read += 1
+        client.incr('tendie_read')
         client.set(sinceId, str(tweet.id))
         try:
             if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
@@ -688,7 +683,6 @@ def webapp_update():
     client.set("tendie_followers", str(acct.followers_count))
     client.set("tendie_favorites", str(acct.favourites_count))
     client.set("tendie_statuses", str(acct.statuses_count))
-    client.set("tendie_read", str(tweets_read))
     client.set("tendie_recent", str(acct.status._json["text"]))
 
 
