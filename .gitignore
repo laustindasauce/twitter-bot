@@ -133,3 +133,4 @@ dmypy.json
 .pyre/
 .DS_Store
 template
+.vscode
