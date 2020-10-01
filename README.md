@@ -3,7 +3,7 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
 
 # Prerequisites
 
-### Twitter Developer Set Up
+## Twitter Developer Set Up
 * Sign into Twitter [here](https://developer.twitter.com/en/docs/twitter-api/getting-started/guide)
 * Create a new application and fill out your information
 * Generate your access token
@@ -13,7 +13,7 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
   * Key ID
   * Secret Key ID
 
-### Redis Setup
+## Redis Setup
 * Download redis and activate your redis server -> [youtube example](https://www.youtube.com/watch?v=dlI-xpQxcuE)
 * Start running your redis-server
 * Next open your redis-cli
@@ -43,14 +43,14 @@ export CONSUMER_KEY="your key" \
  * You will need to go to [Google Cloud Platform](https://cloud.google.com/gcp/?utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-skws-all-all-trial-b-dr-1009135&utm_content=text-ad-none-any-DEV_c-CRE_109860918967-ADGP_Hybrid+%7C+AW+SEM+%7C+SKWS+%7C+US+%7C+en+%7C+Multi+~+Cloud-KWID_43700009609890930-kwd-19383198255&utm_term=KW_%2Bcloud-ST_%2Bcloud&&gclid=Cj0KCQjwv7L6BRDxARIsAGj-34qcziciZyZZMes6maVVBfg7lmWjgqQkUNXdwg8lHqQwTPVtNEWX0xoaAgGPEALw_wcB)
  * Then to console where you can set up your compute engine
  * Watch this video for help with inital setup [video](https://www.youtube.com/watch?v=p5wl1s5gKY0)
-### ssh into your vm instance
+## ssh into your vm instance
 * I prefer to do this on my local machine but you can also do it in browser within a shell
 * Install gcloud sdk on your local machine.. steps are [here](https://cloud.google.com/sdk/docs/downloads-interactive)
  * There will be a generated ssh that you can copy and paste into your terminal to ssh into your vm instance using gcloud
 ![Alt text](/images/ssh.png "ssh")
 * Once you're inside your instance within your terminal it should look something like this
 ![Alt text](/images/terminal.png "instance")
-### Download Docker
+## Download Docker
 * Awesome instructions [here](http://docs.h2o.ai/driverless-ai/latest-stable/docs/userguide/install/google-docker-container.html)
 * Note that you will likely need to add sudo infront of each command
 ```bash
@@ -75,20 +75,20 @@ apt-get install -y docker-ce
 Check that install worked
 * $ docker --version 
 * If this shows your docker version then you've successfully installed docker on your vm instance
-### clone your git repository to run within docker
+## clone your git repository to run within docker
 * First check that git is installed
 * $ git --version
 * $ git clone https://github.com/abspen1/twitter-bot.git
 * $ ls (check that the repo cloned into your instance)
 
-### Build the docker image
+## Build the docker image
 * cd into twitter-bot directory
 * $ sudo docker build -t bot .
 
-### Check if image was created
+## Check if image was created
 $ sudo docker image ls
 
-### Run docker image in a container
+## Run docker image in a container
 ```bash
 $ sudo docker run -d \
   --name bot_name \
@@ -102,7 +102,7 @@ $ sudo docker run -d \
   bot
 ```
 
-### Check that the container is running
+## Check that the container is running
 * $ sudo docker container ls
 * $ sudo docker logs bot_name
 
