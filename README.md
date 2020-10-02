@@ -3,15 +3,15 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
 
 # Prerequisites
 
-## Twitter Developer Set Up
-* Sign into Twitter [here](https://developer.twitter.com/en/docs/twitter-api/getting-started/guide)
-* Create a new application and fill out your information
-* Generate your access token
-* Write down your needed keys
-  * Consumer ID
-  * Consumer Secret Key
-  * Key ID
-  * Secret Key ID
+## Twitter Developer Setup
+* Create your developer account [here](https://developer.twitter.com/en/apply-for-access) 
+  * [guide](https://developer.twitter.com/en/docs/twitter-api/getting-started/guide)
+* Start a new application and fill out your information
+* Save your needed keys
+  * Consumer ID (API KEY V2)
+  * Consumer Secret Key (API SECRET V2)
+  * Key ID (ACCESS TOKEN V2)
+  * Secret Key ID (SECRET V2)
 
 ## Redis Setup
 * Download redis and activate your redis server -> [youtube example](https://www.youtube.com/watch?v=dlI-xpQxcuE)
@@ -24,20 +24,11 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
 * Set your password
   * Within redis-cli// > config set requirepass yourPasswordHere (recommended at least 32 characters long)
 
+## Docker Setup
+* Mac [instructions](https://www.robinwieruch.de/docker-macos)
+* Windows [instructions](https://docs.docker.com/docker-for-windows/install/)
 
-# Running
-**Be sure to CD into your working directory with dockerfile and bot.py within**
-
-### Be sure to export your variables to be read with os.getenv()
-```bash
-export CONSUMER_KEY="your key" \
-&& export CONSUMER_SECRET="your secret" \
-&& export SECRET="your secret"\
-&& export REDIS_PASS="your redis password"\
-&& export KEY="your key"
-```
-
-# Running 24/7 with Docker in Google Cloud Instance
+# Google Cloud Instance Deployment with Docker
 * First you need to set up your Google Cloud Instance
  * I suggest youtube to help you set it up
  * You will need to go to [Google Cloud Platform](https://cloud.google.com/gcp/?utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-skws-all-all-trial-b-dr-1009135&utm_content=text-ad-none-any-DEV_c-CRE_109860918967-ADGP_Hybrid+%7C+AW+SEM+%7C+SKWS+%7C+US+%7C+en+%7C+Multi+~+Cloud-KWID_43700009609890930-kwd-19383198255&utm_term=KW_%2Bcloud-ST_%2Bcloud&&gclid=Cj0KCQjwv7L6BRDxARIsAGj-34qcziciZyZZMes6maVVBfg7lmWjgqQkUNXdwg8lHqQwTPVtNEWX0xoaAgGPEALw_wcB)
@@ -112,14 +103,21 @@ $ sudo docker run -d \
 ![Alt text](/images/cmds2.png "cmds2")
 
 
-# Running 24/7
+## Countinuous Running
 
-### This is built to be ran 24/7 using docker
+## Built to be ran 24/7 as a docker container
 **Be sure to CD into your working directory with dockerfile and bot.py within**
 
+## FIRST export your variables so you can access them with os.getenv() (Mac OS)
 ```bash
-**This is for running locally**
+export CONSUMER_KEY="your key" \
+&& export CONSUMER_SECRET="your secret" \
+&& export SECRET="your secret"\
+&& export REDIS_PASS="your redis password"\
+&& export KEY="your key"
+```
 
+```bash
 $ docker build twitter-bot
 
 $ docker run -d \
@@ -134,11 +132,9 @@ $ docker run -d \
   twitter-bot
 ```
 
-
+**Pull from previous build**
 ```bash
-**This is for Runing on remote server**
-
-docker pull 10.10.10.1:5000/bot-name \
+docker pull bot-name \
 && docker run -d \
   --name bot_name \
   --restart unless-stopped \
@@ -151,10 +147,10 @@ docker pull 10.10.10.1:5000/bot-name \
 ```
 
 
-# Build & Push to remote location
+## Build & Push to remote portainer
 
 ### Docker Container
-**Make sure you are in the directory that has you Dockerfile and bot script**
+**Make sure you are in the directory that has your Dockerfile and bot script**
 ```bash
 docker build --no-cache -t 10.10.10.1:5000/bot-name .
 
