@@ -43,12 +43,13 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
 ![Alt text](/images/terminal.png "instance")
 ## Download Docker
 * Awesome instructions [here](http://docs.h2o.ai/driverless-ai/latest-stable/docs/userguide/install/google-docker-container.html)
+* My tl;dr instructions are below
 * Note that you will likely need to add sudo infront of each command
 ```bash
 # SCRIPT FOR CPUs ONLY
 apt-get -y update
 
-# If you have issues with this command, omit the python-software-properties
+# If you have issues with this command, omit python-software-properties
 apt-get -y --no-install-recommends install \
   curl \
   apt-utils \
