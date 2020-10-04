@@ -686,8 +686,6 @@ def webapp_update():
     client.set("tendie_recent", str(acct.status._json["text"]))
 
 
-to_string = ("Hello from the cloud")
-api.send_direct_message(441228378, to_string)
 print(time.ctime())
 ## Multiple runs per day
 schedule.every(3).minutes.do(dm_reply)
