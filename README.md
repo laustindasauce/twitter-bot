@@ -36,17 +36,18 @@ cd twitter-bot/
 code .
 ```
 Now that you have the code on your local machine you can edit bot.py to make it your own.
-Also, if you need inspiration or a live example run the code below in your terminal.
+Also, if you need inspiration or a live example run the command below in your terminal.
 ```bash
 # cd into twitter-bot folder first
 git checkout coding-specific
 ```
-Now you will be able to see the exact script that my twitter bot is running with in bot.py.
-* Once configuring the script to how you would like it you are ready to get it running
+Now you will be able to see the exact script that my twitter bot is running within bot.py.
+* After you've personalized the script, you are ready to get it running
 
 ## Choose where to run your script
 * [Locally](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-locally)
 * [Google Cloud](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-on-google-cloud-vm-instance)
+You can run your bot locally or in the cloud. I prefer in the cloud so that I don't have to worry about my computer being on all the time to keep the script running. For the cloud I have instructions for using a Google Cloud Instance below. When you open a new account on the Google Cloud console you will recieve $300 credit for you to spend however you'd like. This will last a long time if the only thing you are doing on the cloud is running the twitter bot.
 
 
 
