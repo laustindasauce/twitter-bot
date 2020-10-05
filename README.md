@@ -242,7 +242,7 @@ $ sudo docker run -d \
 * **If you have any ideas, talk to me here:  [![Issues][1.4]][2]**
 * **Or submit an [issue]([1])**
 
-* **Check out my personal bot account here:  [![Twitter][1.2]][2]**
+* **Check out my personal bot account here:  [![Twitter][1.2]][3]**
 
 
 
@@ -252,11 +252,11 @@ $ sudo docker run -d \
 
 <!-- link to messaging webapp page -->
 
-[2]: https://abspen1.github.io/about/contact/contact.html
+[2]: https://austinspencer.works/about/contact/
 
 <!-- links to your social media accounts -->
 
-[2]: https://twitter.com/interntendie
+[3]: https://twitter.com/interntendie
 
 <!-- icons without padding -->
 
