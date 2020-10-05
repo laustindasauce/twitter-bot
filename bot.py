@@ -1,6 +1,5 @@
 import alpaca_trade_api as tradeapi
 import datetime
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
