@@ -248,7 +248,7 @@ $ sudo docker run -d \
 
 <!-- link to issues page -->
 
-[1]: 
+[1]: https://github.com/abspen1/twitter-bot/issues
 
 <!-- link to messaging webapp page -->
 
