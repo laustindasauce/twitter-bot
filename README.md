@@ -1,5 +1,7 @@
 # Twitter Bot [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fabspen1%2Ftwitter-bot&count_bg=%2300ACEE&title_bg=%23555555&icon=twitter.svg&icon_color=%2300ACEE&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
-Learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are automatically tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion Redis database is as easy, if not easier, to use. Redis also lowers CPU storage space, especially while doing the sentiment analysis which can download thousands of tweets. For more reliable 24/7 running, I built this script into a Docker container. Checkout the [webpage](https://abspen1.github.io/twitter-bot/) for some statistics of my account!
+Learning python using tweepy and twitter API to automate twitter functions. Some functions used in this are automatically tweeting, replying to mentions, following users back and more. Most of the examples I've seen online were reading and writing from files, however, in my opinion Redis database is as easy, if not easier, to use. Redis also lowers CPU storage space, especially while doing the sentiment analysis which can download thousands of tweets. For more reliable 24/7 running, I built this script into a Docker container. 
+
+## Checkout the [webpage](https://austinspencer.works/twitter-bot/) for some statistics of my account!
 
 # Prerequisites
 
@@ -12,6 +14,45 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
   * Consumer Secret Key (API SECRET V2)
   * Key ID (ACCESS TOKEN V2)
   * Secret Key ID (SECRET V2)
+
+
+## IDE/Text Editor
+I use Visual Studio Code and prefer that over the other editors I have used. But I will also link some other popular ones if you want to check them out.
+* [VSCode](https://code.visualstudio.com/)
+* [Sublime](https://www.sublimetext.com/3)
+* [PyCharm](https://www.jetbrains.com/pycharm/download/)
+
+## Python Download
+Make sure to download a version of Python that is at least 3.
+* Download python (3.x) from [here](https://www.python.org/downloads/)
+
+## Customize Your Bot
+Below are some instruction you can copy and paste in your terminal to get started with creating your personal bot. First open terminal and then cd into wherever you want to store your code. In this example I will cd into Documents and assume you are using VSCode.
+```bash
+cd Documents/
+git clone https://github.com/abspen1/twitter-bot.git
+cd twitter-bot/
+# code . is a shortcut with Visual Studio Code that will open the editor with whatever folder you're currently in. If you aren't using VSCode just open the twitter-bot folder from within your editor.
+code .
+```
+Now that you have the code on your local machine you can edit bot.py to make it your own.
+Also, if you need inspiration or a live example run the code below in your terminal.
+```bash
+# cd into twitter-bot folder first
+git checkout coding-specific
+```
+Now you will be able to see the exact script that my twitter bot is running with in bot.py.
+* Once configuring the script to how you would like it you are ready to get it running
+
+## Choose where to run your script
+* [Locally](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-locally)
+* [Google Cloud](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-on-google-cloud-vm-instance)
+
+
+
+
+
+# Running Locally
 
 ## Redis Setup
 * Download redis and activate your redis server -> [youtube example](https://www.youtube.com/watch?v=dlI-xpQxcuE)
@@ -28,7 +69,61 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
 * Mac [instructions](https://www.robinwieruch.de/docker-macos)
 * Windows [instructions](https://docs.docker.com/docker-for-windows/install/)
 
-# Google Cloud Instance Deployment with Docker & Redis
+
+## Build and Run Docker Images
+* Be sure to CD into your working directory with dockerfile and bot.py within**
+* Export your variables so you can access them with os.getenv() (Mac OS)
+```bash
+export CONSUMER_KEY="your key" \
+&& export CONSUMER_SECRET="your secret" \
+&& export SECRET="your secret"\
+&& export HOST="external ip address" \
+&& export REDIS_PASS="your redis password"\
+&& export KEY="your key"
+```
+
+```bash
+$ docker build twitter-bot
+
+$ docker run -d \
+  --name bot_name \
+  --restart unless-stopped \
+  -e CONSUMER_KEY="some consumer ID" \
+  -e CONSUMER_SECRET="some consumer secret KEY" \
+  -e KEY="some key ID" \
+  -e SECRET="some secret key ID" \
+  -e HOST="external ip address" \
+  -e REDIS_PASS="some password" \
+  -v $PWD:/work \
+  twitter-bot
+```
+
+**Pull from previous build**
+```bash
+docker pull bot-name \
+&& docker run -d \
+  --name bot_name \
+  --restart unless-stopped \
+  -e CONSUMER_KEY="some consumer ID" \
+  -e CONSUMER_SECRET="some consumer secret KEY" \
+  -e KEY="some key ID" \
+  -e SECRET="some secret key ID" \
+  -e HOST="external ip address" \
+  -e REDIS_PASS="some password" \
+  10.10.10.1:5000/bot-name
+```
+
+## Build & Push to remote portainer
+
+### Docker Container
+**Make sure you are in the directory that has your Dockerfile and bot script**
+```bash
+docker build --no-cache -t 10.0.0.1:PORT/bot-name .
+
+docker push 10.0.0.1:PORT/bot-name
+```
+
+# Running on Google Cloud VM Instance
 * First you need to set up your Google Cloud Instance
 * When you set up a cloud account you will get $300 credit!
 * You will need to go to [Google Cloud Platform](https://cloud.google.com/gcp/?utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-skws-all-all-trial-b-dr-1009135&utm_content=text-ad-none-any-DEV_c-CRE_109860918967-ADGP_Hybrid+%7C+AW+SEM+%7C+SKWS+%7C+US+%7C+en+%7C+Multi+~+Cloud-KWID_43700009609890930-kwd-19383198255&utm_term=KW_%2Bcloud-ST_%2Bcloud&&gclid=Cj0KCQjwv7L6BRDxARIsAGj-34qcziciZyZZMes6maVVBfg7lmWjgqQkUNXdwg8lHqQwTPVtNEWX0xoaAgGPEALw_wcB)
@@ -114,69 +209,11 @@ $ sudo docker run -d \
 ![Alt text](/images/cmds1.png "cmds1")
 ![Alt text](/images/cmds2.png "cmds2")
 
-
-## Countinuous Running
-
-## Built to be ran 24/7 as a docker container
-**Be sure to CD into your working directory with dockerfile and bot.py within**
-
-## FIRST export your variables so you can access them with os.getenv() (Mac OS)
-```bash
-export CONSUMER_KEY="your key" \
-&& export CONSUMER_SECRET="your secret" \
-&& export SECRET="your secret"\
-&& export HOST="external ip address" \
-&& export REDIS_PASS="your redis password"\
-&& export KEY="your key"
-```
-
-```bash
-$ docker build twitter-bot
-
-$ docker run -d \
-  --name bot_name \
-  --restart unless-stopped \
-  -e CONSUMER_KEY="some consumer ID" \
-  -e CONSUMER_SECRET="some consumer secret KEY" \
-  -e KEY="some key ID" \
-  -e SECRET="some secret key ID" \
-  -e HOST="external ip address" \
-  -e REDIS_PASS="some password" \
-  -v $PWD:/work \
-  twitter-bot
-```
-
-**Pull from previous build**
-```bash
-docker pull bot-name \
-&& docker run -d \
-  --name bot_name \
-  --restart unless-stopped \
-  -e CONSUMER_KEY="some consumer ID" \
-  -e CONSUMER_SECRET="some consumer secret KEY" \
-  -e KEY="some key ID" \
-  -e SECRET="some secret key ID" \
-  -e HOST="external ip address" \
-  -e REDIS_PASS="some password" \
-  10.10.10.1:5000/bot-name
-```
-
-
-## Build & Push to remote portainer
-
-### Docker Container
-**Make sure you are in the directory that has your Dockerfile and bot script**
-```bash
-docker build --no-cache -t 10.0.0.1:PORT/bot-name .
-
-docker push 10.0.0.1:PORT/bot-name
-```
-
 ## Contributions are welcomed! 💚
-**If you have any ideas, talk to me here:  [![Issues][1.4]][2]**
-**Or submit an [issue]([1])
+* **If you have any ideas, talk to me here:  [![Issues][1.4]][2]**
+* **Or submit an [issue]([1])**
 
-**Check out my personal bot account here:  [![Twitter][1.2]][2]**
+* **Check out my personal bot account here:  [![Twitter][1.2]][2]**
 
 
 
