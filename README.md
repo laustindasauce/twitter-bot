@@ -115,6 +115,13 @@ docker push 10.0.0.1:PORT/bot-name
 
 ### Dependencies
 You will need to pip install the following packages if you want to run this bot locally without Docker.
+
+* Using requirements.txt
+```bash
+pip install -r requirements.txt
+```
+
+* pip install manually
 ```bash
 pip install redis
 pip install schedule
