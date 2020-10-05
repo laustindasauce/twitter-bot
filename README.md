@@ -240,7 +240,7 @@ $ sudo docker run -d \
 
 ## Contributions are welcomed! 💚
 * **If you have any ideas, talk to me here:  [![Issues][1.4]][2]**
-* **Or submit an [issue]([1])**
+* **Or submit an issue [here](https://github.com/abspen1/twitter-bot/issues)**
 
 * **Check out my personal bot account here:  [![Twitter][1.2]][3]**
 
@@ -248,7 +248,7 @@ $ sudo docker run -d \
 
 <!-- link to issues page -->
 
-[1]: https://github.com/abspen1/twitter-bot/issues
+[1]: 
 
 <!-- link to messaging webapp page -->
 
