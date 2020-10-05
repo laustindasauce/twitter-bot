@@ -20,8 +20,8 @@ secret = os.getenv("SECRET")
 
 """ Download Redis and have a server running check README """
 
-### REMOTE REDIS SERVER ###
-client = redis.Redis(host="10.10.10.1", port=6379,
+### GOOGLE CLOUD REDIS SERVER ###
+client = redis.Redis(host=os.getenv("HOST"), port=6379,
                      password=os.getenv("REDIS_PASS"))
 
 ### LOCAL REDIS SERVER ###
@@ -107,8 +107,6 @@ def searchBot():
 
 
 def tweet_sentiment():
-    client = redis.Redis(host="10.10.10.1", port=6379,
-                         password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
     status = f"The sentiment for 'Example' is {sentiment}."
     print(status)
