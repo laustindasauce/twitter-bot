@@ -45,9 +45,8 @@ Now you will be able to see the exact script that my twitter bot is running with
 * After you've personalized the script, you are ready to get it running
 
 ## Choose where to run your script
-* [Locally](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-locally)
-* [Google Cloud](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-on-google-cloud-vm-instance)
-You can run your bot locally or in the cloud. I prefer in the cloud so that I don't have to worry about my computer being on all the time to keep the script running. For the cloud I have instructions for using a Google Cloud Instance below. When you open a new account on the Google Cloud console you will recieve $300 credit for you to spend however you'd like. This will last a long time if the only thing you are doing on the cloud is running the twitter bot.
+You can run your bot [locally](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-locally) or within a [Google Cloud VM instance](https://github.com/abspen1/twitter-bot/blob/master/README.md#running-on-google-cloud-vm-instance). I prefer in the cloud so that I don't have to worry about my computer being on all the time to keep the script running. For the cloud I have instructions for using a Google Cloud Instance below. When you open a new account on the Google Cloud console you will recieve $300 credit for you to spend however you'd like. This will last a long time if the only thing you are doing on the cloud is running the twitter bot.
+
 
 
 
