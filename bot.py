@@ -1,14 +1,14 @@
-import tweepy
-from textblob import TextBlob
-import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import pandas as pd
+import re
 import redis
 import seaborn as sns
 import schedule
+from textblob import TextBlob
 import time
-import re
-import os
+import tweepy
 
 
 """ Need to sign up for a developer twitter account to get these check README """
