@@ -71,7 +71,7 @@ You can run your bot [locally](#running-locally) or within a [Google Cloud VM in
 
 
 ## Build and Run Docker Images
-First build your image then run the image as a Docker container on the Docker engine with the commands below.
+Build your image and then run the image as a Docker container with the commands below.
 * FIRST cd into your working directory with Dockerfile and bot.py
 ```bash
 $ docker build twitter-bot
