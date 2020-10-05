@@ -22,13 +22,13 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
     1. "requirepass"
     2. "This Will Be Empty"
 * Set your password
-  * Within redis-cli// > config set requirepass yourPasswordHere (recommended at least 32 characters long)
+  * Within redis-cli// > config set requirepass yourPasswordHere (recommended >= 32 characters)
 
 ## Docker Setup
 * Mac [instructions](https://www.robinwieruch.de/docker-macos)
 * Windows [instructions](https://docs.docker.com/docker-for-windows/install/)
 
-# Google Cloud Instance Deployment with Docker
+# Google Cloud Instance Deployment with Docker & Redis
 * First you need to set up your Google Cloud Instance
 * When you set up a cloud account you will get $300 credit!
 * You will need to go to [Google Cloud Platform](https://cloud.google.com/gcp/?utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-skws-all-all-trial-b-dr-1009135&utm_content=text-ad-none-any-DEV_c-CRE_109860918967-ADGP_Hybrid+%7C+AW+SEM+%7C+SKWS+%7C+US+%7C+en+%7C+Multi+~+Cloud-KWID_43700009609890930-kwd-19383198255&utm_term=KW_%2Bcloud-ST_%2Bcloud&&gclid=Cj0KCQjwv7L6BRDxARIsAGj-34qcziciZyZZMes6maVVBfg7lmWjgqQkUNXdwg8lHqQwTPVtNEWX0xoaAgGPEALw_wcB)
@@ -43,6 +43,11 @@ Learning python using tweepy and twitter API to automate twitter functions. Some
 ![Alt text](/images/ssh.png "ssh")
 * Once you're inside your instance within your terminal it should look something like this
 ![Alt text](/images/terminal.png "instance")
+## Download Redis
+* Awesome instructions [here](https://cloud.google.com/community/tutorials/setting-up-redis)
+* Very easy and can be completed in < 10 minutes
+* Be sure to create a secure password if you choose to configure remote access (recommended >= 32 characters)
+* Find your external IP on your VM console (needed for the HOST env variable)
 ## Download Docker
 * Awesome instructions [here](http://docs.h2o.ai/driverless-ai/latest-stable/docs/userguide/install/google-docker-container.html)
 * My tl;dr instructions are below
@@ -94,6 +99,7 @@ $ sudo docker run -d \
   -e CONSUMER_SECRET="some consumer secret KEY" \
   -e KEY="some key ID" \
   -e SECRET="some secret key ID" \
+  -e HOST="external ip address" \
   -e REDIS_PASS="some password" \
   -v $PWD:/work \
   bot
@@ -119,6 +125,7 @@ $ sudo docker run -d \
 export CONSUMER_KEY="your key" \
 && export CONSUMER_SECRET="your secret" \
 && export SECRET="your secret"\
+&& export HOST="external ip address" \
 && export REDIS_PASS="your redis password"\
 && export KEY="your key"
 ```
@@ -133,6 +140,7 @@ $ docker run -d \
   -e CONSUMER_SECRET="some consumer secret KEY" \
   -e KEY="some key ID" \
   -e SECRET="some secret key ID" \
+  -e HOST="external ip address" \
   -e REDIS_PASS="some password" \
   -v $PWD:/work \
   twitter-bot
@@ -148,6 +156,7 @@ docker pull bot-name \
   -e CONSUMER_SECRET="some consumer secret KEY" \
   -e KEY="some key ID" \
   -e SECRET="some secret key ID" \
+  -e HOST="external ip address" \
   -e REDIS_PASS="some password" \
   10.10.10.1:5000/bot-name
 ```
@@ -158,9 +167,9 @@ docker pull bot-name \
 ### Docker Container
 **Make sure you are in the directory that has your Dockerfile and bot script**
 ```bash
-docker build --no-cache -t 10.10.10.1:5000/bot-name .
+docker build --no-cache -t 10.0.0.1:PORT/bot-name .
 
-docker push 10.10.10.1:5000/bot-name
+docker push 10.0.0.1:PORT/bot-name
 ```
 
 ## Contributions are welcomed! 💚
