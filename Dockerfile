@@ -3,6 +3,8 @@ FROM continuumio/miniconda3
 RUN apt-get update -y
 RUN apt-get install build-essential -y
 
+RUN conda update -n base -c defaults conda
+
 COPY requirements.txt requirements.txt
 
 RUN conda create -n py36 python=3.6
