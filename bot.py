@@ -684,6 +684,7 @@ def webapp_update():
     client.set("tendie_followers", str(acct.followers_count))
     client.set("tendie_favorites", str(acct.favourites_count))
     client.set("tendie_statuses", str(acct.statuses_count))
+    print(f"Followers: {acct.followers_count}")
 
 
 ####### Set Our Scheduled Jobs ########
