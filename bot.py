@@ -211,6 +211,7 @@ def tweet_sentiment():
     status = f"I am currently {sentiment} the stock market."
     print(status)
     api.update_status(status)
+    client.set("tendie_recent", status)
 
 
 def scrape_twitter(maxTweets, searchQuery, redisDataBase):
@@ -315,6 +316,7 @@ def run_scraper():
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
+    client.set("tendie_recent", to_string)
 
 
 # This is purely to gain followers by following people that follow back
@@ -682,10 +684,9 @@ def webapp_update():
     client.set("tendie_followers", str(acct.followers_count))
     client.set("tendie_favorites", str(acct.favourites_count))
     client.set("tendie_statuses", str(acct.statuses_count))
-    client.set("tendie_recent", str(acct.status._json["text"]))
 
 
-print(time.ctime())
+####### Set Our Scheduled Jobs ########
 ## Multiple runs per day
 schedule.every(3).minutes.do(dm_reply)
 # schedule.every(7).minutes.do(specific_favorite)
