@@ -71,7 +71,7 @@ def get_all_tweets(screen_name):
 
     #transform the tweepy tweets into a 2D array that will populate the csv
     outtweets = [[tweet.id_str, tweet.created_at, tweet.text]
-                 for tweet in alltweets]
+                 for tweet in alltweets if tweet.text[:7] == "Reading" or tweet.text[:7] == "Twitter"]
 
     #write the csv
     with open(f'new_{screen_name}_tweets.csv', 'w') as f:
@@ -155,16 +155,23 @@ def getPct():
     print(f"Percentage of accuracy: {pct}%")
     client.set("tendie_pct", pct)
 
+def addDataList():
+    reader = csv.DictReader(open("new_interntendie_tweets.csv"))
+    for raw in reader:
+        client.lpush("380Data", raw["text"])
+    print(client.llen("380Data"))
+
 
 def main():
+    # addDataList()
     #pass in the username of the account you want to download
-	# get_all_tweets("interntendie")
+	# get_all_tweets("InternTendie")
     # readTweets()
     # preferBullish()
     # checkAccuracy()
-    # print(client.get("tendie_pct"))
-    client.set("testing", str(datetime.date.today()))
-    print(client.get("testing"))
+    print(client.get("tendie_pct"))
+    # client.set("testing", str(datetime.date.today()))
+    # print(client.get("testing"))
     # print(client.scard("bullish_date"))
     # print(client.scard("bearish_date"))
     # acct = api.get_user("interntendie")
