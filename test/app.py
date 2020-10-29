@@ -4,6 +4,7 @@ from textblob import TextBlob
 import alpaca_trade_api as tradeapi
 import csv
 import pandas as pd
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 import redis
@@ -26,14 +27,14 @@ auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 png_file = "/tmp/plot.png"
 
-APCA_API_BASE_URL = os.getenv("APCA_API_BASE_URL")
-APCA_API_KEY_ID = os.getenv("APCA_API_KEY_ID")
-APCA_API_SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
-alpaca = tradeapi.REST(APCA_API_KEY_ID,
-                    APCA_API_SECRET_KEY,
-                    APCA_API_BASE_URL,
-                    api_version='v2'
-                    )
+# APCA_API_BASE_URL = os.getenv("APCA_API_BASE_URL")
+# APCA_API_KEY_ID = os.getenv("APCA_API_KEY_ID")
+# APCA_API_SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
+# alpaca = tradeapi.REST(APCA_API_KEY_ID,
+#                     APCA_API_SECRET_KEY,
+#                     APCA_API_BASE_URL,
+#                     api_version='v2'
+#                     )
 correct = 0
 wrong = 0
 
@@ -157,10 +158,37 @@ def getPct():
 
 def addDataList():
     reader = csv.DictReader(open("new_interntendie_tweets.csv"))
+    client.delete("380Data")
     for raw in reader:
-        client.lpush("380Data", raw["text"])
+        client.lpush("380Data", str(int(raw["text"]) + 50))
     print(client.llen("380Data"))
 
+def sampleMean():
+    dataList = client.lrange("380Data", 0, -1)
+    dataList = [int(x) for x in dataList]
+    sum = 0
+    n = int(client.llen("380Data"))
+    print(n)
+    for item in dataList:
+        # i = item + 50
+        # if i < 0:
+        #     print("Error!!!")
+        #     print(i)
+        sum += item
+    print(sum)
+    mean = sum / n
+    print("Sample mean: ", mean)
+    standard_deviation(dataList, mean, n)
+
+def standard_deviation(nums, mean, n):
+    total = 0
+    for num in nums:
+        total += (num - mean) * (num - mean)
+    print(f"total: {total}")
+    sd = total/(n-1)
+    print(f"variance: {sd}")
+    sd = math.sqrt(sd)
+    print("population sd: ", sd)
 
 def main():
     # addDataList()
@@ -169,13 +197,15 @@ def main():
     # readTweets()
     # preferBullish()
     # checkAccuracy()
-    print(client.get("tendie_pct"))
+    # print(client.get("tendie_pct"))
     # client.set("testing", str(datetime.date.today()))
     # print(client.get("testing"))
     # print(client.scard("bullish_date"))
     # print(client.scard("bearish_date"))
     # acct = api.get_user("interntendie")
     # print(acct.followers_count)
+    # addDataList()
+    sampleMean()
 
 if __name__ == "__main__":
     main()
