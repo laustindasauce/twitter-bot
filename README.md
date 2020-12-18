@@ -45,7 +45,7 @@ Now you will be able to see the exact script that my twitter bot is running with
 * After you've personalized the script, you are ready to get it running
 
 ## Choose where to run your script
-You can run your bot [locally](/blob/master/README-local.md) or within a [Google Cloud VM instance](/blob/master/README-cloud.md). I prefer in the cloud so that I don't have to worry about my computer being on all the time to keep the script running. For the cloud I have instructions for using a Google Cloud Instance below. When you open a new account on the Google Cloud console you will recieve $300 credit for you to spend however you'd like. This will last a long time if the only thing you are doing on the cloud is running the twitter bot.
+You can run your bot [locally](/README-local.md) or within a [Google Cloud VM instance](/README-cloud.md). I prefer in the cloud so that I don't have to worry about my computer being on all the time to keep the script running. For the cloud I have instructions for using a Google Cloud Instance below. When you open a new account on the Google Cloud console you will recieve $300 credit for you to spend however you'd like. This will last a long time if the only thing you are doing on the cloud is running the twitter bot.
 
 ## Contributions are welcomed! 💚
 * **If you have any ideas, talk to me here:  [![Issues][1.4]][2]**
