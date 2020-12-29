@@ -1,0 +1,17 @@
+stages:
+  - name: Build & Publish
+    steps:
+      - publishImageConfig:
+          dockerfilePath: ./Dockerfile
+          buildContext: .
+          tag: cloud-bot:${CICD_EXECUTION_SEQUENCE}
+        env:
+          ### IMPORTANT ###
+          # This is a workaround
+          # Needed to be your MTU - 50
+          # My MTU is 1500 so env set to 1450
+          PLUGIN_MTU: 1450
+  - name: Deploy
+    steps:
+      - applyYamlConfig:
+          path: ./cloud_bot/bot-dc.yaml

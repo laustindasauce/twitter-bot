@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: { twitter-bot-name }
+  namespace: { namespace }
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: { twitter-bot-name }
+  template:
+    metadata:
+      labels:
+        app: { twitter-bot-name }
+    spec:
+      imagePullSecrets:
+        - name: pipeline-docker-registry
+      containers:
+        - name: { twitter-bot }
+          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          imagePullPolicy: Always
+          env:
+            - name: CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: CONSUMER_KEY
+                  name: { twitter-bot-secrets }
+            - name: CONSUMER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: CONSUMER_SECRET
+                  name: { twitter-bot-secrets }
+            - name: KEY
+              valueFrom:
+                secretKeyRef:
+                  key: KEY
+                  name: { twitter-bot-secrets }
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_HOST
+                  name: { twitter-bot-secrets }
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_PASS
+                  name: { twitter-bot-secrets }
+            - name: DATABASE # Not sensitive value so doesn't need to be in secret
+              value: '0'
