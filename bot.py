@@ -17,7 +17,7 @@ key = os.getenv("KEY")
 secret = os.getenv("SECRET")
 
 ### Redis
-client = redis.Redis(host="10.10.10.1", port=6379, db=0,
+client = redis.Redis(host="10.10.10.1", port=6379, db=1,
                      password=os.getenv("REDIS_PASS"))
 
 ### Tweepy
@@ -687,7 +687,7 @@ def webapp_update():
 
 ####### Set Our Scheduled Jobs ########
 ## Multiple runs per day
-schedule.every(4).minutes.do(dm_reply)
+# schedule.every(4).minutes.do(dm_reply)
 # schedule.every(7).minutes.do(specific_favorite)
 # schedule.every(9).minutes.do(webapp_update)
 # schedule.every(30).minutes.do(reply)
