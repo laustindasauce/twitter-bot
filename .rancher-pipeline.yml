@@ -1,0 +1,29 @@
+stages:
+- name: Build & Publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: twitter-bot:${CICD_EXECUTION_SEQUENCE}
+    env:
+      PLUGIN_MTU: "1450"
+  when:
+    branch: {}
+    event:
+      include:
+      - push
+      - pull request
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./bot-dc.yaml
+  when:
+    branch: {}
+    event:
+      include:
+      - push
+      - pull request
+branch:
+  include:
+  - coding-specific
+notification: {}
