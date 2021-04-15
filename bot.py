@@ -557,7 +557,7 @@ def thank_new_followers():
             if not trouble:
                 try:
                     client.sadd('followers_thanked', str(follower))
-                    api.send_direct_message(follower, to_string)
+                    # api.send_direct_message(follower, to_string)
                 except tweepy.TweepError as e:
                     if e.reason[:13] == "[{'code': 226" or e.reason[:13] == "[{'code': 429":
                         print("They think this is spam...")
@@ -574,7 +574,6 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
     time.sleep(60)
-    dm_reply()
 
 
 def specific_favorite():
@@ -688,24 +687,26 @@ def webapp_update():
 
 ####### Set Our Scheduled Jobs ########
 ## Multiple runs per day
-schedule.every(3).minutes.do(dm_reply)
+schedule.every(4).minutes.do(dm_reply)
 # schedule.every(7).minutes.do(specific_favorite)
-schedule.every(9).minutes.do(webapp_update)
-schedule.every(10).minutes.do(reply)
+# schedule.every(9).minutes.do(webapp_update)
+# schedule.every(30).minutes.do(reply)
 schedule.every(15).minutes.do(thank_new_followers)
 schedule.every(7).hours.do(run_scraper)
 ## Daily runs
 schedule.every().day.at("01:00").do(cleanDates)
-schedule.every().day.at("08:26").do(auto_follow2)
-schedule.every().day.at("10:17").do(searchBot)
-schedule.every().day.at("13:26").do(auto_follow)
-schedule.every().day.at("12:12").do(searchBot2)
+# schedule.every().day.at("08:26").do(auto_follow2)
+# schedule.every().day.at("10:17").do(searchBot)
+# schedule.every().day.at("13:26").do(auto_follow)
+# schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("15:13").do(tweet_sentiment)
-schedule.every().day.at("17:07").do(searchBot3)
+# schedule.every().day.at("17:07").do(searchBot3)
 ## Weekly runs
 schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
 
+print("Running twitter-bot")
+run_scraper()
 
 
 while True:
