@@ -1,11 +1,8 @@
 import datetime
-import numpy as np
 import os
-import pandas as pd
 import re
 import redis
 import schedule
-from textblob import TextBlob
 import time
 import tweepy
 
