@@ -148,6 +148,8 @@ def run_scraper():
 
     bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
+    client.set('sent_number', '360')
+    print(client.get('sent_number'))
     client.incr('sent_number')
     sent_num = int(client.get('sent_number'))
     to_string = f"Reading #{sent_num} => Twitter's sentiment of the stock market is"
@@ -291,7 +293,7 @@ schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
 
 print("Running twitter-bot")
-run_scraper()
+# run_scraper()
 
 
 while True:
