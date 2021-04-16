@@ -28,10 +28,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 correct = 0
 wrong = 0
 
-client.set('last_seen_id', '1349968072308895745')
-client.set('lowest_sentiment', '-334')
-client.set('highest_sentiment', '299')
-
+client.set('sent_number', '360')
 
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
@@ -72,7 +69,7 @@ def tweet_sentiment():
 
 def scrape_twitter(maxTweets, searchQuery, redisDataBase):
     client.delete(redisDataBase)
-    # print(f"Downloading max {maxTweets} tweets")
+    print(f"Downloading max {maxTweets} tweets")
     retweet_filter = '-filter:retweets'
     q = searchQuery+retweet_filter
     tweetCount = 0
@@ -318,7 +315,7 @@ schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
 
 print("Running twitter-bot")
-run_scraper()
+# run_scraper()
 
 
 while True:
