@@ -40,6 +40,8 @@ alpaca = tradeapi.REST(APCA_API_KEY_ID,
 correct = 0
 wrong = 0
 
+client.set('last_seen_id', '1349968072308895745')
+
 
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
