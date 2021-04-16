@@ -28,8 +28,6 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 correct = 0
 wrong = 0
 
-client.set('sent_number', '360')
-
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
     return last_seen_id
@@ -210,7 +208,7 @@ def thank_new_followers():
     followers_thanked = set(followers_thanked)
     follow_count = 0
     limit = False
-    for follower in tweepy.Cursor(api.followers).items(100):
+    for follower in tweepy.Cursor(api.followers).items(10):
         followers.append(str(follower.id))
         #follower has a long list of possible things to see.. kinda neat
         if not follower.following:
@@ -271,28 +269,6 @@ def thank_new_followers():
         total_followers = new_total_followers - total_followers
         print(f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers.")
     time.sleep(60)
-
-
-def specific_favorite():
-    client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 1, password=os.getenv("REDIS_PASS"))
-    sinceId = 'ky_since_id'
-    # client.set(sinceId, '1285706104433979392')
-    tweet_id = int(client.get(sinceId))
-    tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
-    for tweet in reversed(tweets):
-        client.incr('tendie_read')
-        client.set(sinceId, str(tweet.id))
-        try:
-            if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
-                if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
-                    api.create_favorite(tweet.id)
-                    print(f"Favorited {tweet.user.screen_name}'s tweet.")
-                    time.sleep(3)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(3)
-        time.sleep(1)
 
 
 def send_error_message(follower):
