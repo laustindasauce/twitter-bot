@@ -27,14 +27,14 @@ auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 ### Alpaca
-APCA_API_BASE_URL = os.getenv("APCA_API_BASE_URL")
-APCA_API_KEY_ID = os.getenv("APCA_API_KEY_ID")
-APCA_API_SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
-alpaca = tradeapi.REST(APCA_API_KEY_ID,
-                       APCA_API_SECRET_KEY,
-                       APCA_API_BASE_URL,
-                       api_version='v2'
-                       )
+# APCA_API_BASE_URL = os.getenv("APCA_API_BASE_URL")
+# APCA_API_KEY_ID = os.getenv("APCA_API_KEY_ID")
+# APCA_API_SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
+# alpaca = tradeapi.REST(APCA_API_KEY_ID,
+#                        APCA_API_SECRET_KEY,
+#                        APCA_API_BASE_URL,
+#                        api_version='v2'
+#                        )
 
 ### Global Variables
 correct = 0
@@ -696,7 +696,7 @@ def webapp_update():
 schedule.every(15).minutes.do(thank_new_followers)
 schedule.every(7).hours.do(run_scraper)
 ## Daily runs
-schedule.every().day.at("01:00").do(cleanDates)
+# schedule.every().day.at("01:00").do(cleanDates)
 # schedule.every().day.at("08:26").do(auto_follow2)
 # schedule.every().day.at("10:17").do(searchBot)
 # schedule.every().day.at("13:26").do(auto_follow)
