@@ -29,6 +29,8 @@ correct = 0
 wrong = 0
 
 client.set('last_seen_id', '1349968072308895745')
+client.set('lowest_sentiment', '-334')
+client.set('highest_sentiment', '299')
 
 
 def read_last_seen():
@@ -60,7 +62,7 @@ def reply():
 
 def tweet_sentiment():
     print("Running tweet_sentiment()")
-    client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 1, password=os.getenv("REDIS_PASS"))
+    client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
     status = f"I am currently {sentiment} the stock market."
     print(status)
@@ -103,11 +105,13 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                     '\n', '').encode("utf-8"))+"\n"))
             tweetCount += len(new_tweets)
             max_id = new_tweets[-1].id
+            download = (tweetCount / maxTweets) * 100
+            print(f"Downloading tweets -> {download}%")
         except tweepy.TweepError as e:
             # Just exit if any error
             print("some error : " + str(e))
             break
-    client.incr('tendie_read', tweetCount)
+    print(f"Downloading tweets -> 100%")
 
 
 def clean(tweet):
@@ -170,7 +174,6 @@ def run_scraper():
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     api.update_status(to_string)
-    client.set("tendie_recent", to_string)
 
 
 def unfollow():
@@ -286,8 +289,6 @@ def specific_favorite():
             if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
                 if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
                     api.create_favorite(tweet.id)
-                    # tweet.retweet()
-                    # print(client.get(sinceId))
                     print(f"Favorited {tweet.user.screen_name}'s tweet.")
                     time.sleep(3)
         except tweepy.TweepError as e:
