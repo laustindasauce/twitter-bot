@@ -293,7 +293,7 @@ schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
 
 print("Running twitter-bot")
-# run_scraper()
+run_scraper()
 
 
 while True:
