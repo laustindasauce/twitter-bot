@@ -13,33 +13,40 @@ spec:
       labels:
         app: twitter-bot
     spec:
+      imagePullSecrets:
+        - name: pipeline-docker-registry
       containers:
-      - name: twitter-bot
-        image: registry:5000/twitter-bot
-        imagePullPolicy: Always
-        env:
-        - name: CONSUMER_KEY
-          valueFrom:
-            secretKeyRef:
-              key: CONSUMER_KEY
-              name: tendie-twitter-bot
-        - name: CONSUMER_SECRET
-          valueFrom:
-            secretKeyRef:
-              key: CONSUMER_SECRET
-              name: tendie-twitter-bot
-        - name: KEY
-          valueFrom:
-            secretKeyRef:
-              key: KEY
-              name: tendie-twitter-bot
-        - name: SECRET
-          valueFrom:
-            secretKeyRef:
-              key: SECRET
-              name: tendie-twitter-bot
-        - name: REDIS_PASS
-          valueFrom:
-            secretKeyRef:
-              key: REDIS_PASS
-              name: redis-pass
+        - name: twitter-bot
+          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          imagePullPolicy: Always
+          env:
+            - name: CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: CONSUMER_KEY
+                  name: tendie-twitter-bot
+            - name: CONSUMER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: CONSUMER_SECRET
+                  name: tendie-twitter-bot
+            - name: KEY
+              valueFrom:
+                secretKeyRef:
+                  key: KEY
+                  name: tendie-twitter-bot
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: SECRET
+                  name: tendie-twitter-bot
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_HOST
+                  name: redis-pass
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_PASS
+                  name: redis-pass
