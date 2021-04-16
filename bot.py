@@ -16,8 +16,7 @@ key = os.getenv("KEY")
 secret = os.getenv("SECRET")
 
 ### Redis
-client = redis.Redis(host="10.10.10.1", port=6379, db=1,
-                     password=os.getenv("REDIS_PASS"))
+client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 1, password=os.getenv("REDIS_PASS"))
 
 ### Tweepy
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -61,8 +60,7 @@ def reply():
 
 def tweet_sentiment():
     print("Running tweet_sentiment()")
-    client = redis.Redis(host="10.10.10.1", port=6379, db=1,
-                         password=os.getenv("REDIS_PASS"))
+    client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 1, password=os.getenv("REDIS_PASS"))
     sentiment = client.get('twit_bot').decode("utf-8")
     status = f"I am currently {sentiment} the stock market."
     print(status)
@@ -276,8 +274,7 @@ def thank_new_followers():
 
 
 def specific_favorite():
-    client = redis.Redis(host="10.10.10.1", port=6379, db=1,
-                         password=os.getenv("REDIS_PASS"))
+    client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 1, password=os.getenv("REDIS_PASS"))
     sinceId = 'ky_since_id'
     # client.set(sinceId, '1285706104433979392')
     tweet_id = int(client.get(sinceId))
