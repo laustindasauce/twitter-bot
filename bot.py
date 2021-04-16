@@ -1,4 +1,3 @@
-import alpaca_trade_api as tradeapi
 import datetime
 import numpy as np
 import os
@@ -26,21 +25,11 @@ auth.set_access_token(key, secret)
 auth.secure = True
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-### Alpaca
-# APCA_API_BASE_URL = os.getenv("APCA_API_BASE_URL")
-# APCA_API_KEY_ID = os.getenv("APCA_API_KEY_ID")
-# APCA_API_SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
-# alpaca = tradeapi.REST(APCA_API_KEY_ID,
-#                        APCA_API_SECRET_KEY,
-#                        APCA_API_BASE_URL,
-#                        api_version='v2'
-#                        )
-
 ### Global Variables
 correct = 0
 wrong = 0
 
-# client.set('last_seen_id', '1349968072308895745')
+client.set('last_seen_id', '1349968072308895745')
 
 
 def read_last_seen():
@@ -59,24 +48,6 @@ def reply():
         client.incr("tendie_read")
         try:
             username = tweet.user.screen_name
-            # if check_reply(username, tweet):
-            #     if 'follow back' in tweet.full_text.lower() and 'thanks' not in tweet.full_text.lower():
-            #         api.update_status("@" + username +
-            #                           " please be patient.")
-            #         print("Replied to follow back request")
-            #         try:
-            #             api.destroy_friendship(username)
-            #             print(f"Terminated friendship with {username}")
-            #         except tweepy.TweepError as e:
-            #             print(e)
-            #         store_last_seen(tweet.id)
-            #         return
-            #     print("Replied to - " + username +
-            #           " - " + tweet.full_text)
-            #     api.update_status("@" + username +
-            #                         " Hello, " + username + ", just a moment. " + 
-            #                         "@CalendarKy @statutorywheel, can I please get some help?", tweet.id)
-            #     store_last_seen(tweet.id)
             
             print("Favorited " + username +
                     " - " + tweet.full_text)
@@ -86,123 +57,6 @@ def reply():
             store_last_seen(tweet.id)
             print(e.reason)
         time.sleep(2)
-
-
-def check_reply(username, tweet):
-    if username != "CalendarKy" and username != "statutorywheel" and tweet.full_text[:11] != "@CalendarKy" \
-            and tweet.full_text[:11] != "@statutorywheel" and tweet.full_text[:17] != "@InternTendie and" \
-            and tweet.full_text[:14] != "@InternTendie @":
-        return True
-    return False
-
-def dm_reply():
-    last_seen = int(client.get('dm_seen'))
-    messages = api.list_direct_messages(last_seen)
-    for message in reversed(messages):
-        sender_id = message.message_create['sender_id']
-        ## moving this if statement for quicker runtime ;]
-        if not client.sismember('sent_dm', str(sender_id)):
-            text = message.message_create['message_data']['text']
-            # print(text)
-            if check_dm(text.lower()):
-                github_dm(sender_id)
-        last_seen = message.id
-    client.set('dm_seen', str(last_seen))
-
-
-def check_dm(text):
-    if 'yes' in text.lower() or 'yea' in text.lower() or 'send it' in text.lower() or 'yep' in text.lower() or 'sure' in text.lower() or 'ya' in text.lower() or 'yuh' in text.lower():
-        return True
-    return False
-
-def github_dm(sender_id):
-    client.sadd('sent_dm', str(sender_id))
-    to_string = "\nAwesome, here is the link! Let me know what you think!\n" + \
-        "https://github.com/abspen1/twitter-bot"
-    api.send_direct_message(sender_id, to_string)
-
-    # Subtract one here since I added my ID to ignore also
-    num = client.scard('sent_dm') - 1
-    print(f"Sent github dm : {num}")
-
-
-def searchBot():
-    client.incr("tendie_read", 50)
-    print("Running #python search.")
-    tweets = tweepy.Cursor(api.search, "#python").items(50)
-    # print("Running first search.")
-    print(time.ctime())
-    i = 0
-    for tweet in tweets:
-        i += 1
-        try:
-            # print("Retweet done!")
-            if i % 50 == 0:
-                # tweet.retweet()
-                print(f"Favorited {i} #python tweets.")
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 139":
-                continue
-            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
-                print("Malicious activity suspected. Ending searchBot.")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
-
-
-def searchBot2():
-    client.incr("tendie_read", 50)
-
-    print("Running javascript search.")
-    tweets = tweepy.Cursor(api.search, "javascript").items(40)
-    print(time.ctime())
-    i = 0
-    for tweet in tweets:
-        try:
-            i += 1
-            if i % 25 == 0:
-                # tweet.retweet()
-                print(f"Favorited {i} javascript tweets.")
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 139":
-                continue
-            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
-                print("Malicious activity suspected. Ending searchBot2.")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
-
-
-def searchBot3():
-    client.incr("tendie_read", 30)
-
-    print("Running algorithm search.")
-    tweets = tweepy.Cursor(api.search, "algorithm").items(30)
-    # print("Running third search.")
-    print(time.ctime())
-    i = 0
-    for tweet in tweets:
-        try:
-            i += 1
-            if i % 20 == 0:
-                print(f"Favorited {i} algorithm tweets")
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 139":
-                continue
-            elif e.reason[:13] == "[{'code': 283" or e.reason[:13] == "[{'code': 429":
-                print("Malicious activity suspected. Ending searchBot3.")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
 
 
 def tweet_sentiment():
@@ -319,163 +173,6 @@ def run_scraper():
     print(to_string)
     api.update_status(to_string)
     client.set("tendie_recent", to_string)
-
-
-# This is purely to gain followers by following people that follow back
-def auto_follow2():
-    client.incr('tendie_read', 50)
-    query = "ifb"
-    print(f"Following users who have tweeted about the {query}")
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
-    num_followed = 0
-    for tweet in search:
-        if tweet.user.followers_count > 5000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(2)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 160":
-                continue
-            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 326":
-                print("Followed too many people... ending auto_follow2")
-                return
-            time.sleep(2)
-    client.incr('tendie_read', 50)
-    query = "follow back"
-    print(f"Following users who have tweeted about the {query}")
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
-    for tweet in search:
-        if tweet.user.followers_count > 5000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(2)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 160":
-                continue
-            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 326":
-                print("Followed too many people... ending auto_follow2")
-                return
-            time.sleep(2)
-    print(f"Now following {num_followed} more users.")
-
-
-# This is trying to get followers that will be active and interested in my content
-def auto_follow():
-    client.incr('tendie_read', 50)
-
-    query = "computer science"
-    # print(f"Following users who have tweeted about the {query}")
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
-    num_followed = 0
-    for tweet in search:
-        if tweet.user.followers_count > 3000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(5)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 160":
-                continue
-            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
-                print(f"Now following {num_followed} more users.")
-                print("Followed too many people... ending auto_follow")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
-
-    # Switch up the query
-    client.incr('tendie_read', 50)
-
-    query = "programming"
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(50)
-    for tweet in search:
-        if tweet.user.followers_count > 3000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(5)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 160":
-                continue
-            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
-                print("Followed too many people... ending auto_follow")
-                print(f"Now following {num_followed} more users.")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
-    print(f"Now following {num_followed} more users.")
-
-    # Switch up the query
-    client.incr('tendie_read', 20)
-
-    query = "python program"
-    search = tweepy.Cursor(api.search, q=query,
-                           result_type="recent", lang="en").items(20)
-    for tweet in search:
-        if tweet.user.followers_count > 3000:
-            continue
-        try:
-            api.create_favorite(tweet.id)
-            time.sleep(2)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(2)
-        try:
-            api.create_friendship(tweet.user.id)
-            time.sleep(5)
-            num_followed += 1
-        except tweepy.TweepError as e:
-            if e.reason[:13] == "[{'code': 160":
-                continue
-            elif e.reason[:13] == "[{'code': 429" or e.reason[:13] == "[{'code': 283":
-                print("Followed too many people... ending auto_follow")
-                print(f"Now following {num_followed} more users.")
-                return
-            else:
-                print(e.reason)
-            time.sleep(2)
-    print(f"Now following {num_followed} more users.")
 
 
 def unfollow():
@@ -615,95 +312,10 @@ def send_error_message(follower):
         send_error_message(441228378)
 
 
-def cleanDates():
-    bullish = client.smembers("bullish_date")
-    bearish = client.smembers("bearish_date")
-    delete = 0
-    for date in bullish:
-        if date in bearish:
-            print(date.decode("utf-8"))
-            client.srem("bearish_date", date.decode("utf-8"))
-            delete += 1
-    print(f"removed {delete} dates from bearish")
-
-
-def getSentimentAccuracy():
-    cleanDates()
-    bullishDates = client.smembers("bullish_date")
-    bearishDates = client.smembers("bearish_date")
-    for date in bullishDates:
-        date = date.decode("utf-8") + "T09:30:00-04:00"
-        checkBullish(date)
-
-    for date in bearishDates:
-        date = date.decode("utf-8") + "T09:30:00-04:00"
-        checkBearish(date)
-    getPct()
-
-def checkBullish(date):
-    global correct
-    global wrong
-    bars = alpaca.get_barset("SPY", "day", start=date, limit=100)
-    day1 = bars["SPY"][0].c
-    try:
-        day2 = bars["SPY"][1].c
-    except Exception as e:
-        print(e)
-        return
-
-    if day2 > day1:
-        correct += 1
-    else:
-        wrong += 1
-
-
-def checkBearish(date):
-    global correct
-    global wrong
-    bars = alpaca.get_barset("SPY", "day", start=date, limit=100)
-    day1 = bars["SPY"][0].c
-    try:
-        day2 = bars["SPY"][1].c
-    except Exception as e:
-        if e != "list index out of range":
-            print(e)
-        return
-    if day2 > day1:
-        wrong += 1
-    else:
-        correct += 1
-
-def getPct():
-    pct = (correct / (correct + wrong)) * 100
-    pct = "{:.2f}".format(pct)
-    print(f"Correct: {correct} Incorrect: {wrong}")
-    print(f"Percentage of accuracy: {pct}%")
-    client.set("tendie_pct", pct)
-
-def webapp_update():
-    acct = api.get_user("interntendie")
-    client.set("tendie_followers", str(acct.followers_count))
-    client.set("tendie_favorites", str(acct.favourites_count))
-    client.set("tendie_statuses", str(acct.statuses_count))
-
-
 ####### Set Our Scheduled Jobs ########
-## Multiple runs per day
-# schedule.every(4).minutes.do(dm_reply)
-# schedule.every(7).minutes.do(specific_favorite)
-# schedule.every(9).minutes.do(webapp_update)
-# schedule.every(30).minutes.do(reply)
 schedule.every(15).minutes.do(thank_new_followers)
 schedule.every(7).hours.do(run_scraper)
-## Daily runs
-# schedule.every().day.at("01:00").do(cleanDates)
-# schedule.every().day.at("08:26").do(auto_follow2)
-# schedule.every().day.at("10:17").do(searchBot)
-# schedule.every().day.at("13:26").do(auto_follow)
-# schedule.every().day.at("12:12").do(searchBot2)
 schedule.every().day.at("15:13").do(tweet_sentiment)
-# schedule.every().day.at("17:07").do(searchBot3)
-## Weekly runs
 schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
 
