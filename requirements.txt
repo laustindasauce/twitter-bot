@@ -38,6 +38,7 @@ ROPGadget==6.5
 schedule==1.0.0
 six==1.15.0
 sortedcontainers==2.3.0
+textblob==0.15.3
 toml==0.10.2
 tweepy==3.10.0
 unicorn==1.0.2rc3

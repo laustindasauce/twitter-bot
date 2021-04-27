@@ -4,6 +4,7 @@ import os
 import re
 import redis
 import schedule
+from textblob import TextBlob
 import time
 import tweepy
 
