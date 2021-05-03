@@ -27,6 +27,16 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 correct = 0
 wrong = 0
 
+if client.get('last_seen_id') is None:
+    client.set('last_seen_id', '1194877411671724066')
+    client.set('read', '53309254')
+    client.set('sent_number', '379')
+    client.set('highest_sentiment', '309')
+    client.set('lowest_sentiment', '-334')
+
+if client.get('twit_bot') is None:
+    client.set('twit_bot', 'bullish')
+
 def read_last_seen():
     last_seen_id = int(client.get('last_seen_id'))
     return last_seen_id
