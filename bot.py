@@ -160,6 +160,7 @@ def run_scraper():
     client.incr('sent_number')
     sent_num = int(client.get('sent_number'))
     to_string = f"Reading #{sent_num} => Twitter's sentiment of the stock market is"
+    weekday = datetime.datetime.today().weekday() < 5
     if sentiment > 5:
         client.sadd("bullish_date", str(datetime.date.today()))
         to_string = f"{to_string} bullish with a reading of {sentiment}."
@@ -167,8 +168,12 @@ def run_scraper():
         if sentiment > current_high:
             client.set('highest_sentiment', str(sentiment))
             to_string = f"{to_string} This is the highest reading to date."
+        if weekday: 
+            client.incr('weekly_bulls')
     elif sentiment > -5:
         to_string = f"{to_string} nuetral with a reading of {sentiment}."
+        if weekday: 
+            client.incr('weekly_nuetral')
     else:
         client.sadd("bearish_date", str(datetime.date.today()))
         to_string = f"{to_string} bearish with a reading of {sentiment}."
@@ -176,6 +181,8 @@ def run_scraper():
         if sentiment < current_low:
             client.set('lowest_sentiment', str(sentiment))
             to_string = f"{to_string} This is the lowest reading to date."
+        if weekday: 
+            client.incr('weekly_bears')
     print(to_string)
     api.update_status(to_string)
 
@@ -207,6 +214,34 @@ def unfollow():
         time.sleep(5)
     print(f"Unfollowed: {unfollow_count} losers.")
 
+def weekly_sentiment():
+    if client.get('weekly_bulls') is None and client.get('weekly_bears') is None and client.get('weekly_nuetral') is None:
+        print("Weekly stats weren't set")
+        return
+    bulls = int(client.get('weekly_bulls'))
+    bears = int(client.get('weekly_bears'))
+    split = int(client.get('weekly_nuetral'))
+    total = bulls + bears + split
+    week_sentiment = ''
+    if bulls > bears:
+        week_sentiment = 'bullish'
+    elif bears > bulls:
+        week_sentiment = 'bearish'
+    else:
+        week_sentiment = 'nuetral'
+    today = datetime.date.today()
+    last_monday = str(today - datetime.timedelta(days=today.weekday()))
+    today = str(today)
+    adjTimeframe = f" {last_monday[-5:]} - {today[-5:]}"
+    
+    
+    to_string = f"From {adjTimeframe} at close there were {total} stock market sentiment readings." + \
+    f" Sentiment was {week_sentiment} with {bulls} bullish, {bears} bearish, and {split} nuetral readings."
+
+    client.hset('stock_sentiment', today, week_sentiment)
+
+    api.update_status(to_string)
+    
 
 def thank_new_followers():
     total_followers = client.scard('followers_thanked')
@@ -294,10 +329,16 @@ def send_error_message(follower):
 
 ####### Set Our Scheduled Jobs ########
 schedule.every(15).minutes.do(thank_new_followers)
-schedule.every(7).hours.do(run_scraper)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
+
+####### Set Our Scheduled Jobs ########
+schedule.every().day.at("08:30").do(run_scraper)
+schedule.every().day.at("12:00").do(run_scraper)
+schedule.every().day.at("15:00").do(run_scraper)
+schedule.every().day.at("22:00").do(run_scraper)
+
 
 print("Running twitter-bot")
 run_scraper()
