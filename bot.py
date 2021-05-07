@@ -217,6 +217,7 @@ def unfollow():
 def weekly_sentiment():
     if client.get('weekly_bulls') is None and client.get('weekly_bears') is None and client.get('weekly_nuetral') is None:
         print("Weekly stats weren't set")
+        clear_weekly()
         return
     bulls = int(client.get('weekly_bulls'))
     bears = int(client.get('weekly_bears'))
@@ -241,6 +242,12 @@ def weekly_sentiment():
     client.hset('stock_sentiment', today, week_sentiment)
 
     api.update_status(to_string)
+    clear_weekly()
+
+def clear_weekly():
+    client.set('weekly_bulls', '0')
+    client.set('weekly_bears', '0')
+    client.set('weekly_nuetral', '0')
     
 
 def thank_new_followers():
@@ -338,6 +345,7 @@ schedule.every().day.at("08:30").do(run_scraper)
 schedule.every().day.at("12:00").do(run_scraper)
 schedule.every().day.at("15:00").do(run_scraper)
 schedule.every().day.at("22:00").do(run_scraper)
+schedule.every().friday.at("17:00").do(weekly_sentiment)
 
 
 print("Running twitter-bot")
