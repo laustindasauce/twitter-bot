@@ -105,15 +105,14 @@ def scrape_twitter(maxTweets, searchQuery, redisDataBase):
                 print("No more tweets found")
                 break
             for tweet in new_tweets:
-                client.sadd(redisDataBase, (str(tweet.full_text.replace(
-                    '\n', '').encode("utf-8"))+"\n"))
+                client.sadd(redisDataBase, (str(tweet.full_text.replace('\n', '').encode("utf-8"))+"\n"))
             tweetCount += len(new_tweets)
             max_id = new_tweets[-1].id
             download = (tweetCount / maxTweets) * 100
             print(f"Downloading tweets -> {download}%")
         except tweepy.TweepError as e:
             # Just exit if any error
-            print("some error : " + str(e))
+            print("Some error : " + str(e))
             break
     print(f"Downloading tweets -> 100%")
 
@@ -334,22 +333,25 @@ def send_error_message(follower):
         send_error_message(441228378)
 
 
-####### Set Our Scheduled Jobs ########
+####### Schedule Twitter Jobs ########
 schedule.every(15).minutes.do(thank_new_followers)
 schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
 
-####### Set Our Scheduled Jobs ########
+####### Schedule Scraper Jobs ########
 schedule.every().day.at("08:30").do(run_scraper)
 schedule.every().day.at("12:00").do(run_scraper)
 schedule.every().day.at("15:00").do(run_scraper)
 schedule.every().day.at("22:00").do(run_scraper)
+
+###### Schedule Weekly Sentiment Job ########
 schedule.every().friday.at("17:00").do(weekly_sentiment)
 
 
 print("Running twitter-bot")
-run_scraper()
+
+# run_scraper()
 
 
 while True:
