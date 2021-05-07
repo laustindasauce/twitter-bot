@@ -29,7 +29,12 @@ client = redis.Redis(
 )
 
 ### LOCAL REDIS SERVER ###
-client = redis.Redis(host="127.0.0.1", password="IF YOU SET ONE")
+client = redis.Redis(
+    host="127.0.0.1",
+    port=6379, # Default
+    db=1, # 0-15 default is 0
+    password="IF YOU SET ONE"
+)
 
 
 ### TWEEPY SETUP ###
@@ -266,9 +271,7 @@ def run_scraper():
 def auto_follow():
     query = "Whatever you want here"
     print(f"Following users who have tweeted about the {query}")
-    search = tweepy.Cursor(api.search, q=query, result_type="recent", lang="en").items(
-        50
-    )
+    search = tweepy.Cursor(api.search, q=query, result_type="recent", lang="en").items(50)
     num_followed = 0
     for tweet in search:
         if tweet.user.followers_count > 2000:
@@ -353,12 +356,11 @@ def thank_new_followers():
             client.sadd("followers_thanked", str(follower))
         new_total_followers = client.scard("followers_thanked")
         total_followers = new_total_followers - total_followers
-        print(
-            f"{total_followers} new followers. Total of {new_total_followers} followers."
-        )
+        print(f"{total_followers} new followers. Total of {new_total_followers} followers.")
 
 
 print(time.ctime())
+
 schedule.every().week.do(unfollow)
 schedule.every().thursday.at("11:35").do(unfollow)
 schedule.every().day.at("13:26").do(auto_follow)
