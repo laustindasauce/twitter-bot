@@ -15,6 +15,7 @@ key = os.getenv("KEY")
 secret = os.getenv("SECRET")
 
 ### Redis
+
 client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 1, password=os.getenv("REDIS_PASS"))
 
 ### Tweepy
