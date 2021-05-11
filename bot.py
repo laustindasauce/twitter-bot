@@ -351,7 +351,6 @@ schedule.every().friday.at("17:00").do(weekly_sentiment)
 
 
 print("Running twitter-bot")
-
 # run_scraper()
 
 
