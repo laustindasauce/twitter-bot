@@ -5,8 +5,8 @@ stages:
       dockerfilePath: ./Dockerfile
       buildContext: .
       tag: twitter-bot:${CICD_EXECUTION_SEQUENCE}
-    # env:
-    #   PLUGIN_MTU: "1450"
+    env:
+      PLUGIN_MTU: "1500"
   when:
     branch: {}
     event:
