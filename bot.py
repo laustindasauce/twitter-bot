@@ -147,6 +147,7 @@ def run_scraper():
     tweet_subjectivity = np.zeros(client.scard(redisDataBase))
     bullish_count = 0
     bearish_count = 0
+    
     for idx, tweet in enumerate(f):
         tweet_polarity[idx] = polarity(tweet)
         tweet_subjectivity[idx] = subjectivity(tweet)
