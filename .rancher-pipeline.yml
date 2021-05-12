@@ -6,7 +6,7 @@ stages:
       buildContext: .
       tag: twitter-bot:${CICD_EXECUTION_SEQUENCE}
     env:
-      PLUGIN_MTU: "1500"
+      PLUGIN_MTU: "1230"
   when:
     branch: {}
     event:
