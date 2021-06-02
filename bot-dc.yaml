@@ -17,9 +17,11 @@ spec:
         - name: pipeline-docker-registry
       containers:
         - name: twitter-bot
-          image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+          image: ${CICD_IMAGE}:v1.0
           imagePullPolicy: Always
           env:
+            - name: CICD_GIT_COMMIT
+              value: ${CICD_GIT_COMMIT}
             - name: CONSUMER_KEY
               valueFrom:
                 secretKeyRef:

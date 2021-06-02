@@ -64,6 +64,34 @@ def reply():
             print(e.reason)
         time.sleep(2)
 
+def specific_favorite():
+    '''
+    Could use something like this to get trending tickers
+    Just follow thousands of people who tweet regularly about the stock market
+    Each time you find a tweet with stock market in it or a ticker in it follow that person
+    '''
+    client = redis.Redis(host="10.10.10.1", port=6379,
+                         password=os.getenv("REDIS_PASS"))
+    sinceId = 'ky_since_id'
+    client.set(sinceId, '1285706104433979392')
+    tweet_id = int(client.get(sinceId))
+    tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
+    for tweet in reversed(tweets):
+        client.set(sinceId, str(tweet.id))
+        try:
+            if tweet.user.screen_name == 'CalendarKy' or tweet.user.screen_name == 'statutorywheel':
+                if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
+                    api.create_favorite(tweet.id)
+                    # tweet.retweet()
+                    # print(client.get(sinceId))
+                    print(f"Favorited {tweet.user.screen_name}'s tweet.")
+                    time.sleep(3)
+        except tweepy.TweepError as e:
+            if e.reason[:13] != "[{'code': 139":
+                print(e.reason)
+            time.sleep(3)
+        time.sleep(1)
+
 
 def tweet_sentiment():
     print("Running tweet_sentiment()")
@@ -337,7 +365,7 @@ def send_error_message(follower):
 
 ####### Schedule Twitter Jobs ########
 schedule.every(15).minutes.do(thank_new_followers)
-schedule.every().day.at("15:13").do(tweet_sentiment)
+# schedule.every().day.at("15:13").do(tweet_sentiment)
 schedule.every().thursday.at("03:37").do(unfollow)
 schedule.every().week.do(unfollow)
 
