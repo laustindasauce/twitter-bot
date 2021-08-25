@@ -26,8 +26,8 @@ Check master branch
 
 <!-- link to issues page and messaging page -->
 
-[1]: https://github.com/abspen1/twitter-bot/issues
-[2]: https://austinspencer.works/about/contact/
+[1]: https://github.com/austinbspencer/twitter-bot/issues
+[2]: https://git.austinbspencer.com/about/contact/
 
 <!-- links to your social media accounts -->
 
