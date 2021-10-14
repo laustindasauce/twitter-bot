@@ -1,4 +1,4 @@
-FROM python:3.6-stretch
+FROM python:3.9.6
 
 COPY requirements.txt requirements.txt
 
