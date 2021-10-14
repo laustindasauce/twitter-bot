@@ -118,7 +118,6 @@ bin/
 # Spyder project settings
 .spyderproject
 .spyproject
-*.csv
 
 # Rope project settings
 .ropeproject
