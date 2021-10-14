@@ -136,3 +136,6 @@ dmypy.json
 template
 build
 .vscode
+
+# Ignore CSV changes from now on
+*.csv

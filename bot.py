@@ -449,7 +449,7 @@ def readTweets():
 
 
 # get_all_tweets("InternTendie")
-readTweets()
+# readTweets()
 
 ####### Schedule Twitter Jobs ########
 schedule.every(15).minutes.do(thank_new_followers)
