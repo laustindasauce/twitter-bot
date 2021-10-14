@@ -1,3 +1,4 @@
+import csv
 import datetime
 import numpy as np
 import os
@@ -213,6 +214,12 @@ def run_scraper():
         if weekday: 
             client.incr('weekly_bears')
     print(to_string)
+    today = datetime.datetime.now()
+    today = ":".join(str(today).split(":")[0:2])
+    storage_client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 4, password=os.getenv("REDIS_PASS"))
+    res = storage_client.hset('total_tendie_readings', today, str(sentiment))
+    if res != 1:
+        print(f"Error adding new reading to storage client: {today} {sentiment}")
     api.update_status(to_string)
 
 
@@ -362,6 +369,87 @@ def send_error_message(follower):
         time.sleep(10*60)
         send_error_message(441228378)
 
+
+# def get_all_tweets(screen_name):
+#     #Twitter only allows access to a users most recent 3240 tweets with this method
+
+#     #initialize a list to hold all the tweepy Tweets
+#     alltweets = []
+
+#     #make initial request for most recent tweets (200 is the maximum allowed count)
+#     new_tweets = api.user_timeline(screen_name=screen_name, count=200)
+
+#     #save most recent tweets
+#     alltweets.extend(new_tweets)
+
+#     #save the id of the oldest tweet less one
+#     oldest = alltweets[-1].id - 1
+
+#     #keep grabbing tweets until there are no tweets left to grab
+#     while len(new_tweets) > 0:
+#         print(f"getting tweets before {oldest}")
+
+#         #all subsiquent requests use the max_id param to prevent duplicates
+#         new_tweets = api.user_timeline(
+#             screen_name=screen_name, count=200, max_id=oldest)
+
+#         #save most recent tweets
+#         alltweets.extend(new_tweets)
+
+#         #update the id of the oldest tweet less one
+#         oldest = alltweets[-1].id - 1
+
+#         print(f"...{len(alltweets)} tweets downloaded so far")
+
+#     #transform the tweepy tweets into a 2D array that will populate the csv
+#     outtweets = [[tweet.id_str, tweet.created_at, tweet.text]
+#                  for tweet in alltweets if tweet.text[:7] == "Reading" or tweet.text[:7] == "Twitter"]
+
+#     #write the csv
+#     with open(f'new_{screen_name}_tweets.csv', 'w') as f:
+#         writer = csv.writer(f)
+#         writer.writerow(["id", "created_at", "text"])
+#         writer.writerows(outtweets)
+
+#     pass
+
+def readTweets():
+    client = redis.Redis(host=os.getenv("REDIS_HOST"), port=6379, db= 4, password=os.getenv("REDIS_PASS"))
+    reader = csv.DictReader(open("tweets.csv"))
+    total_readings = 0
+
+    for line in reader:
+        reading_val = None
+        
+        text = line["text"].replace('.', '')
+        reading_time = ":".join(line["created_at"].split(":")[0:2])
+
+        text_list = text.split()
+        for word in text_list:
+            if word.isnumeric():
+                reading_val = word
+                total_readings += 1
+
+        if not reading_val:
+            # Negative number
+            text = text.replace('-', '')
+            text_list = text.split()
+            for word in text_list:
+                if word.isnumeric():
+                    reading_val = f'-{word}'
+                    total_readings += 1
+        if reading_val:
+            res = client.hset('total_tendie_readings', reading_time, reading_val)
+            if res != 1:
+                print("Error setting this value as hash in redis")
+                print(reading_time, reading_val)
+        
+
+    print(f'{total_readings} stock market sentiment readings stored in Redis')
+
+
+# get_all_tweets("InternTendie")
+readTweets()
 
 ####### Schedule Twitter Jobs ########
 schedule.every(15).minutes.do(thank_new_followers)

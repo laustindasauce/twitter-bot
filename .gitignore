@@ -113,10 +113,12 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+testEnv/
+bin/
 # Spyder project settings
 .spyderproject
 .spyproject
+*.csv
 
 # Rope project settings
 .ropeproject
