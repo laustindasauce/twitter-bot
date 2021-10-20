@@ -1,7 +1,7 @@
 stages:
   - name: Build & Publish
     when:
-      branch: master
+      branch: not-this-branch
       event: [push, pull request]
     steps:
       - publishImageConfig:
