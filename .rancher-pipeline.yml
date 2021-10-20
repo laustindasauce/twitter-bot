@@ -21,3 +21,7 @@ stages:
     steps:
       - applyYamlConfig:
           path: ./cloud_bot/bot-dc.yaml
+
+branch:
+  include:
+    - not-this-branch
