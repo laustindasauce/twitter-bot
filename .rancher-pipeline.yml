@@ -16,7 +16,7 @@ stages:
           PLUGIN_MTU: 1450
   - name: Deploy
     when:
-      branch: master
+      branch: not-this-branch
       event: [push, pull request]
     steps:
       - applyYamlConfig:
