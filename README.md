@@ -30,4 +30,4 @@ Learning Python using tweepy and twitter API to automate twitter functions. Most
    3. AWS ec2 VM Instance
 
 - Follow me on [GitHub](https://github.com/austinbspencer)
-- Have ideas on how to improve this documentation? Reach out to us [HERE](twitter.bot.admin@austinbspencer.com).
+- Have ideas on how to improve this documentation? Reach out to us @ <a href = "mailto: twitter.bot.admin@austinbspencer.com">twitter.bot.admin@austinbspencer.com</a>
