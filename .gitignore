@@ -139,3 +139,4 @@ build
 
 # Ignore CSV changes from now on
 *.csv
+pipeline

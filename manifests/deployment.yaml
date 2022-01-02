@@ -14,14 +14,12 @@ spec:
         app: twitter-bot
     spec:
       imagePullSecrets:
-        - name: pipeline-docker-registry
+        - name: guldentech-harbor-registry
       containers:
         - name: twitter-bot
-          image: ${CICD_IMAGE}:v1.0
+          image: harbor.guldentech.com/austin-spencer/twitter-bot:TAG
           imagePullPolicy: Always
           env:
-            - name: CICD_GIT_COMMIT
-              value: ${CICD_GIT_COMMIT}
             - name: CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
