@@ -31,8 +31,6 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 correct = 0
 wrong = 0
 
-client.set("read", "73309254")
-
 
 def check_redis():
     if client.get("last_seen_id") is None:
