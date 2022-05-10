@@ -2,6 +2,8 @@ import csv
 import datetime
 import numpy as np
 import os
+import psycopg2
+import pytz
 import re
 import redis
 import schedule
@@ -14,7 +16,14 @@ consumer_key = os.getenv("CONSUMER_KEY")
 consumer_secret = os.getenv("CONSUMER_SECRET")
 key = os.getenv("KEY")
 secret = os.getenv("SECRET")
+ID = "1243690297747312642"
 
+### PSQL
+host = os.getenv("POSTGRESQL_HOST") or "localhost"
+db = os.getenv("POSTGRESQL_DB") or "personal_db"
+user = os.getenv("POSTGRESQL_USER") or "gaming_admin"
+password = os.getenv("POSTGRESQL_PASSWORD") or "secret_password"
+port = os.getenv("POSTGRESQL_PORT") or "5432"
 ### Redis
 
 client = redis.Redis(
@@ -30,12 +39,12 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 ### Global Variables
 correct = 0
 wrong = 0
+timezone = pytz.timezone("America/Los_Angeles")
 
 
 def check_redis():
     if client.get("last_seen_id") is None:
         client.set("last_seen_id", "1194877411671724066")
-        client.set("read", "53309254")
         client.set("sent_number", "379")
         client.set("highest_sentiment", "309")
         client.set("lowest_sentiment", "-334")
@@ -43,6 +52,42 @@ def check_redis():
 
 if client.get("twit_bot") is None:
     client.set("twit_bot", "bullish")
+
+
+def add_sentiment_reading(
+    sentiment: int, date: datetime = timezone.localize(datetime.datetime.now())
+):
+    try:
+        conn = psycopg2.connect(
+            host=host, database=db, user=user, password=password, port=port
+        )
+        cursor = conn.cursor()
+        # Update single record now
+        sql = """INSERT INTO twitter_sentiment (account_id, date, value) VALUES (%s, %s , %s)"""
+        cursor.execute(sql, (ID, date, sentiment))
+        conn.commit()
+        count = cursor.rowcount
+        print(count, "Record added successfully ")
+    except Exception as e:
+        print(e)
+
+
+def update_tweets_read(amount: int):
+    try:
+        conn = psycopg2.connect(
+            host=host, database=db, user=user, password=password, port=port
+        )
+        cursor = conn.cursor()
+        # Update single record now
+        sql_update_query = (
+            """Update twitter_account set tweets_read = %s where id = %s"""
+        )
+        cursor.execute(sql_update_query, (amount, ID))
+        conn.commit()
+        count = cursor.rowcount
+        print(count, "Record Updated successfully ")
+    except Exception as e:
+        print(e)
 
 
 def read_last_seen():
@@ -57,8 +102,9 @@ def store_last_seen(last_seen_id):
 
 def reply():
     tweets = api.mentions_timeline(read_last_seen(), tweet_mode="extended")
+    tweets_read = 0
     for tweet in reversed(tweets):
-        client.incr("tendie_read")
+        tweets_read += 1
         try:
             username = tweet.user.screen_name
 
@@ -69,6 +115,8 @@ def reply():
             store_last_seen(tweet.id)
             print(e.reason)
         time.sleep(2)
+
+    update_tweets_read(tweets_read)
 
 
 def specific_favorite():
@@ -111,7 +159,6 @@ def tweet_sentiment():
     status = f"I am currently {sentiment} the stock market."
     print(status)
     api.update_status(status)
-    client.set("tendie_recent", status)
 
 
 def scrape_twitter(maxTweets, searchQuery, redisDataBase):
@@ -245,14 +292,7 @@ def run_scraper():
         if weekday:
             client.incr("weekly_bears")
     print(to_string)
-    today = datetime.datetime.now()
-    today = ":".join(str(today).split(":")[0:2])
-    storage_client = redis.Redis(
-        host=os.getenv("REDIS_HOST"), port=6379, db=4, password=os.getenv("REDIS_PASS")
-    )
-    res = storage_client.hset("total_tendie_readings", today, str(sentiment))
-    if res != 1:
-        print(f"Error adding new reading to storage client: {today} {sentiment}")
+    add_sentiment_reading(sentiment=sentiment)
     api.update_status(to_string)
 
 
@@ -424,6 +464,7 @@ def send_error_message(follower):
 
 
 def get_all_tweets(screen_name):
+    print("Getting tweets")
     # Twitter only allows access to a users most recent 3240 tweets with this method
 
     # initialize a list to hold all the tweepy Tweets
@@ -471,11 +512,8 @@ def get_all_tweets(screen_name):
     pass
 
 
-def readTweets():
-    client = redis.Redis(
-        host=os.getenv("REDIS_HOST"), port=6379, db=4, password=os.getenv("REDIS_PASS")
-    )
-    reader = csv.DictReader(open("tweets.csv"))
+def readTweets(screen_name):
+    reader = csv.DictReader(open(f"new_{screen_name}_tweets.csv"))
     total_readings = 0
 
     for line in reader:
@@ -499,16 +537,13 @@ def readTweets():
                     reading_val = f"-{word}"
                     total_readings += 1
         if reading_val:
-            res = client.hset("total_tendie_readings", reading_time, reading_val)
-            if res != 1:
-                print("Error setting this value as hash in redis")
-                print(reading_time, reading_val)
+            add_sentiment_reading(
+                sentiment=int(reading_val),
+                date=datetime.datetime.fromisoformat(reading_time),
+            )
 
-    print(f"{total_readings} stock market sentiment readings stored in Redis")
+    print(f"{total_readings} stock market sentiment readings stored in psql db")
 
-
-# get_all_tweets("InternTendie")
-# readTweets()
 
 ####### Schedule Twitter Jobs ########
 schedule.every(15).minutes.do(thank_new_followers)
@@ -528,6 +563,9 @@ schedule.every().friday.at("17:00").do(weekly_sentiment)
 
 print("Running twitter-bot")
 # run_scraper()
+get_all_tweets("InternTendie")
+readTweets("InternTendie")
+update_tweets_read(amount=53325800)
 check_redis()
 
 while True:

@@ -50,3 +50,28 @@ spec:
                 secretKeyRef:
                   key: REDIS_PASS
                   name: redis
+            - name: POSTGRESQL_DB
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-db
+                  name: django-api-secrets
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-user
+                  name: django-api-secrets
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-password
+                  name: django-api-secrets
+            - name: POSTGRESQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-host
+                  name: django-api-secrets
+            - name: POSTGRESQL_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-port
+                  name: django-api-secrets
