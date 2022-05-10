@@ -563,9 +563,9 @@ schedule.every().friday.at("17:00").do(weekly_sentiment)
 
 print("Running twitter-bot")
 # run_scraper()
-# get_all_tweets("InternTendie")
-# readTweets("InternTendie")
-# update_tweets_read(amount=53325800)
+get_all_tweets("InternTendie")
+readTweets("InternTendie")
+update_tweets_read(amount=53325800)
 check_redis()
 
 while True:
