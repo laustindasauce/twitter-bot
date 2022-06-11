@@ -5,7 +5,6 @@ import os
 import psycopg2
 import pytz
 import re
-import redis
 import schedule
 from textblob import TextBlob
 import time
@@ -24,11 +23,6 @@ db = os.getenv("POSTGRESQL_DB") or "personal_db"
 user = os.getenv("POSTGRESQL_USER") or "gaming_admin"
 password = os.getenv("POSTGRESQL_PASSWORD") or "secret_password"
 port = os.getenv("POSTGRESQL_PORT") or "5432"
-### Redis
-
-client = redis.Redis(
-    host=os.getenv("REDIS_HOST"), port=6379, db=1, password=os.getenv("REDIS_PASS")
-)
 
 ### Tweepy
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -40,18 +34,6 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 correct = 0
 wrong = 0
 timezone = pytz.timezone("America/Los_Angeles")
-
-
-def check_redis():
-    if client.get("last_seen_id") is None:
-        client.set("last_seen_id", "1194877411671724066")
-        client.set("sent_number", "379")
-        client.set("highest_sentiment", "309")
-        client.set("lowest_sentiment", "-334")
-
-
-if client.get("twit_bot") is None:
-    client.set("twit_bot", "bullish")
 
 
 def add_sentiment_reading(
@@ -90,136 +72,135 @@ def update_tweets_read(amount: int):
         print(e)
 
 
-def read_last_seen():
-    last_seen_id = int(client.get("last_seen_id"))
-    return last_seen_id
+def get_sentiment_reading_count():
+    try:
+        conn = psycopg2.connect(
+            host=host, database=db, user=user, password=password, port=port
+        )
+        cursor = conn.cursor()
+        # query to count total number of rows
+        sql = f"SELECT count(*) from twitter_sentiment where account_id = '{ID}';"
+        data = []
+
+        # execute the query
+        cursor.execute(sql, data)
+        results = cursor.fetchone()
+
+        # loop to print all the fetched details
+        for r in results:
+            print(r)
+        print("Total number of rows in the table:", r)
+        return r
+    except Exception as e:
+        print(e)
 
 
-def store_last_seen(last_seen_id):
-    client.set("last_seen_id", str(last_seen_id))
-    return
+def get_sentiment_extremes(extreme: str = "max"):
+    try:
+        conn = psycopg2.connect(
+            host=host, database=db, user=user, password=password, port=port
+        )
+        cursor = conn.cursor()
+        # query to get the max or min value from twitter sentiment
+        sql = (
+            f"SELECT {extreme}(value) from twitter_sentiment where account_id = '{ID}';"
+        )
+        data = []
+
+        # execute the query
+        cursor.execute(sql, data)
+        results = cursor.fetchone()
+
+        # loop to print all the fetched details
+        for r in results:
+            print(r)
+        print(f"{extreme} of twitter sentiment readings: ", r)
+        return r
+    except Exception as e:
+        print(e)
 
 
-def reply():
-    tweets = api.mentions_timeline(read_last_seen(), tweet_mode="extended")
-    tweets_read = 0
-    for tweet in reversed(tweets):
-        tweets_read += 1
-        try:
-            username = tweet.user.screen_name
+def get_account_followers(extreme: str = "max"):
+    try:
+        conn = psycopg2.connect(
+            host=host, database=db, user=user, password=password, port=port
+        )
+        cursor = conn.cursor()
+        # query to get the max or min value from twitter sentiment
+        sql = (
+            f"SELECT {extreme}(value) from twitter_sentiment where account_id = '{ID}';"
+        )
+        data = []
 
-            print("Favorited " + username + " - " + tweet.full_text)
-            api.create_favorite(tweet.id)
-            store_last_seen(tweet.id)
-        except tweepy.TweepError as e:
-            store_last_seen(tweet.id)
-            print(e.reason)
-        time.sleep(2)
+        # execute the query
+        cursor.execute(sql, data)
+        results = cursor.fetchone()
 
-    update_tweets_read(tweets_read)
-
-
-def specific_favorite():
-    """
-    Could use something like this to get trending tickers
-    Just follow thousands of people who tweet regularly about the stock market
-    Each time you find a tweet with stock market in it or a ticker in it follow that person
-    """
-    client = redis.Redis(host="10.10.10.1", port=6379, password=os.getenv("REDIS_PASS"))
-    sinceId = "ky_since_id"
-    client.set(sinceId, "1285706104433979392")
-    tweet_id = int(client.get(sinceId))
-    tweets = api.home_timeline(since_id=tweet_id, include_rts=1, count=200)
-    for tweet in reversed(tweets):
-        client.set(sinceId, str(tweet.id))
-        try:
-            if (
-                tweet.user.screen_name == "CalendarKy"
-                or tweet.user.screen_name == "statutorywheel"
-            ):
-                if str(tweet.text)[:1] != "@" and str(tweet.text)[:2] != "RT":
-                    api.create_favorite(tweet.id)
-                    # tweet.retweet()
-                    # print(client.get(sinceId))
-                    print(f"Favorited {tweet.user.screen_name}'s tweet.")
-                    time.sleep(3)
-        except tweepy.TweepError as e:
-            if e.reason[:13] != "[{'code': 139":
-                print(e.reason)
-            time.sleep(3)
-        time.sleep(1)
+        # loop to print all the fetched details
+        for r in results:
+            print(r)
+        print(f"{extreme} of twitter sentiment readings: ", r)
+        return r
+    except Exception as e:
+        print(e)
 
 
-def tweet_sentiment():
-    print("Running tweet_sentiment()")
-    client = redis.Redis(
-        host=os.getenv("REDIS_HOST"), port=6379, password=os.getenv("REDIS_PASS")
-    )
-    sentiment = client.get("twit_bot").decode("utf-8")
-    status = f"I am currently {sentiment} the stock market."
-    print(status)
-    api.update_status(status)
-
-
-def scrape_twitter(maxTweets, searchQuery, redisDataBase):
-    client.delete(redisDataBase)
+def scrape_twitter(maxTweets, searchQuery, file_name):
     print(f"Downloading max {maxTweets} tweets")
     retweet_filter = "-filter:retweets"
     q = searchQuery + retweet_filter
     tweetCount = 0
     max_id = -1
     tweetsPerQry = 100
-    redisDataBase = "tweets_scraped"
     sinceId = None
-    while tweetCount < (maxTweets - 50):
-        try:
-            if max_id <= 0:
-                if not sinceId:
-                    new_tweets = api.search(
-                        q=q, lang="en", count=tweetsPerQry, tweet_mode="extended"
-                    )
+    with open(file_name, "w") as file:
+        while tweetCount < (maxTweets - 50):
+            try:
+                if max_id <= 0:
+                    if not sinceId:
+                        new_tweets = api.search(
+                            q=q, lang="en", count=tweetsPerQry, tweet_mode="extended"
+                        )
+                    else:
+                        new_tweets = api.search(
+                            q=q,
+                            lang="en",
+                            count=tweetsPerQry,
+                            since_id=sinceId,
+                            tweet_mode="extended",
+                        )
                 else:
-                    new_tweets = api.search(
-                        q=q,
-                        lang="en",
-                        count=tweetsPerQry,
-                        since_id=sinceId,
-                        tweet_mode="extended",
-                    )
-            else:
-                if not sinceId:
-                    new_tweets = api.search(
-                        q=q,
-                        lang="en",
-                        count=tweetsPerQry,
-                        max_id=str(max_id - 1),
-                        tweet_mode="extended",
-                    )
-                else:
-                    new_tweets = api.search(
-                        q=q,
-                        lang="en",
-                        count=tweetsPerQry,
-                        max_id=str(max_id - 1),
-                        since_id=sinceId,
-                        tweet_mode="extended",
-                    )
-            if not new_tweets:
-                print("No more tweets found")
+                    if not sinceId:
+                        new_tweets = api.search(
+                            q=q,
+                            lang="en",
+                            count=tweetsPerQry,
+                            max_id=str(max_id - 1),
+                            tweet_mode="extended",
+                        )
+                    else:
+                        new_tweets = api.search(
+                            q=q,
+                            lang="en",
+                            count=tweetsPerQry,
+                            max_id=str(max_id - 1),
+                            since_id=sinceId,
+                            tweet_mode="extended",
+                        )
+                if not new_tweets:
+                    print("No more tweets found")
+                    break
+                for tweet in new_tweets:
+                    tweet = str(tweet.full_text.replace("\n", "")) + "\n"
+                    file.write(tweet)
+                tweetCount += len(new_tweets)
+                max_id = new_tweets[-1].id
+                download = (tweetCount / maxTweets) * 100
+                print(f"Downloading tweets -> {download}%")
+            except tweepy.TweepError as e:
+                # Just exit if any error
+                print("Some error : " + str(e))
                 break
-            for tweet in new_tweets:
-                client.sadd(
-                    redisDataBase,
-                    (str(tweet.full_text.replace("\n", "").encode("utf-8")) + "\n"),
-                )
-            tweetCount += len(new_tweets)
-            max_id = new_tweets[-1].id
-            download = (tweetCount / maxTweets) * 100
-            print(f"Downloading tweets -> {download}%")
-        except tweepy.TweepError as e:
-            # Just exit if any error
-            print("Some error : " + str(e))
-            break
     print(f"Downloading tweets -> 100%")
 
 
@@ -231,9 +212,12 @@ def clean(tweet):
     return tweet
 
 
-def read_tweets(redis_set):
-    f = client.smembers(redis_set)
-    tweets = [clean(sentence.decode("utf-8").strip()) for sentence in f]
+def read_tweets(file_name):
+    tweets = []
+    with open(file_name, "r") as file:
+        f = file.readlines()
+        tweets = [clean(sentence.strip()) for sentence in f]
+
     return tweets
 
 
@@ -247,11 +231,11 @@ def subjectivity(x):
 
 def run_scraper():
     print("Running data scraper.")
-    redisDataBase = "tweets_scraped"
-    scrape_twitter(3000, "stock market", redisDataBase)
-    f = read_tweets(redisDataBase)
-    tweet_polarity = np.zeros(client.scard(redisDataBase))
-    tweet_subjectivity = np.zeros(client.scard(redisDataBase))
+    file_name = "scraper_data.txt"
+    scrape_twitter(100, "stock market", file_name)
+    f = read_tweets(file_name)
+    tweet_polarity = np.zeros(len(f))
+    tweet_subjectivity = np.zeros(len(f))
     bullish_count = 0
     bearish_count = 0
 
@@ -265,35 +249,24 @@ def run_scraper():
 
     bullish_count -= 35
     sentiment = (bullish_count) - bearish_count
-    client.incr("sent_number")
-    sent_num = int(client.get("sent_number"))
+    sent_num = get_sentiment_reading_count() + 1
     to_string = f"Reading #{sent_num} => Twitter's sentiment of the stock market is"
-    weekday = datetime.datetime.today().weekday() < 5
     if sentiment > 5:
-        client.sadd("bullish_date", str(datetime.date.today()))
         to_string = f"{to_string} bullish with a reading of {sentiment}."
-        current_high = int(client.get("highest_sentiment"))
+        current_high = get_sentiment_extremes("max")
         if sentiment > current_high:
-            client.set("highest_sentiment", str(sentiment))
             to_string = f"{to_string} This is the highest reading to date."
-        if weekday:
-            client.incr("weekly_bulls")
     elif sentiment > -5:
         to_string = f"{to_string} nuetral with a reading of {sentiment}."
-        if weekday:
-            client.incr("weekly_nuetral")
     else:
-        client.sadd("bearish_date", str(datetime.date.today()))
         to_string = f"{to_string} bearish with a reading of {sentiment}."
-        current_low = int(client.get("lowest_sentiment"))
+        current_low = get_sentiment_extremes("min")
         if sentiment < current_low:
-            client.set("lowest_sentiment", str(sentiment))
             to_string = f"{to_string} This is the lowest reading to date."
-        if weekday:
-            client.incr("weekly_bears")
     print(to_string)
     add_sentiment_reading(sentiment=sentiment)
-    api.update_status(to_string)
+    # api.update_status(to_string)
+    os.remove(file_name)
 
 
 def unfollow():
@@ -324,127 +297,32 @@ def unfollow():
     print(f"Unfollowed: {unfollow_count} losers.")
 
 
-def weekly_sentiment():
-    if (
-        client.get("weekly_bulls") is None
-        and client.get("weekly_bears") is None
-        and client.get("weekly_nuetral") is None
-    ):
-        print("Weekly stats weren't set")
-        clear_weekly()
-        return
-    bulls = int(client.get("weekly_bulls"))
-    bears = int(client.get("weekly_bears"))
-    split = int(client.get("weekly_nuetral"))
-    total = bulls + bears + split
-    week_sentiment = ""
-    if bulls > bears:
-        week_sentiment = "bullish"
-    elif bears > bulls:
-        week_sentiment = "bearish"
-    else:
-        week_sentiment = "nuetral"
-    today = datetime.date.today()
-    last_monday = str(today - datetime.timedelta(days=today.weekday()))
-    today = str(today)
-    adjTimeframe = f" {last_monday[-5:]} - {today[-5:]}"
-
-    to_string = (
-        f"From {adjTimeframe} at close there were {total} stock market sentiment readings."
-        + f" Sentiment was {week_sentiment} with {bulls} bullish, {bears} bearish, and {split} nuetral readings."
-    )
-
-    client.hset("stock_sentiment", today, week_sentiment)
-
-    api.update_status(to_string)
-    clear_weekly()
-
-
-def clear_weekly():
-    client.set("weekly_bulls", "0")
-    client.set("weekly_bears", "0")
-    client.set("weekly_nuetral", "0")
-
-
-def thank_new_followers():
-    total_followers = client.scard("followers_thanked")
-    followers_thanked = []
-    followers = []
-    for follower in list(client.smembers("followers_thanked")):
-        followers_thanked.append(follower.decode("utf-8"))
-    followers_thanked = set(followers_thanked)
-    follow_count = 0
-    limit = False
-    for follower in tweepy.Cursor(api.followers).items(10):
-        followers.append(str(follower.id))
-        # follower has a long list of possible things to see.. kinda neat
-        if not follower.following:
-            try:
-                follower.follow()
-                follow_count += 1
-                # Moved this print statement so that if there is an error we don't print
-                # print(f"Following {follower.name}")
-            except tweepy.TweepError as e:
-                """Ignores error that we've already tried to follow this person
-                The reason we're ignoring this error is because if someone is private
-                we will keep trying to follow them until they accept our follow. Which
-                will give the error of already pending request.
-                """
-                if e.reason[:13] == "[{'code': 160":
-                    continue
-                elif (
-                    e.reason[:13] == "[{'code': 161" or e.reason[:13] == "[{'code': 429"
-                ):
-                    print("Following limit hit!!")
-                    limit = True
-                    break
-                elif e.reason[:13] == "[{'code': 283":
-                    print("Malicious activity suspected. Can't follow back right now.")
-                    limit = True
-                    break
-                else:
-                    print(e.reason)
-            time.sleep(3)
-    if follow_count > 0:
-        print(f"Tendie followed back {follow_count} people.")
-    followers_set = set(followers)
-    new_followers = followers_set.difference(followers_thanked)
-    if new_followers:
-        for follower in new_followers:
-            client.sadd("followers_thanked", str(follower))
-        trouble = False
-        to_string = (
-            "\nAppreciate you following me! I am a fully automated twitter account. If you're interested in programming or if you'd like to create an automated twitter account of your own, I can send you a link to my GitHub Repository!\n"
-            + "If your next message has 'yes' anywhere in it I will send you a link!"
-        )
-        if limit:
-            to_string = f"{to_string}\nSorry, I've hit a following limit and will follow you back ASAP!"
-        for follower in new_followers:
-            if not trouble:
+def thank_new_followers(self):
+    try:
+        new = 0
+        for follower in tweepy.Cursor(self.api.get_followers).items(20):
+            # follower has a long list of possible things to see.. kinda neat
+            if not follower.following:
                 try:
-                    client.sadd("followers_thanked", str(follower))
-                    # api.send_direct_message(follower, to_string)
-                except tweepy.TweepError as e:
-                    if (
-                        e.reason[:13] == "[{'code': 226"
-                        or e.reason[:13] == "[{'code': 429"
-                    ):
-                        print("They think this is spam...")
-                        trouble = True
-                    else:
-                        print(e)
-                time.sleep(3)
-            else:
-                try:
-                    client.sadd("followers_thanked", str(follower))
-                except tweepy.TweepError as e:
-                    print(e)
-        new_total_followers = client.scard("followers_thanked")
-        total_followers = new_total_followers - total_followers
-        print(
-            f"Tendie Intern has {total_followers} new followers. Total of {new_total_followers} followers."
+                    follower.follow()
+                    time.sleep(3)
+                    new += 1
+                    # Moved this print statement so that if there is an error we don't print
+                except tweepy.TweepyException as e:
+                    """Ignores error that we've already tried to follow this person
+                    The reason we're ignoring this error is because if someone is private
+                    we will keep trying to follow them until they accept our follow.
+                    """
+                    if "160" in str(e):
+                        return
+                    time.sleep(2)
+        if new > 0:
+            print(f"Followed {new} people.")
+    except tweepy.TweepyException as e:
+        error_message = (
+            f"{self.info.screen_name} : Exception in thank_new_followers: {str(e)}"
         )
-    time.sleep(60)
+        raise Exception(error_message)
 
 
 def send_error_message(follower):
@@ -557,16 +435,11 @@ schedule.every().day.at("12:00").do(run_scraper)
 schedule.every().day.at("15:00").do(run_scraper)
 schedule.every().day.at("22:00").do(run_scraper)
 
-###### Schedule Weekly Sentiment Job ########
-schedule.every().friday.at("17:00").do(weekly_sentiment)
-
-
 print("Running twitter-bot")
-# run_scraper()
+run_scraper()
 # get_all_tweets("InternTendie")
 # readTweets("InternTendie")
 # update_tweets_read(amount=53325800)
-check_redis()
 
 while True:
     try:

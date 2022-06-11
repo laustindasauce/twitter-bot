@@ -40,16 +40,16 @@ spec:
                 secretKeyRef:
                   key: SECRET
                   name: tendie-twitter-bot
-            - name: REDIS_HOST
-              valueFrom:
-                secretKeyRef:
-                  key: REDIS_HOST
-                  name: redis
-            - name: REDIS_PASS
-              valueFrom:
-                secretKeyRef:
-                  key: REDIS_PASS
-                  name: redis
+            # - name: REDIS_HOST
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: REDIS_HOST
+            #       name: redis
+            # - name: REDIS_PASS
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: REDIS_PASS
+            #       name: redis
             - name: POSTGRESQL_DB
               valueFrom:
                 secretKeyRef:
