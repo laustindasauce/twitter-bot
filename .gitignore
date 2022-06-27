@@ -143,3 +143,6 @@ pipeline
 
 # Local redis db
 *.rdb
+
+# Concourse
+ci/
