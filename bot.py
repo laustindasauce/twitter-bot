@@ -300,7 +300,7 @@ def unfollow():
 def thank_new_followers():
     try:
         new = 0
-        for follower in tweepy.Cursor(api.get_followers).items(20):
+        for follower in tweepy.Cursor(api.followers).items(20):
             # follower has a long list of possible things to see.. kinda neat
             if not follower.following:
                 try:
@@ -318,7 +318,7 @@ def thank_new_followers():
                     time.sleep(2)
         if new > 0:
             print(f"Followed {new} people.")
-    except tweepy.TweepyException as e:
+    except tweepy.TweepError as e:
         error_message = f"Exception in thank_new_followers: {str(e)}"
         raise Exception(error_message)
 
