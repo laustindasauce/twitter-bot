@@ -34,6 +34,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 correct = 0
 wrong = 0
 timezone = pytz.timezone("America/Los_Angeles")
+SCRAPER_FILENAME = "scraper_data.txt"
 
 
 def add_sentiment_reading(
@@ -145,7 +146,7 @@ def get_account_followers(extreme: str = "max"):
         print(e)
 
 
-def scrape_twitter(maxTweets, searchQuery, file_name):
+def scrape_twitter(maxTweets, searchQuery):
     print(f"Downloading max {maxTweets} tweets")
     retweet_filter = "-filter:retweets"
     q = searchQuery + retweet_filter
@@ -153,7 +154,7 @@ def scrape_twitter(maxTweets, searchQuery, file_name):
     max_id = -1
     tweetsPerQry = 100
     sinceId = None
-    with open(file_name, "w") as file:
+    with open(SCRAPER_FILENAME, "w") as file:
         while tweetCount < (maxTweets - 50):
             try:
                 if max_id <= 0:
@@ -212,9 +213,9 @@ def clean(tweet):
     return tweet
 
 
-def read_tweets(file_name):
+def read_tweets():
     tweets = []
-    with open(file_name, "r") as file:
+    with open(SCRAPER_FILENAME, "r") as file:
         f = file.readlines()
         tweets = [clean(sentence.strip()) for sentence in f]
 
@@ -231,9 +232,8 @@ def subjectivity(x):
 
 def run_scraper():
     print("Running data scraper.")
-    file_name = "scraper_data.txt"
-    scrape_twitter(100, "stock market", file_name)
-    f = read_tweets(file_name)
+    scrape_twitter(3000, "stock market")
+    f = read_tweets()
     tweet_polarity = np.zeros(len(f))
     tweet_subjectivity = np.zeros(len(f))
     bullish_count = 0
@@ -265,8 +265,8 @@ def run_scraper():
             to_string = f"{to_string} This is the lowest reading to date."
     print(to_string)
     add_sentiment_reading(sentiment=sentiment)
-    # api.update_status(to_string)
-    os.remove(file_name)
+    api.update_status(to_string)
+    os.remove(SCRAPER_FILENAME)
 
 
 def unfollow():
