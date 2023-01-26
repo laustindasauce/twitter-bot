@@ -17,9 +17,11 @@ spec:
         - name: guldentech-harbor-registry
       containers:
         - name: twitter-bot
-          image: harbor.guldentech.com/austin-spencer/twitter-bot:TAG
+          image: harbor2.guldentech.com/austin-spencer/twitter-bot:TAG
           imagePullPolicy: Always
           env:
+            - name: version
+              value: THE_VERSION
             - name: CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
@@ -40,16 +42,6 @@ spec:
                 secretKeyRef:
                   key: SECRET
                   name: tendie-twitter-bot
-            # - name: REDIS_HOST
-            #   valueFrom:
-            #     secretKeyRef:
-            #       key: REDIS_HOST
-            #       name: redis
-            # - name: REDIS_PASS
-            #   valueFrom:
-            #     secretKeyRef:
-            #       key: REDIS_PASS
-            #       name: redis
             - name: POSTGRESQL_DB
               valueFrom:
                 secretKeyRef:
